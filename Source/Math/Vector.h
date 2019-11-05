@@ -21,12 +21,12 @@ struct Vector {
     Vector& operator+=(const T value);
     Vector& operator-=(const T value);
     Vector& operator*=(const T value);
-    Vector operator+(const Vector<T>& other);
-    Vector operator-(const Vector<T>& other);
-    Vector operator+(const T value);
-    Vector operator-(const T value);
-    Vector operator*(const T value);
-    Vector dot(const Vector<T>& other);
+    Vector operator+(const Vector<T>& other) const;
+    Vector operator-(const Vector<T>& other) const;
+    Vector operator+(const T value) const;
+    Vector operator-(const T value) const;
+    Vector operator*(const T value) const;
+    Vector dot(const Vector<T>& other) const;
 
     std::size_t size;
     std::unique_ptr<T[]> values;
@@ -114,7 +114,7 @@ Vector<T>& Vector<T>::operator*=(const T value) {
 }
 
 template<typename T>
-Vector<T> Vector<T>::operator+(const Vector<T>& other) {
+Vector<T> Vector<T>::operator+(const Vector<T>& other) const {
     Vector<T> ret(*this);
     ret += other;
 
@@ -122,7 +122,7 @@ Vector<T> Vector<T>::operator+(const Vector<T>& other) {
 }
 
 template<typename T>
-Vector<T> Vector<T>::operator-(const Vector<T>& other) {
+Vector<T> Vector<T>::operator-(const Vector<T>& other) const {
     Vector<T> ret(*this);
     ret -= other;
 
@@ -130,7 +130,7 @@ Vector<T> Vector<T>::operator-(const Vector<T>& other) {
 }
 
 template<typename T>
-Vector<T> Vector<T>::operator+(const T value) {
+Vector<T> Vector<T>::operator+(const T value) const {
     Vector<T> ret(*this);
     ret += value;
 
@@ -138,12 +138,12 @@ Vector<T> Vector<T>::operator+(const T value) {
 }
 
 template<typename T>
-Vector<T> Vector<T>::operator-(const T value) {
+Vector<T> Vector<T>::operator-(const T value) const {
     return *this + -value;
 }
 
 template<typename T>
-Vector<T> Vector<T>::operator*(const T value) {
+Vector<T> Vector<T>::operator*(const T value) const {
     Vector<T> ret(*this);
     ret *= value;
 
@@ -151,7 +151,7 @@ Vector<T> Vector<T>::operator*(const T value) {
 }
 
 template<typename T>
-Vector<T> Vector<T>::dot(const Vector<T>& other) {
+Vector<T> Vector<T>::dot(const Vector<T>& other) const {
     T ret = 0;
     for (int i = 0; i < size; i++) {
         ret += *this[i] * other[i];
