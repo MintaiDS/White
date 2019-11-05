@@ -12,6 +12,18 @@ struct Vector {
     Vector(std::vector<T> values);
 
     T& operator[](std::size_t index);
+    T& operator+=(const Vector<T>& other);
+    T& operator-=(const Vector<T>& other);
+    T& operator*=(const Vector<T>& other);
+    T& operator+=(const T value);
+    T& operator-=(const T value);
+    T& operator*=(const T value);
+    T operator+(const Vector<T>& other);
+    T operator-(const Vector<T>& other);
+    T operator*(const Vector<T>& other);
+    T operator+(const T value);
+    T operator-(const T value);
+    T operator*(const T value);
 
     std::size_t size;
     std::unique_ptr<T[]> values;
