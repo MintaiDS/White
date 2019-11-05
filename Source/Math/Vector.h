@@ -23,7 +23,7 @@ Vector<T>::Vector() : size(0) {}
 template<typename T>
 Vector<T>::Vector(std::size_t size, T* values) 
         : size(size)
-        , values(new T[size]) {
+        , values(std::make_unique<T[]>(size)) {
     for (int i = 0; i < size; i++) {
         this->values[i] = values[i];
     }
