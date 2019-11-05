@@ -14,6 +14,7 @@ struct Vector {
     Vector(std::vector<T> values);
     Vector(const Vector<T>& other);
 
+    T operator[](std::size_t index) const;
     T& operator[](std::size_t index);
     Vector& operator+=(const Vector<T>& other);
     Vector& operator-=(const Vector<T>& other);
@@ -57,8 +58,13 @@ Vector<T>::Vector(const Vector<T>& other)
         : size(other.size)
         , values(std::make_unique<T[]>(size)) {
     for (int i = 0; i < size; i++) {
-        this->values[i] = values[i];
+        values[i] = other[i];
     }
+}
+
+template<typename T>
+T Vector<T>::operator[](std::size_t index) const {
+    return values[index];
 }
 
 template<typename T>
