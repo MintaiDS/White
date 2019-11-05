@@ -10,6 +10,7 @@ namespace Math {
 template<typename T>
 struct Vector {          
     Vector();
+    Vector(std::size_t size);
     Vector(std::size_t size, T* values);
     Vector(std::vector<T> values);
     Vector(const Vector<T>& other);
@@ -26,7 +27,9 @@ struct Vector {
     Vector operator+(const T value) const;
     Vector operator-(const T value) const;
     Vector operator*(const T value) const;
-    Vector dot(const Vector<T>& other) const;
+    T dot(const Vector<T>& other) const;
+    Vector cross(const Vector<T>& other) const;
+    T mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
 
     std::size_t size;
     std::unique_ptr<T[]> values;
@@ -34,6 +37,16 @@ struct Vector {
 
 template<typename T>
 Vector<T>::Vector() : size(0) {}
+
+
+template<typename T>
+Vector<T>::Vector(std::size_t size) 
+        : size(size)
+        , values(std::make_unique<T[]>(size)) {
+    for (auto& value : values) {
+        value = 0;
+    }
+}
 
 template<typename T>
 Vector<T>::Vector(std::size_t size, T* values) 
@@ -151,13 +164,29 @@ Vector<T> Vector<T>::operator*(const T value) const {
 }
 
 template<typename T>
-Vector<T> Vector<T>::dot(const Vector<T>& other) const {
+T Vector<T>::dot(const Vector<T>& other) const {
     T ret = 0;
     for (int i = 0; i < size; i++) {
         ret += *this[i] * other[i];
     }
 
     return ret;
+}
+
+template<typename T>
+Vector<T> Vector<T>::cross(const Vector<T>& other) const {
+    Vector<T> ret(size);
+    ret[0] = *this[1] * other[2] - *this[2] * other[1];
+    ret[1] = *this[0] * other[2] - *this[2] * other[0];
+    ret[2] = *this[0] * other[1] - *this[1] * other[0];
+
+    return ret;
+}
+
+template<typename T>
+T Vector<T>::mixed(const Vector<T>& otherFirst, 
+                   const Vector<T>& otherSecond) const {
+    return *this.dot(otherFrist.cross(otherSecond));
 }
 
 }
