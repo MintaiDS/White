@@ -11,4 +11,5 @@ int main() {
         std::cin >> x;
         a.push_back(x);
     }
+    White::Math::Vector<int> v(a);
 }

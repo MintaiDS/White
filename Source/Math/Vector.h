@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 namespace White {
 namespace Math {
@@ -7,11 +8,13 @@ namespace Math {
 template<typename T>
 struct Vector {          
     Vector();
-    Vector(size_t size, T* values);
+    Vector(std::size_t size, T* values);
     Vector(std::vector<T> values);
 
+    T& operator[](std::size_t index);
+
     std::size_t size;
-    std::unique_ptr<T*> values;
+    std::unique_ptr<T[]> values;
 };
 
 template<typename T>
@@ -20,15 +23,24 @@ Vector<T>::Vector() : size(0) {}
 template<typename T>
 Vector<T>::Vector(std::size_t size, T* values) 
         : size(size)
-        , values(std::make_unique<T[]>(size)) {
-    std::copy(values, values + size, this->values);
+        , values(new T[size]) {
+    for (int i = 0; i < size; i++) {
+        this->values[i] = values[i];
+    }
 }
 
 template<typename T>
 Vector<T>::Vector(std::vector<T> values) 
         : size(values.size())
         , values(std::make_unique<T[]>(size)) { 
-    std::copy(std::begin(values), std::end(values), this->values);
+    for (int i = 0; i < size; i++) {
+        this->values[i] = values[i];
+    }
+}
+
+template<typename T>
+T& Vector<T>::operator[](std::size_t index) {
+    return values[index];
 }
 
 }
