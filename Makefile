@@ -1,5 +1,6 @@
-obj_path = Obj/
-bin_path = Bin/
+build_output_path = Build/
+obj_path = $(build_output_path)Obj/
+bin_path = $(build_output_path)Bin/
 src_path = Source/
 src_math_path = $(src_path)Math/
 cl_compiler = "cl.exe"
