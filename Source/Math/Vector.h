@@ -27,6 +27,7 @@ struct Vector {
     Vector operator+(const T value) const;
     Vector operator-(const T value) const;
     Vector operator*(const T value) const;
+
     T dot(const Vector<T>& other) const;
     Vector cross(const Vector<T>& other) const;
     T mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
