@@ -4,3 +4,6 @@
 *.un
 *.swp
 *.swo
+
+# Ignore build output.
+Build/
