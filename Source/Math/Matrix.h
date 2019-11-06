@@ -24,11 +24,12 @@ struct Matrix {
     Matrix& operator+=(const T value);
     Matrix& operator-=(const T value);
     Matrix& operator*=(const T value);
-    //Matrix operator+(const Matrix<T>& other) const;
-    //Matrix operator-(const Matrix<T>& other) const;
-    //Matrix operator+(const T value) const;
-    //Matrix operator-(const T value) const;
-    //Matrix operator*(const T value) const;
+    Matrix operator+(const Matrix<T>& other) const;
+    Matrix operator-(const Matrix<T>& other) const;
+    Matrix operator*(const Matrix<T>& other) const;
+    Matrix operator+(const T value) const;
+    Matrix operator-(const T value) const;
+    Matrix operator*(const T value) const;
 
     //T dot(const Matrix<T>& other) const;
     //Matrix cross(const Matrix<T>& other) const;
@@ -152,6 +153,51 @@ Matrix<T>& Matrix<T>::operator*=(const T value) {
             column *= value;
         }
     }
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
+    Matrix<T> ret(*this);
+    ret += other;
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) const {
+    Matrix<T> ret(*this);
+    ret -= other;
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
+    Matrix<T> ret(*this);
+    ret *= other;
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator+(const T value) const {
+    Matrix<T> ret(*this);
+    ret += value;
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator-(const T value) const {
+    return *this + -value;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator*(const T value) const {
+    Matrix<T> ret(*this);
+    ret *= value;
+
+    return ret;
 }
 
 }
