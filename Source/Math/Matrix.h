@@ -13,7 +13,7 @@ struct Matrix {
     Matrix();
     Matrix(std::size_t rows, std::size_t columns);
     Matrix(std::size_t rows, std::size_t columns, T** values);
-    //Matrix(std::vector<std::vector<T>> values);
+    Matrix(std::vector<std::vector<T>> values);
     //Matrix(const Matrix<T>& other);
 
     //T[] operator[](std::size_t index) const;
@@ -58,8 +58,18 @@ Matrix<T>::Matrix(std::size_t rows, std::size_t columns, T** values)
         : rows(rows)
         , columns(columns)
         , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
-    for (auto& row : values) {
-        row = std::make_unique<Vector>(columns, row);
+    for (int i = 0; i < rows; i++) {
+        this->values[i] = std::make_unique<Vector>(columns, values[i]);
+    }
+}
+
+template<typename T>
+Matrix<T>::Matrix(std::vector<std::vector<T>> values)
+        : rows(values.size())
+        , columns(values[0].size())
+        , values(std::make_unique<std::unieuq_ptr<Vector<T>>[]>(rows)) {
+    for (int i = 0; i < rows; i++) {
+        this->values[i] = std::make_unique<Vector>(values[i]);
     }
 }
 
