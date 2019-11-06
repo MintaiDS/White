@@ -11,8 +11,7 @@ compiler = $(cl_compiler)
 linker = "link.exe"
 compiler_options = /MT /w /c
 compiler_options_out = /Fo:$(obj_path)
-compiler_options_include = /I $(src_util_math_path)
-compiler_options_include = $(compiler_options_include) \
+compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_util_system_path)
 linker_options = -defaultlib:libcmt -subsystem:console
 linker_options_out = -out:$(bin_path)

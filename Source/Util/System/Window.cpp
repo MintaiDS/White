@@ -1,11 +1,9 @@
 #include "Window.h"
 
+namespace Util {
+namespace System {
+
 std::vector<Window> Window::windows;
-
-Window::Window(LPWSTR className) {
-}
-
-Window::Window(WNDCLASSEXW wc) : wc(wc) {}
 
 LRESULT CALLBACK Window::windowProc(HWND hWnd, UINT uMsg,
                                     WPARAM wParam, LPARAM lParam) {
@@ -23,18 +21,5 @@ LRESULT CALLBACK Window::windowProcCallback(HWND hWnd, UINT uMsg,
     return 0; 
 }
 
-bool Window::registerClass() {
-    return RegisterClassExW(&wc);
 }
-
-bool Window::create() {
-    return false;
-}
-
-bool Window::show(int nCmdShow) {
-    return ShowWindow(hWnd, nCmdShow);
-}
-
-HWND Window::getHandle() const {
-    return hWnd;
 }

@@ -2,22 +2,15 @@
 
 #include "windows.h"
 
+namespace Util {
+namespace System {
+
 class Window {
-public:
-    Window();
-    Window(LPWSTR className);
-    Window(WNDCLASSEXW wc);
-     
+public:    
     static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, 
                                        WPARAM wParam, LPARAM lParam);
     LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg,
                                         WPARAM wParam, LPARAM lParam);
-
-    bool registerClass();
-    bool create();
-    bool show(int nCmdShow = SW_SHOW);
-    HWND getHandle() const;
-
 protected:
     HWND hWnd;
     WNDCLASSEXW wc;
@@ -28,3 +21,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg,
                             WPARAM wParam, LPARAM lParam) {
     return Window::windowProc(hWnd, uMsg, wParam, lParam);
 } 
+
+}
+}
