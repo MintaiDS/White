@@ -20,6 +20,7 @@ struct Matrix {
     Vector<T>& operator[](std::size_t index);
     Matrix& operator+=(const Matrix<T>& other);
     Matrix& operator-=(const Matrix<T>& other);
+    Matrix& operator*=(const Matrix<T>& other);
     Matrix& operator+=(const T value);
     Matrix& operator-=(const T value);
     Matrix& operator*=(const T value);
@@ -95,11 +96,26 @@ Vector<T>& Matrix<T>::operator[](std::size_t index) {
 
 template<typename T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& other) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            values[i][j] += other[i][j];
+        }
+    }
 
+    return *this;
 }
 
 template<typename T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            values[i][j] -= other[i][j];
+        }
+    }
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
     
 }
 
