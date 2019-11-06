@@ -116,7 +116,17 @@ Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
 
 template<typename T>
 Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
-    
+    Matrix<T> tmp(*this);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            *this[i][j] = 0;
+            for (int k = 0; k < columns; k++) {
+                *this[i][j] += *this[i][k] * other[k][j];
+            }
+        }
+    }
+
+    return *this;
 }
 
 template<typename T>
