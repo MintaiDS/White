@@ -3,18 +3,6 @@
 std::vector<Window> Window::windows;
 
 Window::Window(LPWSTR className) {
-    wc.cbSize = sizeof(WNDCLASSEXW);
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = &WindowProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = GetModuleHandleW(NULL);
-    wc.hIcon = NULL;
-    wc.hCursor = NULL;
-    wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = className;
-    wc.hIconSm = NULL;
 }
 
 Window::Window(WNDCLASSEXW wc) : wc(wc) {}
@@ -40,7 +28,7 @@ bool Window::registerClass() {
 }
 
 bool Window::create() {
-    return true;
+    return false;
 }
 
 bool Window::show(int nCmdShow) {
