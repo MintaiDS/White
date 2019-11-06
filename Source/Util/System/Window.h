@@ -2,6 +2,7 @@
 
 #include "windows.h"
 
+namespace White {
 namespace Util {
 namespace System {
 
@@ -22,5 +23,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg,
     return Window::windowProc(hWnd, uMsg, wParam, lParam);
 } 
 
+}
 }
 }

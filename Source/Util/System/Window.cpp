@@ -1,5 +1,6 @@
 #include "Window.h"
 
+namespace White {
 namespace Util {
 namespace System {
 
@@ -21,5 +22,6 @@ LRESULT CALLBACK Window::windowProcCallback(HWND hWnd, UINT uMsg,
     return 0; 
 }
 
+}
 }
 }
