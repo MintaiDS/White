@@ -31,12 +31,6 @@ struct Matrix {
     Matrix operator-(const T value) const;
     Matrix operator*(const T value) const;
 
-    //T dot(const Matrix<T>& other) const;
-    //Matrix cross(const Matrix<T>& other) const;
-    //T mixed(const Matrix<T>& otherFirst, const Matrix<T>& otherSecond) const;
-
-    //std::size_t size;
-    //std::unique_ptr<T[][]> values; 
     std::size_t rows;
     std::size_t columns;
     std::unique_ptr<Vector<T>[]> values;
