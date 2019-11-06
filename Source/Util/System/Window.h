@@ -21,8 +21,6 @@ public:
 protected:
     HWND hWnd;
     WNDCLASSEXW wc;
-
-public:
     static std::vector<Window> windows; 
 };
 
