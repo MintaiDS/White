@@ -9,7 +9,7 @@ class Window {
 public:    
     static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, 
                                        WPARAM wParam, LPARAM lParam);
-    LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg,
+    virtual LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg,
                                         WPARAM wParam, LPARAM lParam);
 protected:
     HWND hWnd;
