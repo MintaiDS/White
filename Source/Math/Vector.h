@@ -39,7 +39,6 @@ struct Vector {
 template<typename T>
 Vector<T>::Vector() : size(0) {}
 
-
 template<typename T>
 Vector<T>::Vector(std::size_t size) 
         : size(size)
