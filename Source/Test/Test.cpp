@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../Math/Vector.h"
+#include "Vector.h"
 
 int main() {
     int n;
