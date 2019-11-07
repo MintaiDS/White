@@ -12,9 +12,9 @@ class Window {
 public:    
     Window();
 
-    static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, 
+    static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, 
                                        WPARAM wParam, LPARAM lParam);
-    virtual LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg,
+    virtual LRESULT CALLBACK WindowProcCallback(HWND hWnd, UINT uMsg,
                                                 WPARAM wParam, LPARAM lParam);
 
 protected:
@@ -25,7 +25,7 @@ protected:
 
 static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, 
                                    WPARAM wParam, LPARAM lParam) {
-    return Window::windowProc(hWnd, uMsg, wParam, lParam);
+    return Window::WindowProc(hWnd, uMsg, wParam, lParam);
 } 
 
 }

@@ -14,13 +14,13 @@ public:
     Canvas(HINSTANCE hInstance);
     ~Canvas();
 
-    void show();
-    void update();
-    void destroy();
-    void loop();
-    void render();
+    void Show();
+    void Update();
+    void Destroy();
+    void Loop();
+    void Render();
 
-    virtual LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg, 
+    virtual LRESULT CALLBACK WindowProcCallback(HWND hWnd, UINT uMsg, 
                                                  WPARAM wParam, LPARAM lParam);
 };
 

@@ -10,18 +10,18 @@ Window::Window() {
     windows.push_back(this);
 }
 
-LRESULT CALLBACK Window::windowProc(HWND hWnd, UINT uMsg,
+LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT uMsg,
                                     WPARAM wParam, LPARAM lParam) {
     for (int i = 0; i < windows.size(); i++) {
         if (windows[i]->hWnd == hWnd) {
-            return windows[i]->windowProcCallback(hWnd, uMsg, wParam, lParam);
+            return windows[i]->WindowProcCallback(hWnd, uMsg, wParam, lParam);
         }
     }
 
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-LRESULT CALLBACK Window::windowProcCallback(HWND hWnd, UINT uMsg, 
+LRESULT CALLBACK Window::WindowProcCallback(HWND hWnd, UINT uMsg, 
                                             WPARAM wParam, LPARAM lParam) {
     return DefWindowProcW(hWnd, uMsg, wParam, lParam); 
 }

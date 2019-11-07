@@ -63,19 +63,19 @@ Canvas::~Canvas() {
     UnregisterClassW(L"Canvas", GetModuleHandleW(NULL));
 }
 
-void Canvas::show() {
+void Canvas::Show() {
     ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 }
 
-void Canvas::update() {
+void Canvas::Update() {
     UpdateWindow(hWnd);
 }
 
-void Canvas::destroy() {
+void Canvas::Destroy() {
     DestroyWindow(hWnd);
 }
 
-void Canvas::loop() {
+void Canvas::Loop() {
     while (true) { 
         MSG msg;
         while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) == TRUE) { 
@@ -86,11 +86,11 @@ void Canvas::loop() {
                 return;
             } 
         } 
-        render();
+        Render();
     }  
 }
 
-void Canvas::render() {
+void Canvas::Render() {
     std::random_device random;
     GLfloat r = (random() % 1000) / 1000.0;
     GLfloat g = (random() % 1000) / 1000.0;
@@ -109,7 +109,7 @@ void Canvas::render() {
     SwapBuffers(hdc);
 }
 
-LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
+LRESULT CALLBACK Canvas::WindowProcCallback(HWND hWnd, UINT uMsg,
                                             WPARAM wParam, LPARAM lParam) {   
     HDC hdc;
     HGLRC hglrc; 
@@ -121,10 +121,10 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
         MessageBoxW(NULL, L"On canvas create", NULL, MB_OK);
         break;
     case WM_SIZE:
-        update();
+        Update();
         break;
     case WM_CLOSE:
-        destroy();
+        Destroy();
         break;
     case WM_DESTROY:
         hglrc = wglGetCurrentContext();

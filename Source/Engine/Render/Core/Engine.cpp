@@ -4,10 +4,10 @@
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
                     LPWSTR lpCmdLine, int nCmdShow) {  
     White::Engine::Render::Util::Canvas canvas(hInstance);
-    canvas.show();
-    canvas.update();
-    canvas.loop();
-    canvas.destroy();
+    canvas.Show();
+    canvas.Update();
+    canvas.Loop();
+    canvas.Destroy();
     
     return 0;
 }

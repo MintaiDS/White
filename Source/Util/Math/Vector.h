@@ -29,9 +29,9 @@ struct Vector {
     Vector operator-(const T value) const;
     Vector operator*(const T value) const;
 
-    T dot(const Vector<T>& other) const;
-    Vector cross(const Vector<T>& other) const;
-    T mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
+    T Dot(const Vector<T>& other) const;
+    Vector Cross(const Vector<T>& other) const;
+    T Mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
 
     std::size_t size;
     std::unique_ptr<T[]> values;
@@ -165,7 +165,7 @@ Vector<T> Vector<T>::operator*(const T value) const {
 }
 
 template<typename T>
-T Vector<T>::dot(const Vector<T>& other) const {
+T Vector<T>::Dot(const Vector<T>& other) const {
     T ret = 0;
     for (int i = 0; i < size; i++) {
         ret += *this[i] * other[i];
@@ -175,7 +175,7 @@ T Vector<T>::dot(const Vector<T>& other) const {
 }
 
 template<typename T>
-Vector<T> Vector<T>::cross(const Vector<T>& other) const {
+Vector<T> Vector<T>::Cross(const Vector<T>& other) const {
     Vector<T> ret(size);
     ret[0] = *this[1] * other[2] - *this[2] * other[1];
     ret[1] = *this[0] * other[2] - *this[2] * other[0];
@@ -185,7 +185,7 @@ Vector<T> Vector<T>::cross(const Vector<T>& other) const {
 }
 
 template<typename T>
-T Vector<T>::mixed(const Vector<T>& otherFirst, 
+T Vector<T>::Mixed(const Vector<T>& otherFirst, 
                    const Vector<T>& otherSecond) const {
     return *this.dot(otherFrist.cross(otherSecond));
 }
