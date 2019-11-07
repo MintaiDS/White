@@ -12,6 +12,7 @@ src_util_system_path = $(src_util_path)System/
 src_util_math_path = $(src_util_path)Math/
 src_engine_render_util_path = $(src_engine_render_path)Util/
 src_engine_render_core_path = $(src_engine_render_path)Core/
+src_engine_render_gl_path = $(src_engine_render_path)GL/
 cl_compiler = "cl.exe"
 compiler = $(cl_compiler)
 linker = "link.exe"
@@ -26,8 +27,9 @@ linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
 obj_files = $(obj_path)*.o
 lib_files = Gdi32.lib User32.lib Opengl32.lib
-all : Vector.o Matrix.o Window.o Canvas.o Engine.o Test.o Engine.exe
-engine: Vector.o Matrix.o Window.o Canvas.o Engine.o Engine.exe
+all : engine
+engine: Vector.o Matrix.o Window.o Canvas.o GLFunctions.o \
+        GLInitializer.o Engine.o Engine.exe
 Matrix.o : $(src_util_math_path)Matrix.cpp
 	"$(compiler) \
 	$(compiler_options) \
@@ -64,6 +66,18 @@ Engine.o : $(src_engine_render_core_path)Engine.cpp
 	$(compiler_options_out)Engine.o \
 	$(compiler_options_include) \
 	$(src_engine_render_core_path)Engine.cpp"	
+GLFunctions.o : $(src_engine_render_gl_path)GLFunctions.cpp
+	"$(compiler) \
+	$(compiler_options) \
+	$(compiler_options_out)GLFunctions.o \
+	$(compiler_options_include) \
+	$(src_engine_render_gl_path)GLFunctions.cpp"
+GLInitializer.o : $(src_engine_render_gl_path)GLInitializer.cpp
+	"$(compiler) \
+	$(compiler_options) \
+	$(compiler_options_out)GLInitializer.o \
+	$(compiler_options_include) \
+	$(src_engine_render_gl_path)GLInitializer.cpp"
 Test.exe : $(obj_files)
 	"$(linker) \
 	$(linker_options) \
