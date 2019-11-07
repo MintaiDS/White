@@ -91,9 +91,10 @@ void Canvas::loop() {
 }
 
 void Canvas::render() {
-    GLfloat r = 1.0f;
-    GLfloat g = 0.5f;
-    GLfloat b = 0.5f;
+    std::random_device random;
+    GLfloat r = (random() % 1000) / 1000.0;
+    GLfloat g = (random() % 1000) / 1000.0;
+    GLfloat b = (random() % 1000) / 1000.0;
     PFNGLCLEARPROC glClear;
     PFNGLCLEARCOLORPROC glClearColor;
     HDC hdc = GetDC(hWnd);
@@ -104,6 +105,7 @@ void Canvas::render() {
                    (GetProcAddress(hModule, "glClearColor"));
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(r, g, b, 1.0f);
+    Sleep(100);
     SwapBuffers(hdc);
 }
 
