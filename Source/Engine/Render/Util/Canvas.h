@@ -11,7 +11,7 @@ namespace Util {
 
 class Canvas : public Window {
 public:
-    Canvas();
+    Canvas(HINSTANCE hInstance);
     ~Canvas();
 
     void show();

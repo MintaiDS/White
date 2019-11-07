@@ -4,22 +4,26 @@ namespace White {
 namespace Util {
 namespace System {
 
-std::vector<Window> Window::windows;
+std::vector<Window*> Window::windows;
+
+Window::Window() {
+    windows.push_back(this);
+}
 
 LRESULT CALLBACK Window::windowProc(HWND hWnd, UINT uMsg,
                                     WPARAM wParam, LPARAM lParam) {
     for (int i = 0; i < windows.size(); i++) {
-        if (windows[i].hWnd == hWnd) {
-            return windows[i].windowProcCallback(hWnd, uMsg, wParam, lParam);
+        if (windows[i]->hWnd == hWnd) {
+            return windows[i]->windowProcCallback(hWnd, uMsg, wParam, lParam);
         }
     }
 
-    return 0;
+    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK Window::windowProcCallback(HWND hWnd, UINT uMsg, 
                                             WPARAM wParam, LPARAM lParam) {
-    return 0; 
+    return DefWindowProcW(hWnd, uMsg, wParam, lParam); 
 }
 
 }

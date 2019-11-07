@@ -1,3 +1,6 @@
+#include <string>
+#include <sstream>
+
 #include <gl\glew.h>
 #include <gl\gl.h>
 #include <gl\glu.h>
@@ -9,13 +12,13 @@ namespace Engine {
 namespace Render {
 namespace Util {
 
-Canvas::Canvas() {
+Canvas::Canvas(HINSTANCE hInstance) {
     wc.cbSize = sizeof(WNDCLASSEXW);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = White::Util::System::WindowProc;
+    wc.lpfnWndProc = static_cast<WNDPROC>(White::Util::System::WindowProc);
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance = GetModuleHandleW(NULL);
+    wc.hInstance = hInstance;
     wc.hIcon = NULL;
     wc.hCursor = NULL;
     wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
@@ -23,14 +26,24 @@ Canvas::Canvas() {
     wc.lpszClassName = L"Canvas";
     wc.hIconSm = NULL;
 
-    RegisterClassExW(&wc);
+    if (!RegisterClassExW(&wc)) {
+        MessageBoxW(NULL, L"register failed", NULL, MB_OK);
+    }
 
     hWnd = CreateWindowExW(0, L"Canvas", L"White Engine",
                            WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            CW_USEDEFAULT, CW_USEDEFAULT, 
-                           NULL, NULL, GetModuleHandleW(NULL), NULL);
+                           NULL, NULL, hInstance, NULL);
 
+    DWORD x = GetLastError();
+    wchar_t err[512];
+    swprintf(err, L"%d", hWnd);
+    
+    if (hWnd == NULL) {
+        MessageBoxW(NULL, err, NULL, MB_OK);
+    }
+ 
     PIXELFORMATDESCRIPTOR pfd = {
         sizeof(PIXELFORMATDESCRIPTOR),
         1, 
@@ -88,6 +101,7 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
         SwapBuffers(hdc);
         break;
     case WM_CREATE:
+        MessageBoxW(NULL, L"On canvas create", NULL, MB_OK);
         break;
     case WM_SIZE:
         update();
@@ -107,7 +121,7 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
         return DefWindowProcW(hWnd, uMsg, wParam, lParam);
     }
     
-    return 0;
+    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
 }
