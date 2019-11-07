@@ -25,8 +25,9 @@ compiler_options_include = /I $(src_util_math_path) \
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
 obj_files = $(obj_path)*.o
-lib_files = Gdi32.lib User32.lib Opengl32.lib Glew32.lib
-all : Vector.o Matrix.o Window.o Canvas.o Engine.o Test.o Test.exe Engine.exe
+lib_files = Gdi32.lib User32.lib Opengl32.lib
+all : Vector.o Matrix.o Window.o Canvas.o Engine.o Test.o Engine.exe
+engine: Vector.o Matrix.o Window.o Canvas.o Engine.o Engine.exe
 Matrix.o : $(src_util_math_path)Matrix.cpp
 	"$(compiler) \
 	$(compiler_options) \

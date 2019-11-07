@@ -6,6 +6,7 @@
 
 #include <gl/gl.h>
 #include <gl/glext.h>
+#include <gl/glcorearb.h>
 
 namespace White {
 namespace Engine {
@@ -50,12 +51,12 @@ Canvas::Canvas(HINSTANCE hInstance) {
         0, 
         0, 0, 0
     };
+
     HDC hdc = GetDC(hWnd);
     int iPixelFormat = ChoosePixelFormat(hdc, &pfd);
     SetPixelFormat(hdc, iPixelFormat, &pfd);   
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
-    //glewInit(); 
 }
 
 Canvas::~Canvas() {
@@ -75,30 +76,44 @@ void Canvas::destroy() {
 }
 
 void Canvas::loop() {
-    MSG msg;
-    while (GetMessageW(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessageW(&msg);
-    }
+    while (true) { 
+        MSG msg;
+        while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) == TRUE) { 
+            if (GetMessageW(&msg, NULL, 0, 0) ) { 
+                TranslateMessage(&msg); 
+                DispatchMessageW(&msg); 
+            } else { 
+                return;
+            } 
+        } 
+        render();
+    }  
+}
+
+void Canvas::render() {
+    GLfloat r = 1.0f;
+    GLfloat g = 0.5f;
+    GLfloat b = 0.5f;
+    PFNGLCLEARPROC glClear;
+    PFNGLCLEARCOLORPROC glClearColor;
+    HDC hdc = GetDC(hWnd);
+    HMODULE hModule = LoadLibraryW(L"opengl32.dll");
+    glClear = reinterpret_cast<PFNGLCLEARPROC>
+              (GetProcAddress(hModule, "glClear"));
+    glClearColor = reinterpret_cast<PFNGLCLEARCOLORPROC>
+                   (GetProcAddress(hModule, "glClearColor"));
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(r, g, b, 1.0f);
+    SwapBuffers(hdc);
 }
 
 LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
                                             WPARAM wParam, LPARAM lParam) {   
     HDC hdc;
-    HGLRC hglrc;
-    std::random_device random;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    void (*glClearColor)(GLfloat, GLfloat, GLfloat, GLfloat);
-    void (*glClear)(GLbitfield);
+    HGLRC hglrc; 
 
     switch (uMsg) {
     case WM_PAINT:
-        hdc = GetDC(hWnd);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        SwapBuffers(hdc);
         break;
     case WM_CREATE:
         MessageBoxW(NULL, L"On canvas create", NULL, MB_OK);

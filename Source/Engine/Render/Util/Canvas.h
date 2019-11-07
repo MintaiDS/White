@@ -18,6 +18,7 @@ public:
     void update();
     void destroy();
     void loop();
+    void render();
 
     virtual LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg, 
                                                  WPARAM wParam, LPARAM lParam);
