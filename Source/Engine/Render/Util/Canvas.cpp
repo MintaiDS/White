@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+#include <random>
 
 #include <gl\glew.h>
 #include <gl\gl.h>
@@ -94,10 +95,18 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
                                             WPARAM wParam, LPARAM lParam) {   
     HDC hdc;
     HGLRC hglrc;
-
+    std::random_device random;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
     switch (uMsg) {
     case WM_PAINT:
         hdc = GetDC(hWnd);
+        glClear(GL_COLOR_BUFFER_BIT); 
+        r = (random() % 1000000000) / 1000000000.0;
+        g = (random() % 1000000000) / 1000000000.0;
+        b = (random() % 1000000000) / 1000000000.0;
+        glClearColor(r, g, b, 1.0f);
         SwapBuffers(hdc);
         break;
     case WM_CREATE:
