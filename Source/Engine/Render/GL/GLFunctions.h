@@ -18,6 +18,11 @@ struct GLFunctions {
 
     PFNGLCLEARPROC Clear;
     PFNGLCLEARCOLORPROC ClearColor;
+    PFNGLCREATESHADERPROC CreateShader;
+    PFNGLCOMPILESHADERPROC CompileShader; 
+    PFNGLDELETESHADERPROC DeleteShader;
+    PFNGLCREATEPROGRAMPROC CreateProgram;
+    PFNGLUSEPROGRAMPROC UseProgram;
 
 private:
     GLFunctions();
