@@ -36,14 +36,6 @@ Canvas::Canvas(HINSTANCE hInstance) {
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            NULL, NULL, hInstance, NULL);
-
-    DWORD x = GetLastError();
-    wchar_t err[512];
-    swprintf(err, L"%d", hWnd);
-    
-    if (hWnd == NULL) {
-        MessageBoxW(NULL, err, NULL, MB_OK);
-    }
  
     PIXELFORMATDESCRIPTOR pfd = {
         sizeof(PIXELFORMATDESCRIPTOR),
@@ -102,11 +94,6 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
     switch (uMsg) {
     case WM_PAINT:
         hdc = GetDC(hWnd);
-        glClear(GL_COLOR_BUFFER_BIT); 
-        r = (random() % 1000000000) / 1000000000.0;
-        g = (random() % 1000000000) / 1000000000.0;
-        b = (random() % 1000000000) / 1000000000.0;
-        glClearColor(r, g, b, 1.0f);
         SwapBuffers(hdc);
         break;
     case WM_CREATE:
