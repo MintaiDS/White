@@ -40,6 +40,10 @@ void Canvas::update() {
     UpdateWindow(hWnd);
 }
 
+void Canvas::destroy() {
+    DestroyWindow(hWnd);
+}
+
 void Canvas::loop() {
     MSG msg;
     while (GetMessageW(&msg, NULL, 0, 0)) {
@@ -49,7 +53,28 @@ void Canvas::loop() {
 }
 
 LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
-                                            WPARAM wParam, LPARAM lParam) {
+                                            WPARAM wParam, LPARAM lParam) {   
+    //switch (uMsg) {
+    //case WM_CREATE:
+    //    break;
+    //case WM_SIZE:
+    //    update();
+    //    break;
+    //case WM_CLOSE:
+    //    destroy();
+    //    break;
+    //case WM_DESTROY:
+    //    hglrc = wglGetCurrentContext()
+    //    hdc = wglGetCurrentDC();
+    //    wglMakeCurrent(NULL, NULL);
+    //    ReleaseDC(hWnd, hdc);
+    //    wglDeleteContext(hglrc); 
+    //    PostQuitMessage(0);
+    //    break;
+    //default:
+    //    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+    //}
+    
     return 0;
 }
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <windows.h>
 
-#include "windows.h"
+#include <vector>
 
 namespace White {
 namespace Util {
