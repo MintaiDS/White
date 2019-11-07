@@ -2,6 +2,8 @@ build_output_path = Build/
 obj_path = $(build_output_path)Obj/
 bin_path = $(build_output_path)Bin/
 src_path = Source/
+external_path = External/
+external_gl_path = $(external_path)OpenGL/
 src_test_path = $(src_path)Test/
 src_util_path = $(src_path)Util/
 src_engine_path = $(src_path)Engine/
@@ -18,7 +20,8 @@ compiler_options_out = /Fo:$(obj_path)
 compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_util_system_path) \
 						   /I $(src_engine_render_util_path) \
-						   /I $(src_engine_render_core_path)
+						   /I $(src_engine_render_core_path) \
+						   /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
 obj_files = $(obj_path)*.o

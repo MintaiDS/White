@@ -1,12 +1,11 @@
+#include "Canvas.h"
+
 #include <string>
 #include <sstream>
 #include <random>
 
-#include <gl\glew.h>
-#include <gl\gl.h>
-#include <gl\glu.h>
-
-#include "Canvas.h"
+#include <gl/gl.h>
+#include <gl/glext.h>
 
 namespace White {
 namespace Engine {
@@ -56,7 +55,7 @@ Canvas::Canvas(HINSTANCE hInstance) {
     SetPixelFormat(hdc, iPixelFormat, &pfd);   
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
-    glewInit(); 
+    //glewInit(); 
 }
 
 Canvas::~Canvas() {
@@ -91,9 +90,14 @@ LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
     GLfloat r;
     GLfloat g;
     GLfloat b;
+    void (*glClearColor)(GLfloat, GLfloat, GLfloat, GLfloat);
+    void (*glClear)(GLbitfield);
+
     switch (uMsg) {
     case WM_PAINT:
         hdc = GetDC(hWnd);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         SwapBuffers(hdc);
         break;
     case WM_CREATE:
