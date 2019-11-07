@@ -1,6 +1,8 @@
 #include "GLInitializer.h"
 #include "GLFunctions.h"
 
+#include <windows.h>
+
 #include <gl/gl.h>
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
@@ -12,10 +14,11 @@ namespace GL {
 
 void GLInitializer::Init() {
     HMODULE hModule = LoadLibraryW(L"opengl32.dll");
-    Clear = reinterpret_cast<PFNGLCLEARPROC>
-            (GetProcAddress(hModule, "glClear"));
-    ClearColor = reinterpret_cast<PFNGLCLEARCOLORPROC>
-                 (GetProcAddress(hModule, "glClearColor"));
+    GLFunctions& gl = GLFunctions::Get();
+    gl.Clear = reinterpret_cast<PFNGLCLEARPROC>
+               (GetProcAddress(hModule, "glClear"));
+    gl.ClearColor = reinterpret_cast<PFNGLCLEARCOLORPROC>
+                    (GetProcAddress(hModule, "glClearColor"));
 }
 
 }

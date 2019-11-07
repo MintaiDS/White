@@ -1,12 +1,14 @@
 #include "Canvas.h"
+#include "GLFunctions.h"
+#include "GLInitializer.h"
 
-#include <string>
-#include <sstream>
 #include <random>
 
 #include <gl/gl.h>
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
+
+using namespace White::Engine::Render::GL;
 
 namespace White {
 namespace Engine {
@@ -95,16 +97,10 @@ void Canvas::Render() {
     GLfloat r = (random() % 1000) / 1000.0;
     GLfloat g = (random() % 1000) / 1000.0;
     GLfloat b = (random() % 1000) / 1000.0;
-    PFNGLCLEARPROC glClear;
-    PFNGLCLEARCOLORPROC glClearColor;
     HDC hdc = GetDC(hWnd);
-    HMODULE hModule = LoadLibraryW(L"opengl32.dll");
-    glClear = reinterpret_cast<PFNGLCLEARPROC>
-              (GetProcAddress(hModule, "glClear"));
-    glClearColor = reinterpret_cast<PFNGLCLEARCOLORPROC>
-                   (GetProcAddress(hModule, "glClearColor"));
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(r, g, b, 1.0f);
+    GLInitializer::Init();
+    GLFunctions::Get().Clear(GL_COLOR_BUFFER_BIT);
+    GLFunctions::Get().ClearColor(r, g, b, 1.0f);
     Sleep(100);
     SwapBuffers(hdc);
 }

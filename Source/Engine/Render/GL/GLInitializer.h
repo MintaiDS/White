@@ -5,7 +5,7 @@ namespace Engine {
 namespace Render { 
 namespace GL {
 
-class GLInitializer {
+struct GLInitializer {
     static void Init();
 };
 
