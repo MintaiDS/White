@@ -1,3 +1,7 @@
+#include <gl\glew.h>
+#include <gl\gl.h>
+#include <gl\glu.h>
+
 #include "Canvas.h"
 
 namespace White {
@@ -26,6 +30,27 @@ Canvas::Canvas() {
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
+
+    PIXELFORMATDESCRIPTOR pfd = {
+        sizeof(PIXELFORMATDESCRIPTOR),
+        1, 
+        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+        PFD_TYPE_RGBA,
+        24,
+        0, 0, 0, 0, 0,
+        0, 0, 0,
+        0, 0, 0,
+        32, 0, 0,
+        PFD_MAIN_PLANE,
+        0, 
+        0, 0, 0
+    };
+    HDC hdc = GetDC(hWnd);
+    int iPixelFormat = ChoosePixelFormat(hdc, &pfd);
+    SetPixelFormat(hdc, iPixelFormat, &pfd);   
+    HGLRC hglrc = wglCreateContext(hdc);
+    wglMakeCurrent(hdc, hglrc);     
+    glewInit(); 
 }
 
 Canvas::~Canvas() {
@@ -54,26 +79,33 @@ void Canvas::loop() {
 
 LRESULT CALLBACK Canvas::windowProcCallback(HWND hWnd, UINT uMsg,
                                             WPARAM wParam, LPARAM lParam) {   
-    //switch (uMsg) {
-    //case WM_CREATE:
-    //    break;
-    //case WM_SIZE:
-    //    update();
-    //    break;
-    //case WM_CLOSE:
-    //    destroy();
-    //    break;
-    //case WM_DESTROY:
-    //    hglrc = wglGetCurrentContext()
-    //    hdc = wglGetCurrentDC();
-    //    wglMakeCurrent(NULL, NULL);
-    //    ReleaseDC(hWnd, hdc);
-    //    wglDeleteContext(hglrc); 
-    //    PostQuitMessage(0);
-    //    break;
-    //default:
-    //    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
-    //}
+    HDC hdc;
+    HGLRC hglrc;
+
+    switch (uMsg) {
+    case WM_PAINT:
+        hdc = GetDC(hWnd);
+        SwapBuffers(hdc);
+        break;
+    case WM_CREATE:
+        break;
+    case WM_SIZE:
+        update();
+        break;
+    case WM_CLOSE:
+        destroy();
+        break;
+    case WM_DESTROY:
+        hglrc = wglGetCurrentContext();
+        hdc = wglGetCurrentDC();
+        wglMakeCurrent(NULL, NULL);
+        ReleaseDC(hWnd, hdc);
+        wglDeleteContext(hglrc); 
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+    }
     
     return 0;
 }
