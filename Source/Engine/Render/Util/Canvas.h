@@ -10,6 +10,11 @@ namespace Util {
 class Canvas : public White::Util::System::Window {
 public:
     Canvas();
+    ~Canvas();
+
+    void show();
+    void update();
+    void loop();
 
     virtual LRESULT CALLBACK windowProcCallback(HWND hWnd, UINT uMsg, 
                                                  WPARAM wParam, LPARAM lParam);
