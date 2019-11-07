@@ -22,6 +22,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_util_system_path) \
 						   /I $(src_engine_render_util_path) \
 						   /I $(src_engine_render_core_path) \
+						   /I $(src_engine_render_gl_path) \
 						   /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
