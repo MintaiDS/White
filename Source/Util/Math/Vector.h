@@ -5,6 +5,7 @@
 #include <algorithm>
 
 namespace White {
+namespace Util {
 namespace Math {
 
 template<typename T>
@@ -189,5 +190,6 @@ T Vector<T>::mixed(const Vector<T>& otherFirst,
     return *this.dot(otherFrist.cross(otherSecond));
 }
 
+}
 }
 }

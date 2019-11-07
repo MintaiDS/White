@@ -6,6 +6,7 @@
 #include "Vector.h"
 
 namespace White {
+namespace Util {
 namespace Math {
 
 template<typename T>
@@ -194,5 +195,6 @@ Matrix<T> Matrix<T>::operator*(const T value) const {
     return ret;
 }
 
+}
 }
 }
