@@ -1,8 +1,6 @@
 #include "GLInitializer.h"
 #include "GLFunctions.h"
 
-#include <windows.h>
-
 #include <gl/gl.h>
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
