@@ -5,7 +5,7 @@ namespace Util {
 namespace Math {
 
 template<typename T>
-class Color {
+struct Color {
     Color(T r = 0, T g = 0, T b = 0, T a = 0);
 
     T& r = rgba[0];
