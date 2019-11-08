@@ -11,32 +11,31 @@ namespace Render {
 namespace GL {
 
 void GLInitializer::Init() {
-    HMODULE hModule = LoadLibraryW(L"opengl32.dll");
     GLFunctions& gl = GLFunctions::Get();
     gl.Clear = reinterpret_cast<PFNGLCLEARPROC>
-               (GetProcAddress(hModule, "glClear"));
+               (GetFunctionAddress("glClear"));
     gl.ClearColor = reinterpret_cast<PFNGLCLEARCOLORPROC>
-                    (GetProcAddress(hModule, "glClearColor"));
+                    (GetFunctionAddress("glClearColor"));
     gl.CreateShader = reinterpret_cast<PFNGLCREATESHADERPROC>
-                      (GetProcAddress(hModule, "glCreateShader"));
+                      (GetFunctionAddress("glCreateShader"));
     gl.ShaderSource = reinterpret_cast<PFNGLSHADERSOURCEPROC>
-                      (GetProcAddress(hModule, "glShaderSource"));
+                      (GetFunctionAddress("glShaderSource"));
     gl.CompileShader = reinterpret_cast<PFNGLCOMPILESHADERPROC>
-                       (GetProcAddress(hModule, "glCompileShader"));
+                       (GetFunctionAddress("glCompileShader"));
     gl.AttachShader = reinterpret_cast<PFNGLATTACHSHADERPROC>
-                      (GetProcAddress(hModule, "glAttachShader"));
+                      (GetFunctionAddress("glAttachShader"));
     gl.DetachShader = reinterpret_cast<PFNGLDETACHSHADERPROC>
-                      (GetProcAddress(hModule, "glDetachShader"));
+                      (GetFunctionAddress("glDetachShader"));
     gl.DeleteShader = reinterpret_cast<PFNGLDELETESHADERPROC>
-                      (GetProcAddress(hModule, "glDeleteShader"));
+                      (GetFunctionAddress("glDeleteShader"));
     gl.CreateProgram = reinterpret_cast<PFNGLCREATEPROGRAMPROC>
                        (GetFunctionAddress("glCreateProgram"));
     gl.LinkProgram = reinterpret_cast<PFNGLLINKPROGRAMPROC>
-                     (GetProcAddress(hModule, "glLinkProgram"));
+                     (GetFunctionAddress("glLinkProgram"));
     gl.UseProgram = reinterpret_cast<PFNGLUSEPROGRAMPROC>
-                    (GetProcAddress(hModule, "glUseProgram"));
+                    (GetFunctionAddress("glUseProgram"));
     gl.DeleteProgram = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
-                       (GetProcAddress(hModule, "glDeleteProgram"));
+                       (GetFunctionAddress("glDeleteProgram"));
 }
 
 void* GLInitializer::GetFunctionAddress(char* name) {

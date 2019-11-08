@@ -61,6 +61,7 @@ Canvas::Canvas(HINSTANCE hInstance) {
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
     GLInitializer::Init(); 
+    Program program;
 }
 
 Canvas::~Canvas() {
