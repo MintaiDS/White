@@ -62,6 +62,21 @@ Canvas::Canvas(HINSTANCE hInstance) {
     wglMakeCurrent(hdc, hglrc);     
     GLInitializer::Init(); 
     Program program;
+    Shader shader(GL_VERTEX_SHADER);
+    std::wstring path = L"../../../../Engine/Shaders/default.vsh";
+    shader.Source(path);
+    shader.Compile();
+    program.Attach(shader);
+    shader.Delete();
+    path = L"../../../../Engine/Shaders/default.fsh";
+    shader.Create(GL_FRAGMENT_SHADER);
+    shader.Source(path);
+    shader.Compile();
+    program.Attach(shader);
+    shader.Delete();
+    program.Link();
+    program.Use();
+    program.Delete();
 }
 
 Canvas::~Canvas() {
