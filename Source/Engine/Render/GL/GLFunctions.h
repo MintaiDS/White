@@ -41,7 +41,9 @@ struct GLFunctions {
     PFNGLCULLFACEPROC CullFace;
     PFNGLFRONTFACEPROC FrontFace;
     PFNGLBINDVERTEXARRAYPROC BindVertexArray;
-    
+    PFNGLGETSHADERIVPROC GetShaderiv;
+    PFNGLGETPROGRAMIVPROC GetProgramiv;
+
 private:
     GLFunctions();
 };

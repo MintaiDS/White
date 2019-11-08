@@ -63,6 +63,11 @@ void GLInitializer::Init() {
                   (GetFunctionAddress("glCullFace"));
     gl.FrontFace = reinterpret_cast<PFNGLFRONTFACEPROC>
                    (GetFunctionAddress("glFrontFace"));
+    gl.GetShaderiv = reinterpret_cast<PFNGLGETSHADERIVPROC>
+                     (GetFunctionAddress("glGetShaderiv"));
+    gl.GetProgramiv = reinterpret_cast<PFNGLGETPROGRAMIVPROC>
+                     (GetFunctionAddress("glGetProgramiv"));
+
 }
 
 void* GLInitializer::GetFunctionAddress(char* name) {

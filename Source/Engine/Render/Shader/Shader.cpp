@@ -28,7 +28,7 @@ void Shader::Source(const std::wstring& path) {
 }
 
 void Shader::Compile() {
-    GL::GLFunctions::Get().CompileShader(id);
+    GL::GLFunctions::Get().CompileShader(id); 
 }
 
 void Shader::Delete() {
