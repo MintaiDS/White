@@ -96,12 +96,12 @@ Canvas::Canvas(HINSTANCE hInstance) {
     gl.GenBuffers(1, &ids[1]);
     gl.BindBuffer(GL_ARRAY_BUFFER, ids[1]);
     gl.BufferData(GL_ARRAY_BUFFER, 
-                  sizeof vertices[0] * 3, nullptr, GL_STATIC_DRAW);
+                  sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
     gl.GenBuffers(1, &ids[2]);
     gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
     gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, 
                   sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
-    gl.VertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+    gl.VertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     gl.EnableVertexAttribArray(0);
     gl.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
                      sizeof(GLuint) * 3, (const GLvoid*)surface);

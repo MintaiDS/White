@@ -23,6 +23,7 @@ void Shader::Source(const std::wstring& path) {
     std::ifstream file(path, std::ios::binary); 
     std::stringstream buffer;
     buffer << file.rdbuf();
+    file.close();
     GLchar* src = const_cast<GLchar*>(buffer.str().c_str());
     GL::GLFunctions::Get().ShaderSource(id, 1, &src, 0);
 }
