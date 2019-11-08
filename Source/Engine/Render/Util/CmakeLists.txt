@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.6)
+
+add_library(Canvas Canvas.cpp)
+find_library(OpenGL32.lib REQUIRED)
+target_link_libraries(Canvas OpenGL32.lib)
+target_link_libraries(Canvas Window)
+target_link_libraries(Canvas GLInitializer)
+target_link_libraries(Canvas GLFunctions)
+
+#target_include_directories(RenderUtil PRIVATE ${INCLUDES})

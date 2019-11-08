@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.6)
+
+add_library(Shader Shader.cpp)
+add_library(Program Program.cpp)
+
+#target_include_directories(Shader PRIVATE ${INCLUDES})
+
