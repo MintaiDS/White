@@ -10,7 +10,13 @@ namespace Engine {
 namespace Render { 
 namespace GL {
 
+bool GLInitializer::initialized = false;
+
 void GLInitializer::Init() {
+    if (initialized) {
+        return;
+    }
+
     HMODULE hModule = LoadLibraryW(L"opengl32.dll");
     GLFunctions& gl = GLFunctions::Get();
     gl.Clear = reinterpret_cast<PFNGLCLEARPROC>
@@ -37,6 +43,8 @@ void GLInitializer::Init() {
                     (GetProcAddress(hModule, "glUseProgram"));
     gl.DeleteProgram = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
                        (GetProcAddress(hModule, "glDeleteProgram"));
+
+    initialized = true;
 }
 
 }

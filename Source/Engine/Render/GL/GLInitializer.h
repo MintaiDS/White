@@ -7,6 +7,8 @@ namespace GL {
 
 struct GLInitializer {
     static void Init();
+
+    static bool initialized;
 };
 
 }
