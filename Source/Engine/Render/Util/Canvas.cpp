@@ -1,6 +1,7 @@
 #include "Canvas.h"
 #include "GLFunctions.h"
 #include "GLInitializer.h"
+#include "Program.h"
 
 #include <random>
 
@@ -60,7 +61,6 @@ Canvas::Canvas(HINSTANCE hInstance) {
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
     GLInitializer::Init(); 
-    
 }
 
 Canvas::~Canvas() {
@@ -100,7 +100,8 @@ void Canvas::Render() {
     GLfloat g = (random() % 1000) / 1000.0;
     GLfloat b = (random() % 1000) / 1000.0;
     HDC hdc = GetDC(hWnd);
-    //GLInitializer::Init();
+    GLInitializer::Init();
+    GLFunctions::Get().CreateProgram();
     GLFunctions::Get().Clear(GL_COLOR_BUFFER_BIT);
     GLFunctions::Get().ClearColor(r, g, b, 1.0f);
     Sleep(33);

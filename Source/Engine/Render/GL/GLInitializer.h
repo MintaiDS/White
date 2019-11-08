@@ -7,8 +7,7 @@ namespace GL {
 
 struct GLInitializer {
     static void Init();
-
-    static bool initialized;
+    static void* GetFunctionAddress(char* name);
 };
 
 }

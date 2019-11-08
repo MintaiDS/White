@@ -18,7 +18,6 @@ void Program::Attach(const Shader& shader) {
     GL::GLFunctions::Get().AttachShader(id, shader.id);
 }
 
-
 void Program::Detach(const Shader& shader) {
     GL::GLFunctions::Get().DetachShader(id, shader.id);
 }

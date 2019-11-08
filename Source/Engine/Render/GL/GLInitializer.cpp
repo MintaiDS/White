@@ -10,13 +10,7 @@ namespace Engine {
 namespace Render { 
 namespace GL {
 
-bool GLInitializer::initialized = false;
-
 void GLInitializer::Init() {
-    if (initialized) {
-        return;
-    }
-
     HMODULE hModule = LoadLibraryW(L"opengl32.dll");
     GLFunctions& gl = GLFunctions::Get();
     gl.Clear = reinterpret_cast<PFNGLCLEARPROC>
@@ -36,15 +30,23 @@ void GLInitializer::Init() {
     gl.DeleteShader = reinterpret_cast<PFNGLDELETESHADERPROC>
                       (GetProcAddress(hModule, "glDeleteShader"));
     gl.CreateProgram = reinterpret_cast<PFNGLCREATEPROGRAMPROC>
-                       (GetProcAddress(hModule, "glCreateProgram"));
+                       (GetFunctionAddress("glCreateProgram"));
     gl.LinkProgram = reinterpret_cast<PFNGLLINKPROGRAMPROC>
                      (GetProcAddress(hModule, "glLinkProgram"));
     gl.UseProgram = reinterpret_cast<PFNGLUSEPROGRAMPROC>
                     (GetProcAddress(hModule, "glUseProgram"));
     gl.DeleteProgram = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
                        (GetProcAddress(hModule, "glDeleteProgram"));
+}
 
-    initialized = true;
+void* GLInitializer::GetFunctionAddress(char* name) {
+    PROC address = wglGetProcAddress(name);
+    if (!address) {
+        HMODULE hModule = LoadLibraryW(L"opengl32.dll");
+        address = GetProcAddress(hModule, name);
+    }
+
+    return address;
 }
 
 }
