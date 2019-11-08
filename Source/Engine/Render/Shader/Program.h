@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLFunctions.h"
+#include "Shader.h"
 
 namespace White {
 namespace Engine {
