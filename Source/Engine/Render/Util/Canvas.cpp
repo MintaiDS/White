@@ -59,6 +59,7 @@ Canvas::Canvas(HINSTANCE hInstance) {
     SetPixelFormat(hdc, iPixelFormat, &pfd);   
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
+    GLInitializer::Init(); 
 }
 
 Canvas::~Canvas() {
