@@ -1,7 +1,5 @@
 #include "Program.h"
 
-#include <fstream>
-
 namespace White {
 namespace Engine {
 namespace Render {
@@ -26,11 +24,6 @@ void Program::Detach(const Shader& shader) {
 
 void Program::Link() {
     GL::GLFunctions::Get().LinkProgram(id);
-    GLint ret;
-    GL::GLFunctions::Get().GetProgramiv(id, GL_LINK_STATUS, &ret);
-    std::ofstream out("log.txt");
-    out << ret;
-    out.close();
 }
 
 void Program::Use() {
