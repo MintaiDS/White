@@ -77,7 +77,11 @@ Canvas::Canvas(HINSTANCE hInstance) {
     program.Link();
     program.Use();
     program.Delete();
-}
+    GLFunctions::Get().Enable(GL_DEPTH_TEST);
+    GLFunctions::Get().Enable(GL_CULL_FACE);
+    GLFunctions::Get().CullFace(GL_FRONT);
+    GLFunctions::Get().FrontFace(GL_CCW);
+    }
 
 Canvas::~Canvas() {
     UnregisterClassW(L"Canvas", GetModuleHandleW(NULL));
@@ -117,10 +121,39 @@ void Canvas::Render() {
     GLfloat b = (random() % 1000) / 1000.0;
     HDC hdc = GetDC(hWnd);
     GLInitializer::Init();
-    GLFunctions::Get().CreateProgram();
-    GLFunctions::Get().Clear(GL_COLOR_BUFFER_BIT);
-    GLFunctions::Get().ClearColor(r, g, b, 1.0f);
-    Sleep(33);
+    GLFunctions& gl = GLFunctions::Get();
+    gl.CreateProgram();
+    gl.Clear(GL_COLOR_BUFFER_BIT);
+    gl.ClearColor(r, g, b, 1.0f);
+    // Test draw
+    //Just create hello triangle      
+    GLfloat vertices[3][3] = {
+        {-0.5f, -0.5f, 2.0f},
+        {0.0f, 0.5f, 2.0f},
+        {0.5f, -0.5f, 2.0f}
+    };
+    GLuint surface[3] = {
+        0, 1, 2
+    };
+    GLuint ids[3];
+    gl.GenVertexArrays(1, &ids[0]); 
+    gl.BindVertexArray(ids[0]);
+    gl.GenBuffers(1, &ids[1]);
+    gl.BindBuffer(GL_ARRAY_BUFFER, ids[1]);
+    gl.BufferData(GL_ARRAY_BUFFER, 
+                  sizeof vertices[0][0] * 3, NULL, GL_STATIC_DRAW);
+    gl.GenBuffers(1, &ids[2]);
+    gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
+    gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, 
+                  sizeof surface[0] * 3, NULL, GL_STATIC_DRAW);
+    gl.VertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof vertices[0][0], 0);
+    gl.EnableVertexAttribArray(0);
+    gl.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
+                    sizeof surface[0] * 3, surface);
+    gl.BufferSubData(GL_ARRAY_BUFFER, 0, 
+                    sizeof vertices[0][0] * 3 * 3, vertices);
+    //attachObject(&mainScene, &triangle);
+    //prepareRenderData(&mainScene);
     SwapBuffers(hdc);
 }
 

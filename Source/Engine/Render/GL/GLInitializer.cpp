@@ -36,47 +36,33 @@ void GLInitializer::Init() {
                     (GetFunctionAddress("glUseProgram"));
     gl.DeleteProgram = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
                        (GetFunctionAddress("glDeleteProgram"));
-    gl.GenBuffers = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.GenBuffers = reinterpret_cast<PFNGLGENBUFFERSPROC>
                     (GetFunctionAddress("glGenBuffers"));
-    gl.BindBuffer = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.BindBuffer = reinterpret_cast<PFNGLBINDBUFFERPROC>
                     (GetFunctionAddress("glBindBuffer"));
-    gl.BufferData = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.BufferData = reinterpret_cast<PFNGLBUFFERDATAPROC>
                     (GetFunctionAddress("glBufferData"));
-    gl.VertexAttribPointer = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.VertexAttribPointer = reinterpret_cast<PFNGLVERTEXATTRIBPOINTERPROC>
                              (GetFunctionAddress("glVertexAttribPointer"));
-    gl.EnableVertexAttribArray = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
-                                 (GetFunctionAddress("glEnableVertexAttribArray"));
-    gl.BufferSubData = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.EnableVertexAttribArray 
+        = reinterpret_cast<PFNGLENABLEVERTEXATTRIBARRAYPROC>
+          (GetFunctionAddress("glEnableVertexAttribArray"));
+    gl.BufferSubData = reinterpret_cast<PFNGLBUFFERSUBDATAPROC>
                        (GetFunctionAddress("glBufferSubData"));
-    gl.DeleteBuffers = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.DeleteBuffers = reinterpret_cast<PFNGLDELETEBUFFERSPROC>
                        (GetFunctionAddress("glDeleteBuffers"));
-    gl.DeleteVertexArrays = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.DeleteVertexArrays = reinterpret_cast<PFNGLDELETEVERTEXARRAYSPROC>
                             (GetFunctionAddress("glDeleteVertexArrays"));
-    gl.UniformMatrix4fv = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
-                          (GetFunctionAddress("glUniformMatrix4fv"));
-    gl.DrawElements = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
-                      (GetFunctionAddress("glDrawElements"));
-    gl.Enable = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.GenVertexArrays = reinterpret_cast<PFNGLGENVERTEXARRAYSPROC>
+                         (GetFunctionAddress("glGenVertexArrays"));
+    gl.BindVertexArray = reinterpret_cast<PFNGLBINDVERTEXARRAYPROC>
+                         (GetFunctionAddress("glBindVertexArray"));
+    gl.Enable = reinterpret_cast<PFNGLENABLEPROC>
                 (GetFunctionAddress("glEnable"));
-    gl.CullFace = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.CullFace = reinterpret_cast<PFNGLCULLFACEPROC>
                   (GetFunctionAddress("glCullFace"));
-    gl.FrontFace = reinterpret_cast<PFNGLDELETEPROGRAMPROC>
+    gl.FrontFace = reinterpret_cast<PFNGLFRONTFACEPROC>
                    (GetFunctionAddress("glFrontFace"));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 void* GLInitializer::GetFunctionAddress(char* name) {
