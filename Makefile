@@ -31,7 +31,7 @@ linker_options_out = -out:$(bin_path)
 obj_files = $(obj_path)*.o
 lib_files = Gdi32.lib User32.lib Opengl32.lib
 all : engine
-engine: Vector.o Matrix.o Polygon.o Window.o  GLFunctions.o \
+engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Shader.o Program.o Canvas.o Engine.o \
 		Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
@@ -52,6 +52,12 @@ Polygon.o : $(src_util_math_path)Polygon.cpp
 	$(compiler_options_out)Polygon.o \
 	$(compiler_options_include) \
 	$(src_util_math_path)Polygon.cpp"	
+Color.o : $(src_util_math_path)Color.cpp
+	"$(compiler) \
+	$(compiler_options) \
+	$(compiler_options_out)Color.o \
+	$(compiler_options_include) \
+	$(src_util_math_path)Color.cpp"	
 Window.o : $(src_util_system_path)Window.cpp
 	"$(compiler) \
 	$(compiler_options) \
