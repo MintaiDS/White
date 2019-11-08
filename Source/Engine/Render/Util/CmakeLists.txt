@@ -6,5 +6,3 @@ target_link_libraries(Canvas OpenGL32.lib)
 target_link_libraries(Canvas Window)
 target_link_libraries(Canvas GLInitializer)
 target_link_libraries(Canvas GLFunctions)
-
-#target_include_directories(RenderUtil PRIVATE ${INCLUDES})
