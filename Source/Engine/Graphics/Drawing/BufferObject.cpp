@@ -1,9 +1,8 @@
 #include "BufferObject.h"
-#include "GLFunctions.h"
 
 namespace White {
 namespace Engine {
-namespace Grahpics {
+namespace Graphics {
 
 void BufferObject::Create() {
     glGenBuffers(1, &id);
@@ -16,7 +15,11 @@ void BufferObject::Bind(GLenum target) {
 
 void BufferObject::SetData(GLsizeiptr size, 
                            const GLvoid* data, GLenum usage) {
-    glBufferData(target, size, data);
+    glBufferData(target, size, data, usage);
+}
+
+void BufferObject::SetSubData(GLintptr offset, 
+                              GLsizeiptr size, const GLvoid* data) {
 }
 
 void BufferObject::Delete() {

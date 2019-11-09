@@ -1,39 +1,43 @@
 #include "GLFunctions.h"
 
-#define LoadFunction(type, name, module) \
-        name = reinterpret_cast<type>(GetFunctionAddress(#name, hModule))
+#define DeclareFunction(type, name) \
+        typedef type name##_gl_type; \
+        name##_gl_type name
+#define LoadFunction(name) \
+        name = reinterpret_cast<name##_gl_type> \
+               (GetFunctionAddress(#name, hModule))
 
 namespace White {
 namespace Engine {
 namespace Graphics {
 
-PFNGLCLEARPROC glClear;
-PFNGLCLEARCOLORPROC glClearColor;
-PFNGLCREATESHADERPROC glCreateShader;
-PFNGLSHADERSOURCEPROC glShaderSource;
-PFNGLCOMPILESHADERPROC glCompileShader; 
-PFNGLATTACHSHADERPROC glAttachShader;
-PFNGLDETACHSHADERPROC glDetachShader;
-PFNGLDELETESHADERPROC glDeleteShader;
-PFNGLCREATEPROGRAMPROC glCreateProgram;
-PFNGLLINKPROGRAMPROC glLinkProgram;
-PFNGLUSEPROGRAMPROC glUseProgram;
-PFNGLDELETEPROGRAMPROC glDeleteProgram;
-PFNGLGENBUFFERSPROC glGenBuffers;
-PFNGLBINDBUFFERPROC glBindBuffer;
-PFNGLBUFFERDATAPROC glBufferData;
-PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
-PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
-PFNGLBUFFERSUBDATAPROC glBufferSubData;
-PFNGLDELETEBUFFERSPROC glDeleteBuffers;
-PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
-PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
-PFNGLENABLEPROC glEnable;
-PFNGLCULLFACEPROC glCullFace;
-PFNGLFRONTFACEPROC glFrontFace;
-PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
-PFNGLGETSHADERIVPROC glGetShaderiv;
-PFNGLGETPROGRAMIVPROC glGetProgramiv;
+DeclareFunction(PFNGLCLEARPROC, glClear);
+DeclareFunction(PFNGLCLEARCOLORPROC, glClearColor);
+DeclareFunction(PFNGLCREATESHADERPROC, glCreateShader);
+DeclareFunction(PFNGLSHADERSOURCEPROC, glShaderSource);
+DeclareFunction(PFNGLCOMPILESHADERPROC, glCompileShader); 
+DeclareFunction(PFNGLATTACHSHADERPROC, glAttachShader);
+DeclareFunction(PFNGLDETACHSHADERPROC, glDetachShader);
+DeclareFunction(PFNGLDELETESHADERPROC, glDeleteShader);
+DeclareFunction(PFNGLCREATEPROGRAMPROC, glCreateProgram);
+DeclareFunction(PFNGLLINKPROGRAMPROC, glLinkProgram);
+DeclareFunction(PFNGLUSEPROGRAMPROC, glUseProgram);
+DeclareFunction(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
+DeclareFunction(PFNGLGENBUFFERSPROC, glGenBuffers);
+DeclareFunction(PFNGLBINDBUFFERPROC, glBindBuffer);
+DeclareFunction(PFNGLBUFFERDATAPROC, glBufferData);
+DeclareFunction(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
+DeclareFunction(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+DeclareFunction(PFNGLBUFFERSUBDATAPROC, glBufferSubData);
+DeclareFunction(PFNGLDELETEBUFFERSPROC, glDeleteBuffers);
+DeclareFunction(PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays);
+DeclareFunction(PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays);
+DeclareFunction(PFNGLENABLEPROC, glEnable);
+DeclareFunction(PFNGLCULLFACEPROC, glCullFace);
+DeclareFunction(PFNGLFRONTFACEPROC, glFrontFace);
+DeclareFunction(PFNGLBINDVERTEXARRAYPROC, glBindVertexArray);
+DeclareFunction(PFNGLGETSHADERIVPROC, glGetShaderiv);
+DeclareFunction(PFNGLGETPROGRAMIVPROC, glGetProgramiv);
 
 void* GetFunctionAddress(char* name, HMODULE hModule) {
     PROC address = wglGetProcAddress(name);
@@ -46,33 +50,33 @@ void* GetFunctionAddress(char* name, HMODULE hModule) {
 
 void LoadFunctions() {
     HMODULE hModule = LoadLibraryW(L"opengl32.dll");
-    LoadFunction(PFNGLCLEARPROC, glClear);
-    LoadFunction(PFNGLCLEARCOLORPROC, glClearColor);
-    LoadFunction(PFNGLCREATESHADERPROC, glCreateShader);
-    LoadFunction(PFNGLSHADERSOURCEPROC, glShaderSource);
-    LoadFunction(PFNGLCOMPILESHADERPROC, glCompileShader); 
-    LoadFunction(PFNGLATTACHSHADERPROC, glAttachShader);
-    LoadFunction(PFNGLDETACHSHADERPROC, glDetachShader);
-    LoadFunction(PFNGLDELETESHADERPROC, glDeleteShader);
-    LoadFunction(PFNGLCREATEPROGRAMPROC, glCreateProgram);
-    LoadFunction(PFNGLLINKPROGRAMPROC, glLinkProgram);
-    LoadFunction(PFNGLUSEPROGRAMPROC, glUseProgram);
-    LoadFunction(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
-    LoadFunction(PFNGLGENBUFFERSPROC, glGenBuffers);
-    LoadFunction(PFNGLBINDBUFFERPROC, glBindBuffer);
-    LoadFunction(PFNGLBUFFERDATAPROC, glBufferData);
-    LoadFunction(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
-    LoadFunction(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
-    LoadFunction(PFNGLBUFFERSUBDATAPROC, glBufferSubData);
-    LoadFunction(PFNGLDELETEBUFFERSPROC, glDeleteBuffers);
-    LoadFunction(PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays);
-    LoadFunction(PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays);
-    LoadFunction(PFNGLENABLEPROC, glEnable);
-    LoadFunction(PFNGLCULLFACEPROC, glCullFace);
-    LoadFunction(PFNGLFRONTFACEPROC, glFrontFace);
-    LoadFunction(PFNGLBINDVERTEXARRAYPROC, glBindVertexArray);
-    LoadFunction(PFNGLGETSHADERIVPROC, glGetShaderiv);
-    LoadFunction(PFNGLGETPROGRAMIVPROC, glGetProgramiv); 
+    LoadFunction(glClear);
+    LoadFunction(glClearColor);
+    LoadFunction(glCreateShader);
+    LoadFunction(glShaderSource);
+    LoadFunction(glCompileShader); 
+    LoadFunction(glAttachShader);
+    LoadFunction(glDetachShader);
+    LoadFunction(glDeleteShader);
+    LoadFunction(glCreateProgram);
+    LoadFunction(glLinkProgram);
+    LoadFunction(glUseProgram);
+    LoadFunction(glDeleteProgram);
+    LoadFunction(glGenBuffers);
+    LoadFunction(glBindBuffer);
+    LoadFunction(glBufferData);
+    LoadFunction(glVertexAttribPointer);
+    LoadFunction(glEnableVertexAttribArray);
+    LoadFunction(glBufferSubData);
+    LoadFunction(glDeleteBuffers);
+    LoadFunction(glDeleteVertexArrays);
+    LoadFunction(glGenVertexArrays);
+    LoadFunction(glEnable);
+    LoadFunction(glCullFace);
+    LoadFunction(glFrontFace);
+    LoadFunction(glBindVertexArray);
+    LoadFunction(glGetShaderiv);
+    LoadFunction(glGetProgramiv); 
 }
 
 }

@@ -35,7 +35,7 @@ lib_files = Gdi32.lib User32.lib Opengl32.lib
 all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
-        Engine.exe 
+        BufferObject.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -114,6 +114,12 @@ Mesh.o : $(src_engine_graphics_drawing_path)Mesh.cpp
     $(compiler_options_out)Mesh.o \
     $(compiler_options_include) \
     $(src_engine_graphics_drawing_path)Mesh.cpp"
+BufferObject.o : $(src_engine_graphics_drawing_path)Mesh.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)BufferObject.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_drawing_path)BufferObject.cpp"
 Test.exe : $(obj_files)
     "$(linker) \
     $(linker_options) \
