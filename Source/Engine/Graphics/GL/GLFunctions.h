@@ -6,37 +6,68 @@
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
 
+#define EXTERN_FUNCTION_ADDRESS(type, name) \
+        typedef type name##_gl_type; \
+        extern name##_gl_type name
+
 namespace White {
 namespace Engine {
 namespace Graphics {
 
-extern PFNGLCLEARPROC glClear;
-extern PFNGLCLEARCOLORPROC glClearColor;
-extern PFNGLCREATESHADERPROC glCreateShader;
-extern PFNGLSHADERSOURCEPROC glShaderSource;
-extern PFNGLCOMPILESHADERPROC glCompileShader; 
-extern PFNGLATTACHSHADERPROC glAttachShader;
-extern PFNGLDETACHSHADERPROC glDetachShader;
-extern PFNGLDELETESHADERPROC glDeleteShader;
-extern PFNGLCREATEPROGRAMPROC glCreateProgram;
-extern PFNGLLINKPROGRAMPROC glLinkProgram;
-extern PFNGLUSEPROGRAMPROC glUseProgram;
-extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
-extern PFNGLGENBUFFERSPROC glGenBuffers;
-extern PFNGLBINDBUFFERPROC glBindBuffer;
-extern PFNGLBUFFERDATAPROC glBufferData;
-extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
-extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
-extern PFNGLBUFFERSUBDATAPROC glBufferSubData;
-extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
-extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
-extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
-extern PFNGLENABLEPROC glEnable;
-extern PFNGLCULLFACEPROC glCullFace;
-extern PFNGLFRONTFACEPROC glFrontFace;
-extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
-extern PFNGLGETSHADERIVPROC glGetShaderiv;
-extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
+EXTERN_FUNCTION_ADDRESS(PFNGLCLEARPROC, 
+                        glClear);
+EXTERN_FUNCTION_ADDRESS(PFNGLCLEARCOLORPROC, 
+                        glClearColor);
+EXTERN_FUNCTION_ADDRESS(PFNGLCREATESHADERPROC, 
+                        glCreateShader);
+EXTERN_FUNCTION_ADDRESS(PFNGLSHADERSOURCEPROC, 
+                        glShaderSource);
+EXTERN_FUNCTION_ADDRESS(PFNGLCOMPILESHADERPROC, 
+                        glCompileShader); 
+EXTERN_FUNCTION_ADDRESS(PFNGLATTACHSHADERPROC, 
+                        glAttachShader);
+EXTERN_FUNCTION_ADDRESS(PFNGLDETACHSHADERPROC, 
+                        glDetachShader);
+EXTERN_FUNCTION_ADDRESS(PFNGLDELETESHADERPROC, 
+                        glDeleteShader);
+EXTERN_FUNCTION_ADDRESS(PFNGLCREATEPROGRAMPROC, 
+                        glCreateProgram);
+EXTERN_FUNCTION_ADDRESS(PFNGLLINKPROGRAMPROC, 
+                        glLinkProgram);
+EXTERN_FUNCTION_ADDRESS(PFNGLUSEPROGRAMPROC, 
+                        glUseProgram);
+EXTERN_FUNCTION_ADDRESS(PFNGLDELETEPROGRAMPROC, 
+                        glDeleteProgram);
+EXTERN_FUNCTION_ADDRESS(PFNGLGENBUFFERSPROC, 
+                        glGenBuffers);
+EXTERN_FUNCTION_ADDRESS(PFNGLBINDBUFFERPROC, 
+                        glBindBuffer);
+EXTERN_FUNCTION_ADDRESS(PFNGLBUFFERDATAPROC, 
+                        glBufferData);
+EXTERN_FUNCTION_ADDRESS(PFNGLVERTEXATTRIBPOINTERPROC, 
+                        glVertexAttribPointer);
+EXTERN_FUNCTION_ADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC, 
+                        glEnableVertexAttribArray);
+EXTERN_FUNCTION_ADDRESS(PFNGLBUFFERSUBDATAPROC, 
+                        glBufferSubData);
+EXTERN_FUNCTION_ADDRESS(PFNGLDELETEBUFFERSPROC, 
+                        glDeleteBuffers);
+EXTERN_FUNCTION_ADDRESS(PFNGLDELETEVERTEXARRAYSPROC, 
+                        glDeleteVertexArrays);
+EXTERN_FUNCTION_ADDRESS(PFNGLGENVERTEXARRAYSPROC, 
+                        glGenVertexArrays);
+EXTERN_FUNCTION_ADDRESS(PFNGLENABLEPROC, 
+                        glEnable);
+EXTERN_FUNCTION_ADDRESS(PFNGLCULLFACEPROC, 
+                        glCullFace);
+EXTERN_FUNCTION_ADDRESS(PFNGLFRONTFACEPROC, 
+                        glFrontFace);
+EXTERN_FUNCTION_ADDRESS(PFNGLBINDVERTEXARRAYPROC, 
+                        glBindVertexArray);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERIVPROC, 
+                        glGetShaderiv);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMIVPROC, 
+                        glGetProgramiv);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();
