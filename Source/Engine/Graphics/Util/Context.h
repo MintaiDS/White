@@ -7,13 +7,13 @@ using namespace White::Util::System;
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 namespace Util {
 
-class Canvas : public Window {
+class Context : public Window {
 public:
-    Canvas(HINSTANCE hInstance);
-    ~Canvas();
+    Context();
+    ~Context();
 
     void Show();
     void Update();

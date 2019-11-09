@@ -2,7 +2,7 @@
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 
 Program::Program() : id(GL::GLFunctions::Get().CreateProgram()) {}
 

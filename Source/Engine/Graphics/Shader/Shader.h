@@ -6,7 +6,7 @@
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 
 struct Shader {
     Shader(GLenum shaderType = GL_VERTEX_SHADER);

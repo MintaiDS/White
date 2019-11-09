@@ -4,7 +4,7 @@
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 
 struct Program {
     Program();

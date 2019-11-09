@@ -1,4 +1,4 @@
-#include "Canvas.h"
+#include "Context.h"
 #include "GLFunctions.h"
 #include "GLInitializer.h"
 #include "Program.h"
@@ -9,36 +9,36 @@
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
 
-using namespace White::Engine::Render::GL;
+using namespace White::Engine::Graphics::GL;
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 namespace Util {
 
-Canvas::Canvas(HINSTANCE hInstance) {
+Context::Context() {
     wc.cbSize = sizeof(WNDCLASSEXW);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = static_cast<WNDPROC>(White::Util::System::WindowProc);
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
+    wc.hInstance = GetModuleHandleW(NULL);
     wc.hIcon = NULL;
     wc.hCursor = NULL;
     wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
     wc.lpszMenuName = NULL;
-    wc.lpszClassName = L"Canvas";
+    wc.lpszClassName = L"Context";
     wc.hIconSm = NULL;
 
     if (!RegisterClassExW(&wc)) {
         MessageBoxW(NULL, L"register failed", NULL, MB_OK);
     }
 
-    hWnd = CreateWindowExW(0, L"Canvas", L"White Engine",
+    hWnd = CreateWindowExW(0, L"Context", L"White Engine",
                            WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            CW_USEDEFAULT, CW_USEDEFAULT, 
-                           NULL, NULL, hInstance, NULL);
+                           NULL, NULL, GetModuleHandleW(NULL), NULL);
  
     PIXELFORMATDESCRIPTOR pfd = {
         sizeof(PIXELFORMATDESCRIPTOR),
@@ -109,23 +109,23 @@ Canvas::Canvas(HINSTANCE hInstance) {
                      sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
 }
 
-Canvas::~Canvas() {
-    UnregisterClassW(L"Canvas", GetModuleHandleW(NULL));
+Context::~Context() {
+    UnregisterClassW(L"Context", GetModuleHandleW(NULL));
 }
 
-void Canvas::Show() {
+void Context::Show() {
     ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 }
 
-void Canvas::Update() {
+void Context::Update() {
     UpdateWindow(hWnd);
 }
 
-void Canvas::Destroy() {
+void Context::Destroy() {
     DestroyWindow(hWnd);
 }
 
-void Canvas::Loop() {
+void Context::Loop() {
     while (true) { 
         MSG msg;
         while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) == TRUE) { 
@@ -140,7 +140,7 @@ void Canvas::Loop() {
     }  
 }
 
-void Canvas::Render() {
+void Context::Render() {
     std::random_device random;
     GLfloat r = 0.5f;//(random() % 1000) / 1000.0;
     GLfloat g = 0.5f;//(random() % 1000) / 1000.0;
@@ -157,7 +157,7 @@ void Canvas::Render() {
     SwapBuffers(hdc);
 }
 
-LRESULT CALLBACK Canvas::WindowProcCallback(HWND hWnd, UINT uMsg,
+LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
                                             WPARAM wParam, LPARAM lParam) {   
     HDC hdc;
     HGLRC hglrc; 

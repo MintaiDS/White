@@ -1,14 +1,14 @@
 #include "Engine.h"
-#include "Canvas.h"
+#include "Context.h"
 #include "GLInitializer.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
                     LPWSTR lpCmdLine, int nCmdShow) {  
-    White::Engine::Render::Util::Canvas canvas(hInstance);
-    canvas.Show();
-    canvas.Update();
-    canvas.Loop();
-    canvas.Destroy();
+    White::Engine::Graphics::Util::Context context;
+    context.Show();
+    context.Update();
+    context.Loop();
+    context.Destroy();
     
     return 0;
 }

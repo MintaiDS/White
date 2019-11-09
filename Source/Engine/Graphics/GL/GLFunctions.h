@@ -8,7 +8,7 @@
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 namespace GL {
 
 struct GLFunctions {

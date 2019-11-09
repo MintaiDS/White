@@ -6,7 +6,7 @@
 
 namespace White {
 namespace Engine {
-namespace Render {
+namespace Graphics {
 
 Shader::Shader(GLenum shaderType) 
         : id(GL::GLFunctions::Get().CreateShader(shaderType)) {}
