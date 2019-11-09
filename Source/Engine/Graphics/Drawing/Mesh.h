@@ -64,8 +64,17 @@ template<typename T>
 const GLvoid* Mesh<T>::GetRawData() {
     if (!rawData) {
         rawData = new T*[vertices.size()];
-        for (int i = 0; i < vertices.size(); i++) {
-            rawData[i] = new T[vertices[0].GetCount()];
+        int row = 0;
+        for (auto& vertex : vertices) {
+            int column = 0;
+            rawData[row] = new T[vertex.GetCount()];
+            for (auto& attribute : vertex.attributes) {
+                std::copy(attribute.GetRawData(), 
+                          attribute.GetRawData() + attribute.GetCount(),
+                          &rawData[0][0] + row * vertex.GetCount() + column); 
+                column += attribute.GetCount();
+            }
+            row++;
         }
     }
 
