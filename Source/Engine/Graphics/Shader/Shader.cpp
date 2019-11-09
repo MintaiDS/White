@@ -9,14 +9,14 @@ namespace Engine {
 namespace Graphics {
 
 Shader::Shader(GLenum shaderType) 
-        : id(GL::GLFunctions::Get().CreateShader(shaderType)) {}
+        : id(glCreateShader(shaderType)) {}
 
 Shader::~Shader() {
-    GL::GLFunctions::Get().DeleteShader(id);
+    glDeleteShader(id);
 }
 
 void Shader::Create(GLenum shaderType) {
-    id = GL::GLFunctions::Get().CreateShader(shaderType);
+    id = glCreateShader(shaderType);
 }
 
 void Shader::Source(const std::wstring& path) {
@@ -25,15 +25,15 @@ void Shader::Source(const std::wstring& path) {
     buffer << file.rdbuf();
     file.close();
     GLchar* src = const_cast<GLchar*>(buffer.str().c_str());
-    GL::GLFunctions::Get().ShaderSource(id, 1, &src, 0);
+    glShaderSource(id, 1, &src, 0);
 }
 
 void Shader::Compile() {
-    GL::GLFunctions::Get().CompileShader(id); 
+    glCompileShader(id); 
 }
 
 void Shader::Delete() {
-    GL::GLFunctions::Get().DeleteShader(id);
+    glDeleteShader(id);
 }
 
 }

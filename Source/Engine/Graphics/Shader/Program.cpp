@@ -4,34 +4,34 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-Program::Program() : id(GL::GLFunctions::Get().CreateProgram()) {}
+Program::Program() : id(glCreateProgram()) {}
 
 Program::~Program() {
-    GL::GLFunctions::Get().DeleteProgram(id);
+    glDeleteProgram(id);
 }
 
 void Program::Create() {
-    id = GL::GLFunctions::Get().CreateProgram();
+    id = glCreateProgram();
 }
 
 void Program::Attach(const Shader& shader) {
-    GL::GLFunctions::Get().AttachShader(id, shader.id);
+    glAttachShader(id, shader.id);
 }
 
 void Program::Detach(const Shader& shader) {
-    GL::GLFunctions::Get().DetachShader(id, shader.id);
+    glDetachShader(id, shader.id);
 }
 
 void Program::Link() {
-    GL::GLFunctions::Get().LinkProgram(id);
+    glLinkProgram(id);
 }
 
 void Program::Use() {
-    GL::GLFunctions::Get().UseProgram(id);
+    glUseProgram(id);
 }
 
 void Program::Delete() {
-    GL::GLFunctions::Get().DeleteProgram(id);
+    glDeleteProgram(id);
 }
 
 }

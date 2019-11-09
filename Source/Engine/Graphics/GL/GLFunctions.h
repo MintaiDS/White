@@ -9,46 +9,38 @@
 namespace White {
 namespace Engine {
 namespace Graphics {
-namespace GL {
 
-struct GLFunctions {
-    GLFunctions(const GLFunctions& other) = delete;
-    void operator=(const GLFunctions& other) = delete;
-    static GLFunctions& Get();
+extern PFNGLCLEARPROC glClear;
+extern PFNGLCLEARCOLORPROC glClearColor;
+extern PFNGLCREATESHADERPROC glCreateShader;
+extern PFNGLSHADERSOURCEPROC glShaderSource;
+extern PFNGLCOMPILESHADERPROC glCompileShader; 
+extern PFNGLATTACHSHADERPROC glAttachShader;
+extern PFNGLDETACHSHADERPROC glDetachShader;
+extern PFNGLDELETESHADERPROC glDeleteShader;
+extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+extern PFNGLLINKPROGRAMPROC glLinkProgram;
+extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+extern PFNGLGENBUFFERSPROC glGenBuffers;
+extern PFNGLBINDBUFFERPROC glBindBuffer;
+extern PFNGLBUFFERDATAPROC glBufferData;
+extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
+extern PFNGLBUFFERSUBDATAPROC glBufferSubData;
+extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
+extern PFNGLENABLEPROC glEnable;
+extern PFNGLCULLFACEPROC glCullFace;
+extern PFNGLFRONTFACEPROC glFrontFace;
+extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
+extern PFNGLGETSHADERIVPROC glGetShaderiv;
+extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 
-    PFNGLCLEARPROC Clear;
-    PFNGLCLEARCOLORPROC ClearColor;
-    PFNGLCREATESHADERPROC CreateShader;
-    PFNGLSHADERSOURCEPROC ShaderSource;
-    PFNGLCOMPILESHADERPROC CompileShader; 
-    PFNGLATTACHSHADERPROC AttachShader;
-    PFNGLDETACHSHADERPROC DetachShader;
-    PFNGLDELETESHADERPROC DeleteShader;
-    PFNGLCREATEPROGRAMPROC CreateProgram;
-    PFNGLLINKPROGRAMPROC LinkProgram;
-    PFNGLUSEPROGRAMPROC UseProgram;
-    PFNGLDELETEPROGRAMPROC DeleteProgram;
-    PFNGLGENBUFFERSPROC GenBuffers;
-    PFNGLBINDBUFFERPROC BindBuffer;
-    PFNGLBUFFERDATAPROC BufferData;
-    PFNGLVERTEXATTRIBPOINTERPROC VertexAttribPointer;
-    PFNGLENABLEVERTEXATTRIBARRAYPROC EnableVertexAttribArray;
-    PFNGLBUFFERSUBDATAPROC BufferSubData;
-    PFNGLDELETEBUFFERSPROC DeleteBuffers;
-    PFNGLDELETEVERTEXARRAYSPROC DeleteVertexArrays;
-    PFNGLGENVERTEXARRAYSPROC GenVertexArrays;
-    PFNGLENABLEPROC Enable;
-    PFNGLCULLFACEPROC CullFace;
-    PFNGLFRONTFACEPROC FrontFace;
-    PFNGLBINDVERTEXARRAYPROC BindVertexArray;
-    PFNGLGETSHADERIVPROC GetShaderiv;
-    PFNGLGETPROGRAMIVPROC GetProgramiv;
+void* GetFunctionAddress(char* name, HMODULE hModule);
+void LoadFunctions();
 
-private:
-    GLFunctions();
-};
-
-}
 }
 }
 }

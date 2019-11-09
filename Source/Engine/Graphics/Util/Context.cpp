@@ -9,7 +9,7 @@
 #include <gl/glext.h>
 #include <gl/glcorearb.h>
 
-using namespace White::Engine::Graphics::GL;
+using namespace White::Engine::Graphics;
 
 namespace White {
 namespace Engine {
@@ -88,11 +88,10 @@ void Context::Create() {
     SetPixelFormat(hdc, iPixelFormat, &pfd);   
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
-    GLInitializer::Init(); 
+    LoadFunctions();
 }
 
 void Context::SetupDemo() {
-    GLFunctions& gl = GLFunctions::Get();
     Program program;
     Shader shader(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";
@@ -109,10 +108,10 @@ void Context::SetupDemo() {
     program.Link();
     program.Use();
     program.Delete();
-    GLFunctions::Get().Enable(GL_DEPTH_TEST);
-    GLFunctions::Get().Enable(GL_CULL_FACE);
-    GLFunctions::Get().CullFace(GL_FRONT);
-    GLFunctions::Get().FrontFace(GL_CCW);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
     GLfloat vertices[3][4] = {
         {-0.5f, -0.5f, 0.0f, 1.0f},
         {0.0f, 0.5f, 0.0f, 1.0f},
@@ -122,22 +121,22 @@ void Context::SetupDemo() {
         0, 1, 2
     };
     GLuint ids[3];
-    gl.GenVertexArrays(1, &ids[0]); 
-    gl.BindVertexArray(ids[0]);
-    gl.GenBuffers(1, &ids[1]);
-    gl.BindBuffer(GL_ARRAY_BUFFER, ids[1]);
-    gl.BufferData(GL_ARRAY_BUFFER, 
-                  sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
-    gl.GenBuffers(1, &ids[2]);
-    gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
-    gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, 
-                  sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
-    gl.VertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    gl.EnableVertexAttribArray(0);
-    gl.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
-                     sizeof(GLuint) * 3, (const GLvoid*)surface);
-    gl.BufferSubData(GL_ARRAY_BUFFER, 0, 
-                     sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
+    glGenVertexArrays(1, &ids[0]); 
+    glBindVertexArray(ids[0]);
+    glGenBuffers(1, &ids[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
+    glBufferData(GL_ARRAY_BUFFER, 
+                 sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
+    glGenBuffers(1, &ids[2]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+                 sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
+                    sizeof(GLuint) * 3, (const GLvoid*)surface);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 
+                    sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
 }
 
 void Context::Show() {
@@ -173,14 +172,9 @@ void Context::Render() {
     GLfloat g = 0.5f;//(random() % 1000) / 1000.0;
     GLfloat b = 0.5f;//(random() % 1000) / 1000.0;
     HDC hdc = GetDC(hWnd);
-    //GLInitializer::Init();
-    GLFunctions& gl = GLFunctions::Get();
-    gl.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    gl.ClearColor(r, g, b, 1.0f);
-    // Test draw
-    //Just create hello triangle      
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(r, g, b, 1.0f);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)nullptr);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
     SwapBuffers(hdc);
 }
 
