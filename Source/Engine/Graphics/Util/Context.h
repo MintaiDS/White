@@ -8,13 +8,18 @@ using namespace White::Util::System;
 namespace White {
 namespace Engine {
 namespace Graphics {
-namespace Util {
 
 class Context : public Window {
 public:
-    Context();
     ~Context();
 
+    void Init();
+    void CreateWindowClass();
+    void RegisterWindowClass();
+    void CreateContextWindow();
+    void SetPixelFormatDescriptor();
+    void Create();
+    void SetupDemo();
     void Show();
     void Update();
     void Destroy();
@@ -22,10 +27,11 @@ public:
     void Render();
 
     virtual LRESULT CALLBACK WindowProcCallback(HWND hWnd, UINT uMsg, 
-                                                 WPARAM wParam, LPARAM lParam);
+                                                WPARAM wParam, LPARAM lParam);
+
+    PIXELFORMATDESCRIPTOR pfd;
 };
 
-}
 }
 }
 }

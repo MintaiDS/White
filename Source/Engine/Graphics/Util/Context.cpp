@@ -14,9 +14,21 @@ using namespace White::Engine::Graphics::GL;
 namespace White {
 namespace Engine {
 namespace Graphics {
-namespace Util {
 
-Context::Context() {
+Context::~Context() {
+    UnregisterClassW(L"Context", GetModuleHandleW(NULL));
+}
+
+void Context::Init() {
+    CreateWindowClass();
+    RegisterWindowClass(); 
+    CreateContextWindow();
+    SetPixelFormatDescriptor();
+    Create();
+    SetupDemo();
+}
+
+void Context::CreateWindowClass() {
     wc.cbSize = sizeof(WNDCLASSEXW);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = static_cast<WNDPROC>(White::Util::System::WindowProc);
@@ -29,38 +41,57 @@ Context::Context() {
     wc.lpszMenuName = NULL;
     wc.lpszClassName = L"Context";
     wc.hIconSm = NULL;
+}
 
-    if (!RegisterClassExW(&wc)) {
-        MessageBoxW(NULL, L"register failed", NULL, MB_OK);
-    }
+void Context::RegisterWindowClass() {
+    RegisterClassExW(&wc);
+}
 
+void Context::CreateContextWindow() {
     hWnd = CreateWindowExW(0, L"Context", L"White Engine",
                            WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            CW_USEDEFAULT, CW_USEDEFAULT, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
- 
-    PIXELFORMATDESCRIPTOR pfd = {
-        sizeof(PIXELFORMATDESCRIPTOR),
-        1, 
-        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-        PFD_TYPE_RGBA,
-        24,
-        0, 0, 0, 0, 0,
-        0, 0, 0,
-        0, 0, 0,
-        32, 0, 0,
-        PFD_MAIN_PLANE,
-        0, 
-        0, 0, 0
-    };
+}
 
+void Context::SetPixelFormatDescriptor() {
+    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion = 1;                                                           
+    pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    pfd.iPixelType = PFD_TYPE_RGBA;
+    pfd.cColorBits = 24; 
+    pfd.cRedBits = 0; 
+    pfd.cRedShift = 0; 
+    pfd.cGreenBits = 0; 
+    pfd.cGreenShift = 0; 
+    pfd.cBlueBits = 0;
+    pfd.cBlueShift = 0; 
+    pfd.cAlphaBits = 0; 
+    pfd.cAlphaShift = 0;
+    pfd.cAccumBits = 0; 
+    pfd.cAccumRedBits = 0; 
+    pfd.cAccumGreenBits = 0;  
+    pfd.cAccumBlueBits = 32;
+    pfd.cAccumAlphaBits = 0;  
+    pfd.cDepthBits = 0;
+    pfd.cStencilBits = PFD_MAIN_PLANE;
+    pfd.cAuxBuffers = 0;
+    pfd.iLayerType = 0;
+    pfd.bReserved = 0;
+    pfd.dwLayerMask = 0;  
+}
+
+void Context::Create() {
     HDC hdc = GetDC(hWnd);
     int iPixelFormat = ChoosePixelFormat(hdc, &pfd);
     SetPixelFormat(hdc, iPixelFormat, &pfd);   
     HGLRC hglrc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, hglrc);     
     GLInitializer::Init(); 
+}
+
+void Context::SetupDemo() {
     GLFunctions& gl = GLFunctions::Get();
     Program program;
     Shader shader(GL_VERTEX_SHADER);
@@ -107,10 +138,6 @@ Context::Context() {
                      sizeof(GLuint) * 3, (const GLvoid*)surface);
     gl.BufferSubData(GL_ARRAY_BUFFER, 0, 
                      sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
-}
-
-Context::~Context() {
-    UnregisterClassW(L"Context", GetModuleHandleW(NULL));
 }
 
 void Context::Show() {
@@ -189,7 +216,6 @@ LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-}
 }
 }
 }
