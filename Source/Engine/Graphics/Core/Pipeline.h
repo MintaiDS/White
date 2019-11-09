@@ -5,8 +5,7 @@ using namespace White;
 namespace Engine {
 namespace Graphics {
 
-struct Pipeline {
-    
+struct Pipeline {    
 };
 
 }
