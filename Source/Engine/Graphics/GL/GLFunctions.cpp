@@ -37,6 +37,7 @@ FUNCTION_ADDRESS(glFrontFace);
 FUNCTION_ADDRESS(glBindVertexArray);
 FUNCTION_ADDRESS(glGetShaderiv);
 FUNCTION_ADDRESS(glGetProgramiv);
+//FUNCTION_ADDRESS(glDeleteVertexArrays);
 
 void* GetFunctionAddress(char* name, HMODULE hModule) {
     PROC address = wglGetProcAddress(name);
@@ -76,6 +77,7 @@ void LoadFunctions() {
     LOAD_FUNCTION(glBindVertexArray);
     LOAD_FUNCTION(glGetShaderiv);
     LOAD_FUNCTION(glGetProgramiv); 
+    //LOAD_FUNCTION(glDeleteVertexArrays);
 }
 
 }

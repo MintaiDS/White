@@ -1,7 +1,9 @@
 #include "Context.h"
 #include "GLFunctions.h"
 #include "GLInitializer.h"
+#include "VertexArrayObject.h"
 #include "Program.h"
+#include "BufferObject.h"
 
 #include <random>
 
@@ -121,22 +123,41 @@ void Context::SetupDemo() {
         0, 1, 2
     };
     GLuint ids[3];
-    glGenVertexArrays(1, &ids[0]); 
-    glBindVertexArray(ids[0]);
-    glGenBuffers(1, &ids[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
-    glBufferData(GL_ARRAY_BUFFER, 
-                 sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
-    glGenBuffers(1, &ids[2]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-                 sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
+    //glGenVertexArrays(1, &ids[0]); 
+    //VertexArrayObject vertexArray;
+    //vertexArray.Create();
+    //glBindVertexArray(ids[0]);
+    //vertexArray.Bind();
+    //glGenBuffers(1, &ids[1]);
+    BufferObject arrayBuffer;
+    BufferObject elementArrayBuffer;
+    arrayBuffer.Create();
+    elementArrayBuffer.Create();
+    arrayBuffer.Bind(GL_ARRAY_BUFFER);
+    elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
+    arrayBuffer.SetData(sizeof(GLfloat) * 12, nullptr, GL_STATIC_DRAW);
+    elementArrayBuffer.SetData(sizeof(GLuint) * 3, nullptr, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
-                    sizeof(GLuint) * 3, (const GLvoid*)surface);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 
-                    sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
+
+
+    arrayBuffer.SetSubData(0, sizeof(GLfloat) * 12, 
+                           reinterpret_cast<const GLvoid*>(vertices));
+    elementArrayBuffer.SetSubData(0, sizeof(GLuint) * 3,
+                                  reinterpret_cast<const GLvoid*>(surface));
+    //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
+    //glBufferData(GL_ARRAY_BUFFER, 
+    //             sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
+    //glGenBuffers(1, &ids[2]);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+    //             sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
+    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    //glEnableVertexAttribArray(0);
+    //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
+    //                sizeof(GLuint) * 3, (const GLvoid*)surface);
+    //glBufferSubData(GL_ARRAY_BUFFER, 0, 
+    //                sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
 }
 
 void Context::Show() {
@@ -167,15 +188,11 @@ void Context::Loop() {
 }
 
 void Context::Render() {
-    std::random_device random;
-    GLfloat r = 0.5f;//(random() % 1000) / 1000.0;
-    GLfloat g = 0.5f;//(random() % 1000) / 1000.0;
-    GLfloat b = 0.5f;//(random() % 1000) / 1000.0;
-    HDC hdc = GetDC(hWnd);
+    GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(r, g, b, 1.0f);
+    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)nullptr);
-    SwapBuffers(hdc);
+    SwapBuffers(GetDC(hWnd));
 }
 
 LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,

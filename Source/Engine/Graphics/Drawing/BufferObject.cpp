@@ -20,6 +20,7 @@ void BufferObject::SetData(GLsizeiptr size,
 
 void BufferObject::SetSubData(GLintptr offset, 
                               GLsizeiptr size, const GLvoid* data) {
+    glBufferSubData(target, offset, size, data); 
 }
 
 void BufferObject::Delete() {
