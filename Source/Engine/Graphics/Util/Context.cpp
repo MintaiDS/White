@@ -51,9 +51,9 @@ void Context::RegisterWindowClass() {
 
 void Context::CreateContextWindow() {
     hWnd = CreateWindowExW(0, L"Context", L"White Engine",
-                           WS_OVERLAPPEDWINDOW | WS_MAXIMIZE,
-                           CW_USEDEFAULT, CW_USEDEFAULT, 
-                           CW_USEDEFAULT, CW_USEDEFAULT, 
+                           WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_VISIBLE,
+                           100, 100,  
+                           500, 500, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
 }
 
@@ -192,6 +192,7 @@ void Context::Render() {
     glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));
+    Sleep(30);
 }
 
 LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,

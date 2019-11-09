@@ -35,7 +35,8 @@ lib_files = Gdi32.lib User32.lib Opengl32.lib
 all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
-        BufferObject.o VertexArrayObject.o Engine.exe 
+        BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
+		Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -114,6 +115,18 @@ Mesh.o : $(src_engine_graphics_drawing_path)Mesh.cpp
     $(compiler_options_out)Mesh.o \
     $(compiler_options_include) \
     $(src_engine_graphics_drawing_path)Mesh.cpp"
+VertexData.o : $(src_engine_graphics_drawing_path)VertexData.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)VertexData.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_drawing_path)VertexData.cpp"
+VertexAttribute.o : $(src_engine_graphics_drawing_path)VertexAttribute.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)VertexAttribute.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_drawing_path)VertexAttribute.cpp"
 BufferObject.o : $(src_engine_graphics_drawing_path)Mesh.cpp
     "$(compiler) \
     $(compiler_options) \
