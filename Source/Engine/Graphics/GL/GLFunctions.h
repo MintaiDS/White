@@ -68,8 +68,6 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERIVPROC,
                         glGetShaderiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMIVPROC, 
                         glGetProgramiv);
-//EXTERN_FUNCTION_ADDRESS(PFNGLDELETEVERTEXARRAYSPROC,
-//                        glDeleteVertexArrays);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

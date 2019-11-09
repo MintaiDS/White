@@ -124,11 +124,12 @@ void Context::SetupDemo() {
     };
     GLuint ids[3];
     //glGenVertexArrays(1, &ids[0]); 
-    //VertexArrayObject vertexArray;
-    //vertexArray.Create();
-    //glBindVertexArray(ids[0]);
-    //vertexArray.Bind();
-    //glGenBuffers(1, &ids[1]);
+    //;
+    //    //glBindVertexArray(ids[0]);
+    //    //glGenBuffers(1, &ids[1]);
+    VertexArrayObject vertexArray;
+    vertexArray.Create();
+    vertexArray.Bind();
     BufferObject arrayBuffer;
     BufferObject elementArrayBuffer;
     arrayBuffer.Create();
@@ -139,8 +140,6 @@ void Context::SetupDemo() {
     elementArrayBuffer.SetData(sizeof(GLuint) * 3, nullptr, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
-
-
     arrayBuffer.SetSubData(0, sizeof(GLfloat) * 12, 
                            reinterpret_cast<const GLvoid*>(vertices));
     elementArrayBuffer.SetSubData(0, sizeof(GLuint) * 3,
