@@ -35,26 +35,30 @@ public:
     std::size_t GetSize() const;
     std::size_t GetCount() const;
     T* GetRawData();
+    U* GetRawIndices();
 
     std::vector<VertexData<T>> vertices;
     std::vector<U> indices;
 
 protected:
         T* rawData;
+        U* rawIndices;
 };
 
 template<typename T, typename U = unsigned>
-Mesh<T, U>::Mesh() : rawData(nullptr) {}
+Mesh<T, U>::Mesh() : rawData(nullptr), rawIndices(nullptr) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const Mesh<T, U>& other) 
         : vertices(other.vertices)
-        , rawData(nullptr) {}
+        , rawData(nullptr)
+        , rawIndices(nullptr) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices) 
         : vertices(vertices)
-        , rawData(nullptr) {}
+        , rawData(nullptr)
+        , rawIndices(nullptr) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
@@ -67,46 +71,51 @@ Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices)
 template<typename T, typename U = unsigned>
 Mesh<T, U>::~Mesh() {
     delete[] rawData;
+    delete[] rawIndices;
 }
 
-template<typename T, typename U = unsigned>
-Mesh<T, U> Mesh<T, U>::CreateFromShape(
-                                    const Util::Math::Ellipse<T>& ellipse, 
-                                    const Vector<T>& color, int verticesCnt) {
-    Util::Math::Polygon<T> polygon 
+template<typename GLfloat, typename U = unsigned>
+Mesh<GLfloat, U> Mesh<GLfloat, U>::CreateFromShape(
+                                    const Util::Math::Ellipse<GLfloat>& ellipse, 
+                                    const Vector<GLfloat>& color, int verticesCnt) {
+    Util::Math::Polygon<GLfloat> polygon 
         = Util::Math::Polygon::CreateFromShape(ellipse, verticesCnt);
-    std::vector<VertexData<T>> vertices;
+    std::vector<VertexData<GLfloat>> vertices;
     for (int i = 0; i < polygon.vertices.size(); i++) {
-        VertexData<T> vertex;
-        Vector<T> position = {polygon.vertices[i][0], 
+        VertexData<GLfloat> vertex;
+        Vector<GLfloat> position = {polygon.vertices[i][0], 
                               polygon.vertices[i][1],
                               0, 1};
         vertex.attributes.push_back(position);
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T, U> ret(vertices);
+    Mesh<GLfloat, U> ret(vertices);
 
     return ret;
 }
 
-template<typename T, typename U = unsigned>
-Mesh<T, U> Mesh<T, U>::CreateFromShape(
-                                    const Disk<T>& disk, 
-                                    const Vector<T>& color, int verticesCnt) {
-    Polygon<T> polygon = Polygon::CreateFromShape(disk, verticesCnt);
-    std::vector<VertexData<T>> vertices;
-    vertices.push_back({{0, 0, 0, 1}, color});
+template<typename GLfloat, typename U = unsigned>
+Mesh<GLfloat, U> Mesh<GLfloat, U>::CreateFromShape(
+                                    const Disk<GLfloat>& disk, 
+                                    const Vector<GLfloat>& color, int verticesCnt) {
+    Util::Math::Polygon<GLfloat> polygon = Util::Math::Polygon<GLfloat>::CreateFromShape(disk, verticesCnt);
+    
+    std::vector<VertexData<GLfloat>> vertices;
+    VertexData<GLfloat> vertex;
+    vertex.attributes.push_back(Vector<GLfloat>({0, 0, 0, 1}));
+    vertex.attributes.push_back(color);
+    vertices.push_back(vertex);
     for (int i = 0; i < polygon.vertices.size(); i++) {
-        VertexData<T> vertex;
-        Vector<T> position = {polygon.vertices[i][0], 
+        VertexData<GLfloat> vertex;
+        Vector<GLfloat> position = {polygon.vertices[i][0], 
                               polygon.vertices[i][1],
                               0, 1};
         vertex.attributes.push_back(position);
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T, U> ret(vertices);
+    Mesh<GLfloat, U> ret(vertices);
     for (int i = 1; i < polygon.vertices.size(); i++) {
         ret.indices.push_back(0);
         ret.indices.push_back(i + 1);
@@ -192,6 +201,18 @@ T* Mesh<T, U>::GetRawData() {
     }
 
     return rawData;
+}
+
+template<typename T, typename U = unsigned>
+U* Mesh<T, U>::GetRawIndices() {
+    if (!rawIndices) {
+        rawIndices = new U[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            rawIndices[i] = indices[i];
+        }
+    }
+
+    return rawIndices;
 }
 
 }

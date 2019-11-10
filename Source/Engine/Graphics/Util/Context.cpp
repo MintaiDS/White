@@ -8,6 +8,7 @@
 #include "VertexData.h"
 #include "Mesh.h"
 #include "MeshLoader.h"
+#include "Disk.h"
 
 #include <random>
 #include <sstream>
@@ -121,51 +122,60 @@ void Context::SetupDemo() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
-    Vector<GLfloat> positions[3] = {
-        {-0.5f, -0.5f, 0.1f, 1.0f},
-        {0.0f, 0.5f, 0.1f, 1.0f},
-        {0.5f, -0.5f, 0.1f, 1.0f}
-    }; 
-    Vector<GLfloat> colors[3] = {
-        {1.0f, 1.0f, 0.0f, 1.0f},
-        {1.0f, 1.0f, 0.0f, 1.0f},
-        {1.0f, 1.0f, 0.0f, 1.0f}
-    }; 
-    VertexAttribute<GLfloat> attributes[3][2] = {
-        {positions[0], colors[0]},
-        {positions[1], colors[1]},
-        {positions[2], colors[2]}
-    };
-    std::vector<VertexData<GLfloat>> verts;
-    for (int i = 0; i < 3; i++) {
-        std::vector<VertexAttribute<GLfloat>> attribs;
-        attribs.push_back(attributes[i][0]);
-        attribs.push_back(attributes[i][1]);
-        VertexData<GLfloat> data(attribs);
-        verts.push_back(data);
-    } 
-    //Mesh<GLfloat> mesh(verts);
-    Mesh<GLfloat> mesh;
-    MeshLoader meshLoader(mesh);
-    //meshLoader.Export(L"Triangle.polygon", mesh);
-    meshLoader.Import(L"Triangle.polygon");
-    mesh = meshLoader.mesh;
-
-    GLfloat* ptr = mesh.GetRawData(); 
-    GLfloat vertices[3][8] = {
-        {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-        {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-        {0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f}
-    };
-
-    //GLuint surface[3] = {
-    //    0, 1, 2
+    //Vector<GLfloat> positions[3] = {
+    //    {-0.5f, -0.5f, 0.1f, 1.0f},
+    //    {0.0f, 0.5f, 0.1f, 1.0f},
+    //    {0.5f, -0.5f, 0.1f, 1.0f}
+    //}; 
+    //Vector<GLfloat> colors[3] = {
+    //    {1.0f, 1.0f, 0.0f, 1.0f},
+    //    {1.0f, 1.0f, 0.0f, 1.0f},
+    //    {1.0f, 1.0f, 0.0f, 1.0f}
+    //}; 
+    //VertexAttribute<GLfloat> attributes[3][2] = {
+    //    {positions[0], colors[0]},
+    //    {positions[1], colors[1]},
+    //    {positions[2], colors[2]}
     //};
-    std::unique_ptr<GLuint[]> surface 
-        = std::make_unique<GLuint[]>(mesh.vertices.size());
-    for (int i = 0; i < mesh.vertices.size(); i++) {
-        surface[i] = i;
-    }
+    //std::vector<VertexData<GLfloat>> verts;
+    //for (int i = 0; i < 3; i++) {
+    //    std::vector<VertexAttribute<GLfloat>> attribs;
+    //    attribs.push_back(attributes[i][0]);
+    //    attribs.push_back(attributes[i][1]);
+    //    VertexData<GLfloat> data(attribs);
+    //    verts.push_back(data);
+    //} 
+    ////Mesh<GLfloat> mesh(verts);
+    //Mesh<GLfloat> mesh;
+    //MeshLoader meshLoader(mesh);
+    ////meshLoader.Export(L"Triangle.polygon", mesh);
+    //meshLoader.Import(L"Triangle.polygon");
+    //mesh = meshLoader.mesh;
+
+    //GLfloat* ptr = mesh.GetRawData(); 
+    //GLfloat vertices[3][8] = {
+    //    {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+    //    {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+    //    {0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f}
+    //};
+
+    ////GLuint surface[3] = {
+    ////    0, 1, 2
+    ////};
+    //std::unique_ptr<GLuint[]> surface 
+    //    = std::make_unique<GLuint[]>(mesh.vertices.size());
+    //for (int i = 0; i < mesh.vertices.size(); i++) {
+    //    surface[i] = i;
+    //}
+
+    //
+    Disk<GLfloat> disk(0.4);
+    Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    std::ofstream file("log.txt");
+    file << mesh.GetCount() << std::endl;
+    file << mesh.indices.size() << std::endl;
+    file.close();
 
     VertexArrayObject vertexArray;
     vertexArray.Create();
@@ -179,20 +189,24 @@ void Context::SetupDemo() {
     arrayBuffer.SetData(mesh.GetSize(), 
                         nullptr, 
                         GL_STATIC_DRAW);
-    elementArrayBuffer.SetData(sizeof(GLuint) * mesh.vertices.size(), 
+    elementArrayBuffer.SetData(sizeof(GLuint) * mesh.indices.size(), 
                                nullptr, 
                                GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 
-                          sizeof(GLfloat) * 4 * 2, reinterpret_cast<const GLvoid*>(0));
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 
+    glVertexAttribPointer(0, 4, 
+                          GL_FLOAT, GL_FALSE, 
+                          sizeof(GLfloat) * 4 * 2, 
+                          reinterpret_cast<const GLvoid*>(0));
+    glVertexAttribPointer(1, 4, 
+                          GL_FLOAT, GL_FALSE, 
                           sizeof(GLfloat) * 4 * 2, 
                           reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     arrayBuffer.SetSubData(0, mesh.GetSize(), 
                            reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
-    elementArrayBuffer.SetSubData(0, mesh.vertices.size() * 3,
-                                  reinterpret_cast<const GLvoid*>(surface.get()));
+    elementArrayBuffer.SetSubData(
+                        0, mesh.indices.size() * sizeof(GLuint),
+                        reinterpret_cast<const GLvoid*>(mesh.GetRawIndices()));
     //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
     //glBufferData(GL_ARRAY_BUFFER, 
     //             sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
@@ -239,11 +253,14 @@ void Context::Render() {
     GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-    Mesh<GLfloat> mesh;
-    MeshLoader meshLoader(mesh);
-    meshLoader.Import(L"Triangle.polygon");
-    mesh = meshLoader.mesh;
-    glDrawElements(GL_TRIANGLES, mesh.vertices.size(), 
+    //Mesh<GLfloat> mesh;
+    //MeshLoader meshLoader(mesh);
+    //meshLoader.Import(L"Triangle.polygon");
+    //mesh = meshLoader.mesh;
+    Disk<GLfloat> disk(0.4);
+    Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    glDrawElements(GL_TRIANGLES, mesh.indices.size(), 
                    GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));
     Sleep(30);
