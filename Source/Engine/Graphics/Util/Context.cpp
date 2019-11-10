@@ -157,9 +157,16 @@ void Context::SetupDemo() {
         {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
         {0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f}
     };
-    GLuint surface[3] = {
-        0, 1, 2
-    };
+
+    //GLuint surface[3] = {
+    //    0, 1, 2
+    //};
+    std::unique_ptr<GLuint[]> surface 
+        = std::make_unique<GLuint[]>(mesh.vertices.size());
+    for (int i = 0; i < mesh.vertices.size(); i++) {
+        surface[i] = i;
+    }
+
     VertexArrayObject vertexArray;
     vertexArray.Create();
     vertexArray.Bind();
@@ -172,7 +179,7 @@ void Context::SetupDemo() {
     arrayBuffer.SetData(mesh.GetSize(), 
                         nullptr, 
                         GL_STATIC_DRAW);
-    elementArrayBuffer.SetData(sizeof(GLuint) * 3, 
+    elementArrayBuffer.SetData(sizeof(GLuint) * mesh.vertices.size(), 
                                nullptr, 
                                GL_STATIC_DRAW);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 
@@ -184,8 +191,8 @@ void Context::SetupDemo() {
     glEnableVertexAttribArray(1);
     arrayBuffer.SetSubData(0, mesh.GetSize(), 
                            reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
-    elementArrayBuffer.SetSubData(0, sizeof(GLuint) * 3,
-                                  reinterpret_cast<const GLvoid*>(surface));
+    elementArrayBuffer.SetSubData(0, mesh.vertices.size() * 3,
+                                  reinterpret_cast<const GLvoid*>(surface.get()));
     //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
     //glBufferData(GL_ARRAY_BUFFER, 
     //             sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
@@ -232,7 +239,12 @@ void Context::Render() {
     GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (const GLvoid*)nullptr);
+    Mesh<GLfloat> mesh;
+    MeshLoader meshLoader(mesh);
+    meshLoader.Import(L"Triangle.polygon");
+    mesh = meshLoader.mesh;
+    glDrawElements(GL_TRIANGLES, mesh.vertices.size(), 
+                   GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));
     Sleep(30);
 }
