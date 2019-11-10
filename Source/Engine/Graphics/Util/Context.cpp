@@ -7,6 +7,7 @@
 #include "VertexAttribute.h"
 #include "VertexData.h"
 #include "Mesh.h"
+#include "MeshLoader.h"
 
 #include <random>
 #include <sstream>
@@ -143,7 +144,13 @@ void Context::SetupDemo() {
         VertexData<GLfloat> data(attribs);
         verts.push_back(data);
     } 
-    Mesh<GLfloat> mesh(verts);
+    //Mesh<GLfloat> mesh(verts);
+    Mesh<GLfloat> mesh;
+    MeshLoader meshLoader(mesh);
+    //meshLoader.Export(L"Triangle.polygon", mesh);
+    meshLoader.Import(L"Triangle.polygon");
+    mesh = meshLoader.mesh;
+
     GLfloat* ptr = mesh.GetRawData(); 
     GLfloat vertices[3][8] = {
         {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},

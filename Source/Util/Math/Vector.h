@@ -91,7 +91,6 @@ Vector<T>::Vector(std::initializer_list<T> args)
     }
 }
 
-
 template<typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
     size = other.size;

@@ -45,7 +45,7 @@ void MeshLoader::Import(std::wstring path) {
     file.close();
 }
 
-void MeshLoader::Export(std::wstring path) {
+void MeshLoader::Export(std::wstring path, const Mesh<GLfloat>& mesh) {
     std::ofstream file(path);
     int verticesCnt = mesh.vertices.size();
     int attributesCnt = mesh.vertices[0].attributes.size();
@@ -57,12 +57,10 @@ void MeshLoader::Export(std::wstring path) {
         file << componentsCnt << " ";
     }
     file << std::endl;
-    std::vector<VertexData<GLfloat>> vertices;
     for (int i = 0; i < verticesCnt; i++) {
-        std::vector<VertexAttribute<GLfloat>> attributes;
         for (int j = 0; j < attributesCnt; j++) {
-            for (int k = 0; k < vertices[i].attributes[j].GetCount(); k++) {
-                file << vertices[i].attributes[j].data[k] << " ";
+            for (int k = 0; k < mesh.vertices[i].attributes[j].GetCount(); k++) {
+                file << mesh.vertices[i].attributes[j].data[k] << " ";
             }
             file << std::endl;
         }

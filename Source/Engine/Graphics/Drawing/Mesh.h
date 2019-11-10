@@ -14,7 +14,8 @@ namespace Graphics {
 template<typename T>
 class Mesh {
 public:
-    Mesh(const Mesh& other);
+    Mesh();
+    Mesh(const Mesh<T>& other);
     Mesh(const std::vector<VertexData<T>>& vertices);
     Mesh(const std::size_t size, const VertexData<T>* vertices);
     ~Mesh();
@@ -28,6 +29,9 @@ public:
 private:
         T* rawData;
 };
+
+template<typename T>
+Mesh<T>::Mesh() : rawData(nullptr) {}
 
 template<typename T>
 Mesh<T>::Mesh(const Mesh<T>& other) 
