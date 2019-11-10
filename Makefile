@@ -34,6 +34,7 @@ obj_files = $(obj_path)*.o
 lib_files = Gdi32.lib User32.lib Opengl32.lib
 all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
+        Ellipse.o Rectangle.o Line.o Segment.o Circle.o Ring.o Disk.o Point.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Renderer.o Engine.exe 
@@ -49,6 +50,48 @@ Vector.o : $(src_util_math_path)Vector.cpp
     $(compiler_options_out)Vector.o \
     $(compiler_options_include) \
     $(src_util_math_path)Vector.cpp"    
+Ellipse.o : $(src_util_math_path)Ellipse.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Ellipse.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Ellipse.cpp"    
+Segment.o : $(src_util_math_path)Segment.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Segment.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Segment.cpp"    
+Line.o : $(src_util_math_path)Line.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Line.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Line.cpp"    
+Circle.o : $(src_util_math_path)Circle.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Circle.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Circle.cpp"    
+Rectangle.o : $(src_util_math_path)Rectangle.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Rectangle.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Rectangle.cpp"    
+Ring.o : $(src_util_math_path)Ring.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Ring.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Ring.cpp"   
+Disk.o : $(src_util_math_path)Disk.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Disk.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Disk.cpp"   
 Polygon.o : $(src_util_math_path)Polygon.cpp
     "$(compiler) \
     $(compiler_options) \
