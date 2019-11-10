@@ -15,7 +15,7 @@ struct Circle : public Ellipse<T> {
 
 template<typename T>
 Circle<T>::Circle(const T r) 
-        : Ellipse(r, r)
+        : Ellipse(r * 2, r * 2)
         , r(r) {}
 
 }

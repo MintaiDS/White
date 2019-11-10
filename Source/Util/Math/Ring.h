@@ -6,12 +6,12 @@ namespace White {
 namespace Util {
 namespace Math {
 
-typedef<typename T>
+template<typename T>
 struct Ring {
     Ring(const Circle<T>& inner, const Circle<T>& outer);
     
-    Circle<T>& inner;
-    Circle<T>& outer;
+    Circle<T> inner;
+    Circle<T> outer;
 };
 
 template<typename T>
