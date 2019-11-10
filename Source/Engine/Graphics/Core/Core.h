@@ -1,11 +1,17 @@
 #pragma once
 
+#include "MeshManager.h"
+#include "Renderer.h"
+
 namespace White {
 namespace Engine {
 namespace Graphics {
 
 struct Core {
-    Render();
+    Core();
+
+    MeshManager meshManager;
+    Renderer renderer;
 };
 
 }

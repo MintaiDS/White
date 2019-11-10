@@ -26,6 +26,8 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
+Context::Context(Core& core) : core(core) {}
+
 Context::~Context() {
     UnregisterClassW(L"Context", GetModuleHandleW(NULL));
 }
@@ -243,33 +245,21 @@ void Context::Loop() {
                 return;
             } 
         } 
-        Render();
+        core.renderer.Render();
+        SwapBuffers(GetDC(hWnd));
+        Sleep(50);
     }  
 }
 
 void Context::Render() {
-    GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-    //Mesh<GLfloat> mesh;
-    //MeshLoader meshLoader(mesh);
-    //meshLoader.Import(L"Triangle.polygon");
-    //mesh = meshLoader.mesh;
-    //Disk<GLfloat> disk(0.4);
+    //GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+    //Ring<GLfloat> ring(0.4, 0.7);
     //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    //Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
-
-    Ring<GLfloat> ring(0.4, 0.7);
-    Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
- 
-
-    glDrawElements(GL_TRIANGLES, 360 * 2 * 6, 
-                   GL_UNSIGNED_INT, (const GLvoid*)nullptr);
-    SwapBuffers(GetDC(hWnd));
-    Sleep(30);
+    //Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
+    //glDrawElements(GL_TRIANGLES, 360 * 2 * 6, 
+    //               GL_UNSIGNED_INT, (const GLvoid*)nullptr);
 }
 
 LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,

@@ -37,7 +37,8 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         Ellipse.o Rectangle.o Line.o Segment.o Circle.o Ring.o Disk.o Point.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
-        MeshManager.o MeshLoader.o Shape.o Renderer.o Engine.exe 
+        MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
+		Pipeline.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -152,6 +153,18 @@ Engine.o : $(src_engine_graphics_core_path)Engine.cpp
     $(compiler_options_out)Engine.o \
     $(compiler_options_include) \
     $(src_engine_graphics_core_path)Engine.cpp"   
+Core.o : $(src_engine_graphics_core_path)Core.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Core.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)Core.cpp"   
+Pipeline.o : $(src_engine_graphics_core_path)Pipeline.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Pipeline.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)Pipeline.cpp"   
 Renderer.o : $(src_engine_graphics_core_path)Renderer.cpp
     "$(compiler) \
     $(compiler_options) \

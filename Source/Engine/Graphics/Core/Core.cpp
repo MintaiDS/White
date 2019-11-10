@@ -2,10 +2,9 @@
 
 namespace White {
 namespace Engine {
-namespace Grahpics {
+namespace Graphics {
 
-void Core::Render() {
-}
+Core::Core() : renderer(meshManager) {}
 
 }
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-using namespace White;
-
+namespace White {
 namespace Engine {
 namespace Graphics {
 
 struct Pipeline {    
 };
 
+}
 }
 }

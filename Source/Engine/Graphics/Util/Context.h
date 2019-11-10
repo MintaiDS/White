@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "Program.h"
+#include "Core.h"
 
 using namespace White::Util::System;
 
@@ -11,6 +12,7 @@ namespace Graphics {
 
 class Context : public Window {
 public:
+    Context(Core& core);
     ~Context();
 
     void Init();
@@ -29,7 +31,9 @@ public:
     virtual LRESULT CALLBACK WindowProcCallback(HWND hWnd, UINT uMsg, 
                                                 WPARAM wParam, LPARAM lParam);
 
+protected:
     PIXELFORMATDESCRIPTOR pfd;
+    Core& core;
 };
 
 }

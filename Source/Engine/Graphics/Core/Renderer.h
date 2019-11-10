@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Object.h"
 #include "MeshManager.h"
 
 namespace White {
@@ -9,8 +8,13 @@ namespace Graphics {
 
 class Renderer {
 public:
-    void Render(MeshManager& meshManager);
+    Renderer(MeshManager& meshManager);
+
+    void Render();
     void DrawCall(Mesh<GLfloat> mesh);
+
+private:
+    MeshManager& meshManager;
 };
 
 }
