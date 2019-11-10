@@ -18,6 +18,7 @@ struct Vector {
     Vector(const Vector<T>& other);
     Vector(std::initializer_list<T> args);
 
+    Vector& operator=(const Vector<T>& other);
     T operator[](std::size_t index) const;
     T& operator[](std::size_t index);
     Vector& operator+=(const Vector<T>& other);
@@ -88,6 +89,18 @@ Vector<T>::Vector(std::initializer_list<T> args)
         values[i] = *it;
         ++i;
     }
+}
+
+
+template<typename T>
+Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
+    size = other.size;
+    values = std::make_unique<T[]>(size);
+    for (int i = 0; i < size; i++) {
+        values[i] = other[i];
+    }
+
+    return *this;
 }
 
 template<typename T>

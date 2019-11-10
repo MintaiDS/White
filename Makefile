@@ -36,7 +36,7 @@ all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
-		MeshManager.o Renderer.o Engine.exe 
+		MeshManager.o MeshLoader.o Renderer.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -79,6 +79,12 @@ Context.o : $(src_engine_graphics_util_path)Context.cpp
     $(compiler_options_out)Context.o \
     $(compiler_options_include) \
     $(src_engine_graphics_util_path)Context.cpp"   
+MeshLoader.o : $(src_engine_graphics_util_path)MeshLoader.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)MeshLoader.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_util_path)MeshLoader.cpp"   
 Engine.o : $(src_engine_graphics_core_path)Engine.cpp
     "$(compiler) \
     $(compiler_options) \

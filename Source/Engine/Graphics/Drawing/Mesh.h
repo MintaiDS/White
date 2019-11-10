@@ -23,9 +23,10 @@ public:
     std::size_t GetCount() const;
     T* GetRawData();
 
-private:
     std::vector<VertexData<T>> vertices;
-    T* rawData;
+
+private:
+        T* rawData;
 };
 
 template<typename T>
