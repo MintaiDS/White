@@ -8,7 +8,7 @@ namespace Math {
 
 template<typename T>
 struct Segment {
-    Segments(const Vector<T>& begin, const Vector<T>& end);
+    Segment(const Vector<T>& begin, const Vector<T>& end);
 
     Vector<T> begin;
     Vector<T> end;

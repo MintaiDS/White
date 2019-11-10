@@ -50,6 +50,12 @@ Vector.o : $(src_util_math_path)Vector.cpp
     $(compiler_options_out)Vector.o \
     $(compiler_options_include) \
     $(src_util_math_path)Vector.cpp"    
+Point.o : $(src_util_math_path)Point.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Point.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Point.cpp"
 Ellipse.o : $(src_util_math_path)Ellipse.cpp
     "$(compiler) \
     $(compiler_options) \
