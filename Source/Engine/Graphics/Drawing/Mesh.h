@@ -20,6 +20,7 @@ public:
     ~Mesh();
 
     std::size_t GetSize() const;
+    std::size_t GetCount() const;
     T* GetRawData();
 
 private:
@@ -53,6 +54,11 @@ Mesh<T>::~Mesh() {
 template<typename T>
 std::size_t Mesh<T>::GetSize() const {
     return vertices.size() * vertices[0].GetSize();
+}
+
+template<typename T>
+std::size_t Mesh<T>::GetCount() const {
+    return vertices.size() * vertices[0].GetCount();
 }
 
 template<typename T>

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Object.h"
-
-#include <vector>
+#include "MeshManager.h"
 
 namespace White {
 namespace Engine {
@@ -10,10 +9,8 @@ namespace Graphics {
 
 class Renderer {
 public:
-    void Render();
-
-private:
-    std::vector<Object> objects;
+    void Render(MeshManager& meshManager);
+    void DrawCall(Mesh<GLfloat> mesh);
 };
 
 }

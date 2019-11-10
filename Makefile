@@ -36,7 +36,7 @@ all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
-		Engine.exe 
+		MeshManager.o Renderer.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -85,6 +85,18 @@ Engine.o : $(src_engine_graphics_core_path)Engine.cpp
     $(compiler_options_out)Engine.o \
     $(compiler_options_include) \
     $(src_engine_graphics_core_path)Engine.cpp"   
+Renderer.o : $(src_engine_graphics_core_path)Renderer.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Renderer.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)Renderer.cpp"   
+MeshManager.o : $(src_engine_graphics_core_path)MeshManager.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)MeshManager.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)MeshManager.cpp"   
 GLFunctions.o : $(src_engine_graphics_gl_path)GLFunctions.cpp
     "$(compiler) \
     $(compiler_options) \
