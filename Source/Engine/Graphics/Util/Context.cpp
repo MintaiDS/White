@@ -59,7 +59,7 @@ void Context::RegisterWindowClass() {
 
 void Context::CreateContextWindow() {
     hWnd = CreateWindowExW(0, L"Context", L"White Engine",
-                           WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_VISIBLE,
+                           WS_OVERLAPPEDWINDOW | WS_VISIBLE,
                            100, 100,  
                            500, 500, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
@@ -172,12 +172,7 @@ void Context::SetupDemo() {
     Disk<GLfloat> disk(0.4);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 360 * 60);
-    std::ofstream file("log.txt");
-    file << mesh.vertices.size() << std::endl;
-    file << mesh.indices.size() << std::endl;
-    file.close();
-
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
     VertexArrayObject vertexArray;
     vertexArray.Create();
     vertexArray.Bind();
@@ -261,7 +256,7 @@ void Context::Render() {
     Disk<GLfloat> disk(0.4);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 360 * 60);
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
     glDrawElements(GL_TRIANGLES, mesh.indices.size(), 
                    GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));

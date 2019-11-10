@@ -44,10 +44,6 @@ Mesh<GLfloat, U> Disk<GLfloat, U>::ToMesh(
         ret.indices.push_back(i + 1);
         ret.indices.push_back(i);
     }
-    std::ofstream file("log-call.txt");
-    file << "disk" << std::endl;
-    file << ret.indices.size();
-    file.close();
    
     return ret;
 }
