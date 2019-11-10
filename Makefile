@@ -25,7 +25,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_util_path) \
                            /I $(src_engine_graphics_core_path) \
                            /I $(src_engine_graphics_gl_path) \
-						   /I $(src_engine_graphics_drawing_path) \
+                           /I $(src_engine_graphics_drawing_path) \
                            /I $(src_engine_graphics_shader_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
@@ -36,7 +36,7 @@ all : engine
 engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
-		MeshManager.o MeshLoader.o Renderer.o Engine.exe 
+        MeshManager.o MeshLoader.o Renderer.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
