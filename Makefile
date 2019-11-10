@@ -33,7 +33,7 @@ linker_options_out = -out:$(bin_path)
 obj_files = $(obj_path)*.o
 lib_files = Gdi32.lib User32.lib Opengl32.lib
 all : engine
-engine: Vector.o Math.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
+engine: Vector.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         Ellipse.o Rectangle.o Line.o Segment.o Circle.o Ring.o Disk.o Point.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
@@ -50,12 +50,6 @@ Vector.o : $(src_util_math_path)Vector.cpp
     $(compiler_options_out)Vector.o \
     $(compiler_options_include) \
     $(src_util_math_path)Vector.cpp"    
-Math.o : $(src_util_math_path)Math.cpp
-    "$(compiler) \
-    $(compiler_options) \
-    $(compiler_options_out)Math.o \
-    $(compiler_options_include) \
-    $(src_util_math_path)Math.cpp"    
 Ellipse.o : $(src_util_math_path)Ellipse.cpp
     "$(compiler) \
     $(compiler_options) \
