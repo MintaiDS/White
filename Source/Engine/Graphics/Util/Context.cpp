@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "MeshLoader.h"
 #include "Disk.h"
+#include "Ring.h"
 
 #include <random>
 #include <sstream>
@@ -169,10 +170,11 @@ void Context::SetupDemo() {
     //}
 
     //
-    Disk<GLfloat> disk(0.4);
+    //Disk<GLfloat> disk(0.4);
+    Ring<GLfloat> ring(0.4, 0.7);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
+    Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
     VertexArrayObject vertexArray;
     vertexArray.Create();
     vertexArray.Bind();
@@ -253,11 +255,18 @@ void Context::Render() {
     //MeshLoader meshLoader(mesh);
     //meshLoader.Import(L"Triangle.polygon");
     //mesh = meshLoader.mesh;
-    Disk<GLfloat> disk(0.4);
+    //Disk<GLfloat> disk(0.4);
+    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    //Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
+
+    Ring<GLfloat> ring(0.4, 0.7);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 360);
-    glDrawElements(GL_TRIANGLES, mesh.indices.size(), 
+    Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
+ 
+
+    glDrawElements(GL_TRIANGLES, 360 * 2 * 6, 
                    GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));
     Sleep(30);
