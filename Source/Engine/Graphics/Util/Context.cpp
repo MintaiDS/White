@@ -171,9 +171,10 @@ void Context::SetupDemo() {
     //
     Disk<GLfloat> disk(0.4);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 360 * 60);
     std::ofstream file("log.txt");
-    file << mesh.GetCount() << std::endl;
+    file << mesh.vertices.size() << std::endl;
     file << mesh.indices.size() << std::endl;
     file.close();
 
@@ -259,7 +260,8 @@ void Context::Render() {
     //mesh = meshLoader.mesh;
     Disk<GLfloat> disk(0.4);
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 360 * 60);
     glDrawElements(GL_TRIANGLES, mesh.indices.size(), 
                    GL_UNSIGNED_INT, (const GLvoid*)nullptr);
     SwapBuffers(GetDC(hWnd));

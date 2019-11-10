@@ -37,13 +37,19 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         Ellipse.o Rectangle.o Line.o Segment.o Circle.o Ring.o Disk.o Point.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
-        MeshManager.o MeshLoader.o Renderer.o Engine.exe 
+        MeshManager.o MeshLoader.o Shape.o Renderer.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
     $(compiler_options_out)Matrix.o \
     $(compiler_options_include) \
     $(src_util_math_path)Matrix.cpp"    
+Shape.o : $(src_util_math_path)Shape.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Shape.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Shape.cpp"    
 Common.o : $(src_util_math_path)Common.cpp
     "$(compiler) \
     $(compiler_options) \
