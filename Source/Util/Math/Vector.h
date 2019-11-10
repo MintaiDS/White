@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <initializer_list>
 
 namespace White {
 namespace Util {
@@ -15,6 +16,7 @@ struct Vector {
     Vector(std::size_t size, T* values);
     Vector(std::vector<T> values);
     Vector(const Vector<T>& other);
+    Vector(std::initializer_list<T> args);
 
     T operator[](std::size_t index) const;
     T& operator[](std::size_t index);
@@ -73,6 +75,18 @@ Vector<T>::Vector(const Vector<T>& other)
         , values(std::make_unique<T[]>(size)) {
     for (int i = 0; i < size; i++) {
         values[i] = other[i];
+    }
+}
+
+template<typename T>
+Vector<T>::Vector(std::initializer_list<T> args)
+        : size(args.size())
+        , values(std::make_unique<T[]>(size)) {
+    std::initializer_list<T>::iterator it; 
+    int i = 0;
+    for (it = args.begin(); it != args.end(); ++it) {
+        values[i] = *it;
+        ++i;
     }
 }
 

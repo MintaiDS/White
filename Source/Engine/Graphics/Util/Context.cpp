@@ -4,8 +4,14 @@
 #include "VertexArrayObject.h"
 #include "Program.h"
 #include "BufferObject.h"
+#include "VertexAttribute.h"
+#include "VertexData.h"
+#include "Mesh.h"
 
 #include <random>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 #include <gl/gl.h>
 #include <gl/glext.h>
@@ -114,19 +120,47 @@ void Context::SetupDemo() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
-    GLfloat vertices[3][4] = {
-        {-0.5f, -0.5f, 0.0f, 1.0f},
-        {0.0f, 0.5f, 0.0f, 1.0f},
-        {0.5f, -0.5f, 0.0f, 1.0f}
+    Vector<GLfloat> positions[3] = {
+        {-0.5f, -0.5f, 0.1f, 1.0f},
+        {0.0f, 0.5f, 0.1f, 1.0f},
+        {0.5f, -0.5f, 0.1f, 1.0f}
+    }; 
+    Vector<GLfloat> colors[3] = {
+        {1.0f, 1.0f, 0.0f, 1.0f},
+        {1.0f, 1.0f, 0.0f, 1.0f},
+        {1.0f, 1.0f, 0.0f, 1.0f}
+    }; 
+    VertexAttribute<GLfloat> attributes[3][2] = {
+        {positions[0], colors[0]},
+        {positions[1], colors[1]},
+        {positions[2], colors[2]}
+    };
+    std::vector<VertexData<GLfloat>> verts;
+    for (int i = 0; i < 3; i++) {
+        std::vector<VertexAttribute<GLfloat>> attribs;
+        attribs.push_back(attributes[i][0]);
+        attribs.push_back(attributes[i][1]);
+        VertexData<GLfloat> data(attribs);
+        verts.push_back(data);
+    } 
+    Mesh<GLfloat> mesh(verts);
+    GLfloat* ptr = mesh.GetRawData();
+    //std::ofstream out("log.txt");
+    //for (int i = 0; i < 3; i++) {
+    //    for (int j = 0; j < 8; j++) {
+    //        out << ptr[i][j] << " ";
+    //    }
+    //    out << std::endl;
+    //}
+    //out.close();
+    GLfloat vertices[3][8] = {
+        {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+        {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+        {0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f}
     };
     GLuint surface[3] = {
         0, 1, 2
     };
-    GLuint ids[3];
-    //glGenVertexArrays(1, &ids[0]); 
-    //;
-    //    //glBindVertexArray(ids[0]);
-    //    //glGenBuffers(1, &ids[1]);
     VertexArrayObject vertexArray;
     vertexArray.Create();
     vertexArray.Bind();
@@ -136,12 +170,21 @@ void Context::SetupDemo() {
     elementArrayBuffer.Create();
     arrayBuffer.Bind(GL_ARRAY_BUFFER);
     elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
-    arrayBuffer.SetData(sizeof(GLfloat) * 12, nullptr, GL_STATIC_DRAW);
-    elementArrayBuffer.SetData(sizeof(GLuint) * 3, nullptr, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    arrayBuffer.SetData(mesh.GetSize(), 
+                        nullptr, 
+                        GL_STATIC_DRAW);
+    elementArrayBuffer.SetData(sizeof(GLuint) * 3, 
+                               nullptr, 
+                               GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 
+                          sizeof(GLfloat) * 4 * 2, reinterpret_cast<const GLvoid*>(0));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 
+                          sizeof(GLfloat) * 4 * 2, 
+                          reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
     glEnableVertexAttribArray(0);
-    arrayBuffer.SetSubData(0, sizeof(GLfloat) * 12, 
-                           reinterpret_cast<const GLvoid*>(vertices));
+    glEnableVertexAttribArray(1);
+    arrayBuffer.SetSubData(0, mesh.GetSize(), 
+                           reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
     elementArrayBuffer.SetSubData(0, sizeof(GLuint) * 3,
                                   reinterpret_cast<const GLvoid*>(surface));
     //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
@@ -196,7 +239,7 @@ void Context::Render() {
 }
 
 LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
-                                            WPARAM wParam, LPARAM lParam) {   
+                                             WPARAM wParam, LPARAM lParam) {   
     HDC hdc;
     HGLRC hglrc; 
 
@@ -204,7 +247,6 @@ LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
     case WM_PAINT:
         break;
     case WM_CREATE:
-        MessageBoxW(NULL, L"On canvas create", NULL, MB_OK);
         break;
     case WM_SIZE:
         Update();

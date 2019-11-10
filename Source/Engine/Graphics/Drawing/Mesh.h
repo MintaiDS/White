@@ -20,11 +20,11 @@ public:
     ~Mesh();
 
     std::size_t GetSize() const;
-    const GLvoid* GetRawData();
+    T* GetRawData();
 
 private:
     std::vector<VertexData<T>> vertices;
-    T** rawData;
+    T* rawData;
 };
 
 template<typename T>
@@ -47,12 +47,7 @@ Mesh<T>::Mesh(const std::size_t size, const VertexData<T>* vertices)
 
 template<typename T>
 Mesh<T>::~Mesh() {
-    if (rawData) {
-        for (int i = 0; i < vertices.size(); i++) {
-            delete[] rawData[i];
-        }
-        delete[] rawData;
-    }
+    delete[] rawData;
 }
 
 template<typename T>
@@ -61,24 +56,23 @@ std::size_t Mesh<T>::GetSize() const {
 }
 
 template<typename T>
-const GLvoid* Mesh<T>::GetRawData() {
+T* Mesh<T>::GetRawData() {
     if (!rawData) {
-        rawData = new T*[vertices.size()];
+        rawData = new T[vertices.size() * vertices[0].GetCount()];
         int row = 0;
         for (auto& vertex : vertices) {
             int column = 0;
-            rawData[row] = new T[vertex.GetCount()];
             for (auto& attribute : vertex.attributes) {
                 std::copy(attribute.GetRawData(), 
                           attribute.GetRawData() + attribute.GetCount(),
-                          &rawData[0][0] + row * vertex.GetCount() + column); 
+                          rawData + row * vertex.GetCount() + column); 
                 column += attribute.GetCount();
             }
             row++;
         }
     }
 
-    return reinterpret_cast<const GLvoid*>(rawData);
+    return rawData;
 }
 
 }

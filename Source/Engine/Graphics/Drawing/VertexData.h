@@ -10,11 +10,17 @@ namespace Graphics {
 
 template<typename T>
 struct VertexData {
+    VertexData(const std::vector<VertexAttribute<T>>& attributes);
+
     std::size_t GetSize() const;
     std::size_t GetCount() const;
 
     std::vector<VertexAttribute<T>> attributes;
 };
+
+template<typename T>
+VertexData<T>::VertexData(const std::vector<VertexAttribute<T>>& attributes) 
+        : attributes(attributes) {}
 
 template<typename T>
 std::size_t VertexData<T>::GetSize() const {
