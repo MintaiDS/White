@@ -12,24 +12,24 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-template<typename T>
+template<typename T, typename U = unsigned>
 class Mesh {
 public:
     Mesh();
-    Mesh(const Mesh<T>& other);
+    Mesh(const Mesh<T, U>& other);
     Mesh(const std::vector<VertexData<T>>& vertices);
     Mesh(const std::size_t size, const VertexData<T>* vertices);
     ~Mesh();
 
-    static Mesh<T> CreateFromShape(const Util::Math::Ellipse<T>& ellipse, 
-                                   const Vector<T>& color, int verticesCnt);
-    static Mesh<T> CreateFromShape(const Disk<T>& disk, 
-                                   const Vector<T>& color, int verticesCnt);
-    static Mesh<T> CreateFromShape(const Ring<T>& ring, 
-                                   const Vector<T>& color, int verticesCnt);
-    static Mesh<T> CreateFromShape(
+    static Mesh<T, U> CreateFromShape(const Util::Math::Ellipse<T>& ellipse, 
+                                      const Vector<T>& color, int verticesCnt);
+    static Mesh<T, U> CreateFromShape(const Disk<T>& disk, 
+                                      const Vector<T>& color, int verticesCnt);
+    static Mesh<T, U> CreateFromShape(const Ring<T>& ring, 
+                                      const Vector<T>& color, int verticesCnt);
+    static Mesh<T, U> CreateFromShape(
             const Util::Math::Rectangle<T>& rectangle, const Vector<T>& color);
-    static Mesh<T> CreateFromShape(
+    static Mesh<T, U> CreateFromShape(
                         const Segment<T>& segment, const Vector<T>& color);
 
     std::size_t GetSize() const;
@@ -37,41 +37,44 @@ public:
     T* GetRawData();
 
     std::vector<VertexData<T>> vertices;
+    std::vector<U> indices;
 
-private:
+protected:
         T* rawData;
 };
 
-template<typename T>
-Mesh<T>::Mesh() : rawData(nullptr) {}
+template<typename T, typename U = unsigned>
+Mesh<T, U>::Mesh() : rawData(nullptr) {}
 
-template<typename T>
-Mesh<T>::Mesh(const Mesh<T>& other) 
+template<typename T, typename U = unsigned>
+Mesh<T, U>::Mesh(const Mesh<T, U>& other) 
         : vertices(other.vertices)
         , rawData(nullptr) {}
 
-template<typename T>
-Mesh<T>::Mesh(const std::vector<VertexData<T>>& vertices) 
+template<typename T, typename U = unsigned>
+Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices) 
         : vertices(vertices)
         , rawData(nullptr) {}
 
-template<typename T>
-Mesh<T>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
+template<typename T, typename U = unsigned>
+Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
         : rawData(nullptr) {
     for (int i = 0; i < size; i++) {
         this->vertices.push_back(vertices[i]);
     }
 }
 
-template<typename T>
-Mesh<T>::~Mesh() {
+template<typename T, typename U = unsigned>
+Mesh<T, U>::~Mesh() {
     delete[] rawData;
 }
 
-template<typename T>
-Mesh<T> Mesh<T>::CreateFromShape(const Util::Math::Ellipse<T>& ellipse, 
-                                 const Vector<T>& color, int verticesCnt) {
-    Util::Math::Polygon<T> polygon = Util::Math::Polygon::CreateFromShape(ellipse, verticesCnt);
+template<typename T, typename U = unsigned>
+Mesh<T, U> Mesh<T, U>::CreateFromShape(
+                                    const Util::Math::Ellipse<T>& ellipse, 
+                                    const Vector<T>& color, int verticesCnt) {
+    Util::Math::Polygon<T> polygon 
+        = Util::Math::Polygon::CreateFromShape(ellipse, verticesCnt);
     std::vector<VertexData<T>> vertices;
     for (int i = 0; i < polygon.vertices.size(); i++) {
         VertexData<T> vertex;
@@ -82,14 +85,15 @@ Mesh<T> Mesh<T>::CreateFromShape(const Util::Math::Ellipse<T>& ellipse,
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T> ret(vertices);
+    Mesh<T, U> ret(vertices);
 
     return ret;
 }
 
-template<typename T>
-Mesh<T> Mesh<T>::CreateFromShape(const Disk<T>& disk, 
-                                 const Vector<T>& color, int verticesCnt) {
+template<typename T, typename U = unsigned>
+Mesh<T, U> Mesh<T, U>::CreateFromShape(
+                                    const Disk<T>& disk, 
+                                    const Vector<T>& color, int verticesCnt) {
     Polygon<T> polygon = Polygon::CreateFromShape(disk, verticesCnt);
     std::vector<VertexData<T>> vertices;
     vertices.push_back({{0, 0, 0, 1}, color});
@@ -102,14 +106,20 @@ Mesh<T> Mesh<T>::CreateFromShape(const Disk<T>& disk,
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T> ret(vertices);
+    Mesh<T, U> ret(vertices);
+    for (int i = 1; i < polygon.vertices.size(); i++) {
+        ret.indices.push_back(0);
+        ret.indices.push_back(i + 1);
+        ret.indices.push_back(i);
+    }
    
     return ret;
 }
 
-template<typename T>
-Mesh<T> Mesh<T>::CreateFromShape(const Ring<T>& ring, 
-                                 const Vector<T>& color, int verticesCnt) {
+template<typename T, typename U = unsigned>
+Mesh<T, U> Mesh<T, U>::CreateFromShape(
+                                    const Ring<T>& ring, 
+                                    const Vector<T>& color, int verticesCnt) {
     Polygon<T> polygon = Polygon::CreateFromShape(ring, verticesCnt);
     std::vector<VertexData<T>> vertices; 
     for (int i = 0; i < polygon.vertices.size(); i++) {
@@ -121,13 +131,13 @@ Mesh<T> Mesh<T>::CreateFromShape(const Ring<T>& ring,
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T> ret(vertices);
+    Mesh<T, U> ret(vertices);
 
     return ret;
 }
 
-template<typename T>
-Mesh<T> Mesh<T>::CreateFromShape(
+template<typename T, typename U = unsigned>
+Mesh<T, U> Mesh<T, U>::CreateFromShape(
         const Util::Math::Rectangle<T>& rectangle, const Vector<T>& color) {
     Polygon<T> polygon = Polygon::CreateFromShape(rectangle);
     std::vector<VertexData<T>> vertices; 
@@ -140,32 +150,32 @@ Mesh<T> Mesh<T>::CreateFromShape(
         vertex.attributes.push_back(color);
         vertices.push_back(vertex);
     }
-    Mesh<T> ret(vertices);
+    Mesh<T, U> ret(vertices);
  
     return ret;
 }
 
-template<typename T>
-Mesh<T> Mesh<T>::CreateFromShape(
+template<typename T, typename U = unsigned>
+Mesh<T, U> Mesh<T, U>::CreateFromShape(
                         const Segment<T>& segment, const Vector<T>& color) {
     std::vector<VertexData<T>> vertices;    
-    Mesh<T> ret(vertices);
+    Mesh<T, U> ret(vertices);
 
     return ret;
 }
 
-template<typename T>
-std::size_t Mesh<T>::GetSize() const {
+template<typename T, typename U = unsigned>
+std::size_t Mesh<T, U>::GetSize() const {
     return vertices.size() * vertices[0].GetSize();
 }
 
-template<typename T>
-std::size_t Mesh<T>::GetCount() const {
+template<typename T, typename U = unsigned>
+std::size_t Mesh<T, U>::GetCount() const {
     return vertices.size() * vertices[0].GetCount();
 }
 
-template<typename T>
-T* Mesh<T>::GetRawData() {
+template<typename T, typename U = unsigned>
+T* Mesh<T, U>::GetRawData() {
     if (!rawData) {
         rawData = new T[vertices.size() * vertices[0].GetCount()];
         int row = 0;
