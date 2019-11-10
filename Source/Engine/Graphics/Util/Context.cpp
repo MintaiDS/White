@@ -144,15 +144,7 @@ void Context::SetupDemo() {
         verts.push_back(data);
     } 
     Mesh<GLfloat> mesh(verts);
-    GLfloat* ptr = mesh.GetRawData();
-    //std::ofstream out("log.txt");
-    //for (int i = 0; i < 3; i++) {
-    //    for (int j = 0; j < 8; j++) {
-    //        out << ptr[i][j] << " ";
-    //    }
-    //    out << std::endl;
-    //}
-    //out.close();
+    GLfloat* ptr = mesh.GetRawData(); 
     GLfloat vertices[3][8] = {
         {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
         {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
