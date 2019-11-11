@@ -26,9 +26,9 @@ void Renderer::Render() {
     DrawCall(indicesCnt);
 }
 
-void Renderer::DrawCall(int indicesCnt) {
+void Renderer::DrawCall(int indicesCnt, int skip) {
     glDrawElements(GL_TRIANGLES, indicesCnt, 
-                GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(nullptr)); 
+                GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(skip)); 
 }
 
 void Renderer::UpdateData(Mesh<GLfloat> mesh) { 
@@ -37,10 +37,8 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     GLint prevCnt = prevSize / sizeof(GLfloat); 
     GLint newCnt = prevCnt + (newSize - prevSize) / sizeof(GLfloat);
     GLfloat* newArrayData = mesh.GetRawData();
-    //GLfloat* oldArrayData = nullptr;
     std::unique_ptr<GLfloat[]> oldArrayData
         = std::make_unique<GLfloat[]>(prevCnt);
-    //oldArrayData = new GLfloat[prevCnt];
     arrayBuffer.GetSubData(0, prevSize, 
                            reinterpret_cast<GLvoid*>(oldArrayData.get()));
     arrayBuffer.SetData(newSize, 
@@ -81,9 +79,6 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
                         reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-     
-    //delete[] oldArrayData;
-    //delete[] oldElementArrayData;     
 }
 
 void Renderer::AddMesh(Mesh<GLfloat> mesh) {
