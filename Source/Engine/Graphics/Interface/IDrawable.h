@@ -4,7 +4,7 @@
 
 namespace White {
 namespace Engine {
-namespace Math {
+namespace Graphics {
 
 template<typename T>
 struct IDrawable {
