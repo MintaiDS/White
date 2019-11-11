@@ -55,14 +55,9 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     newCnt = prevCnt + (newSize - prevSize) / sizeof(GLuint);
     GLuint* newElementArrayData = mesh.GetRawIndices();
 
-    std::ofstream file("out.txt", std::ios::app);
     for (int i = 0; i < mesh.indices.size(); i++) {
         newElementArrayData[i] += prevArrayCnt;
-        file << newElementArrayData[i] << " ";
     }
-    file << std::endl;
-    file << "prev: " << prevArrayCnt << std::endl;
-    file.close();
     GLuint* oldElementArrayData = new GLuint[prevCnt];
     elementArrayBuffer.GetSubData(0, prevSize, 
                     reinterpret_cast<GLvoid*>(oldElementArrayData));
