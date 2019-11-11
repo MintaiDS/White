@@ -31,6 +31,7 @@ struct Matrix {
     Matrix Inversed() const;
     Matrix& Inverse();
     T Determinant() const;
+    T Minor() const;
     T Minor(const std::size_t row, const std::size_t column) const;
     Vector<T> operator[](std::size_t index) const;
     Vector<T>& operator[](std::size_t index);
@@ -49,9 +50,6 @@ struct Matrix {
     Vector<T> Row(const std::size_t row) const;
     Vector<T> Column(const std::size_t column) const;
     Vector<T>& Row(const std::size_t row);
-
-    T Determinant() const;
-    T Minor() const;
 
     std::size_t rows;
     std::size_t columns;
@@ -184,9 +182,6 @@ Matrix<T> Matrix<T>::Scale(const Vector<T>& scale) {
 }
 
 template<typename T>
-
-
-template<typename T>
 Matrix<T>& Matrix<T>::RemoveRow(const std::size_t row) {
     std::unique_ptr<Vector<T>[]> newValues;
     newValues.reset(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows - 1));
@@ -237,7 +232,7 @@ Matrix<T>& Matrix<T>::Inverse() {
 }
 
 template<typename T>
-T Matrix<T>::Determinant() {
+T Matrix<T>::Determinant() const {
     if (rows == 1) {
         return values[0][0];
     }
