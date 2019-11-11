@@ -25,6 +25,10 @@ public:
     std::size_t GetSize() const;
     std::size_t GetCount() const;
 
+    Matrix<T> GetRotation() const;
+    Matrix<T> GetScaling() const;
+    Matrix<T> GetTranslation() const;
+
     void Rotate(const Vector<T>& rotation);
     void Scale(const Vector<T>& scaling);
     void Translate(const Vector<T>& translation);
@@ -109,6 +113,36 @@ std::size_t Mesh<T, U>::GetSize() const {
 template<typename T, typename U = unsigned>
 std::size_t Mesh<T, U>::GetCount() const {
     return vertices.size() * vertices[0].GetCount();
+}
+
+template<typename T, typename U = unsigned>
+Matrix<T> Mesh<T, U>::GetRotation() const {
+    return Matrix::Rotation(rotation);
+}
+
+template<typename T, typename U = unsigned>
+Matrix<T> Mesh<T, U>::GetScaling() const {
+    return Matrix::Scaling(scaling);
+}
+
+template<typename T, typename U = unsigned>
+Matrix<T> Mesh<T, U>::GetTranslation() const {
+    return Matrix::Translation(translation);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::Rotate( Vector<T>& rotation) {
+    this->rotation += rotation; 
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::Scale( Vector<T>& scaling) {
+    this->scaling += scaling;
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::Translate(Vector<T>& translation) {
+    this->translation += translation;
 }
 
 template<typename T, typename U = unsigned>

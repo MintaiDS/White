@@ -19,11 +19,19 @@ struct Matrix {
     Matrix(const Matrix<T>& other);
     Matrix(std::initializer_list<Vector<T>> args);
 
-    static Matrix<T> Identity(std::size_t dimension);
-    static Matrix<T> Diagonal(const Vector<T>& diagonal);
-    static Matrix<T> Rotation(const Vector<T>& rotation);
-    static Matrix<T> Translation(const Vector<T>& translation);
-    static Matrix<T> Scale(const Vector<T>& scale);
+    static Matrix Identity(std::size_t dimension);
+    static Matrix Diagonal(const Vector<T>& diagonal);
+    static Matrix Rotation(const Vector<T>& rotation);
+    static Matrix Translation(const Vector<T>& translation);
+    static Matrix Scale(const Vector<T>& scale);
+    
+    Matrix& Transpose();
+    Matrix& RemoveRow(const std::size_t row);
+    Matrix& RemoveColumn(const std::size_t column);
+    Matrix Inversed() const;
+    Matrix& Inverse();
+    T Determinant() const;
+    T Minor(const std::size_t row, const std::size_t column) const;
     Vector<T> operator[](std::size_t index) const;
     Vector<T>& operator[](std::size_t index);
     Matrix& operator+=(const Matrix<T>& other);
@@ -44,7 +52,6 @@ struct Matrix {
 
     T Determinant() const;
     T Minor() const;
-
 
     std::size_t rows;
     std::size_t columns;
@@ -171,9 +178,90 @@ Matrix<T> Matrix<T>::Translation(const Vector<T>& translation) {
 
 template<typename T>
 Matrix<T> Matrix<T>::Scale(const Vector<T>& scale) {
-    Matrix<T> ret = Diagonal(scale);
+    Matrix<T> diag = Diagonal(scale);
 
     return ret;
+}
+
+template<typename T>
+
+
+template<typename T>
+Matrix<T>& Matrix<T>::RemoveRow(const std::size_t row) {
+    std::unique_ptr<Vector<T>[]> newValues;
+    newValues.reset(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows - 1));
+    for (auto& row : newValues) {
+        row = std::make_unique<Vector>(columns);
+    }
+    for (int i = 0; i < row; i++) {
+        newValues[i] = values[i];
+    }
+    for (int i = row; i < rows - 1; i++) {
+        newValues[i] = values[i + 1];
+    }
+    values.reset(newValues); 
+
+    return *this;    
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::RemoveColumn(const std::size_t column) {
+    std::unique_ptr<Vector<T>[]> newValues;
+    newValues.reset(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows));
+    for (auto& row : newValues) {
+        row = std::make_unique<Vector>(columns - 1);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < column; j++) {
+            newValues[i][j] = values[i][j];
+        }
+        for (int j = column; j < columns - 1; j++) {
+            newValues[i][j] = values[i][j + 1];
+        }
+    } 
+    values.reset(newValues); 
+
+    return *this;    
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::Inversed() const {
+    Matrix<T> ret(*this);
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::Inverse() {
+    return *this;
+}
+
+template<typename T>
+T Matrix<T>::Determinant() {
+    if (rows == 1) {
+        return values[0][0];
+    }
+
+    T ret = 0;
+    T multiplier = 1;
+    Matrix<T> cur(*this);
+    for (int i = 0; i < columns; i++) {
+        Matrix<T> minor(cur);
+        minor.RemoveRow(0);
+        minor.RemoveColumn(i);
+        ret += cur[0][i] * multiplier * minor.Determinant();
+    }
+
+    return ret;
+}
+
+template<typename T>
+T Matrix<T>::Minor(const std::size_t row, const std::size_t column) const {
+    Matrix<T> minor(*this);
+    minor.RemoveRow(row);
+    minor.RemoveColumn(column);
+
+    return minor.Determinant();  
 }
 
 template<typename T>
