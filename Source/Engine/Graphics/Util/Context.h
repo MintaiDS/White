@@ -12,7 +12,7 @@ namespace Graphics {
 
 class Context : public Window {
 public:
-    Context(Core& core);
+    Context();
     ~Context();
 
     void Init();
@@ -21,11 +21,11 @@ public:
     void CreateContextWindow();
     void SetPixelFormatDescriptor();
     void Create();
-    void SetupDemo();
+    void SetupDemo(Core& core);
     void Show();
     void Update();
     void Destroy();
-    void Loop();
+    void Loop(Core& core);
     void Render();
 
     virtual LRESULT CALLBACK WindowProcCallback(HWND hWnd, UINT uMsg, 
@@ -33,7 +33,6 @@ public:
 
 protected:
     PIXELFORMATDESCRIPTOR pfd;
-    Core& core;
 };
 
 }

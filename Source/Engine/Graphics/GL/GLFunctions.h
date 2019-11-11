@@ -68,6 +68,10 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERIVPROC,
                         glGetShaderiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMIVPROC, 
                         glGetProgramiv);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETBUFFERSUBDATAPROC, 
+                        glGetBufferSubData);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETBUFFERPARAMETERIVPROC,
+                        glGetBufferParameteriv);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

@@ -26,7 +26,7 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-Context::Context(Core& core) : core(core) {}
+Context::Context() {}
 
 Context::~Context() {
     UnregisterClassW(L"Context", GetModuleHandleW(NULL));
@@ -38,7 +38,6 @@ void Context::Init() {
     CreateContextWindow();
     SetPixelFormatDescriptor();
     Create();
-    SetupDemo();
 }
 
 void Context::CreateWindowClass() {
@@ -104,7 +103,7 @@ void Context::Create() {
     LoadFunctions();
 }
 
-void Context::SetupDemo() {
+void Context::SetupDemo(Core& core) {
     Program program;
     Shader shader(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";
@@ -124,89 +123,54 @@ void Context::SetupDemo() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW);
-    //Vector<GLfloat> positions[3] = {
-    //    {-0.5f, -0.5f, 0.1f, 1.0f},
-    //    {0.0f, 0.5f, 0.1f, 1.0f},
-    //    {0.5f, -0.5f, 0.1f, 1.0f}
-    //}; 
-    //Vector<GLfloat> colors[3] = {
-    //    {1.0f, 1.0f, 0.0f, 1.0f},
-    //    {1.0f, 1.0f, 0.0f, 1.0f},
-    //    {1.0f, 1.0f, 0.0f, 1.0f}
-    //}; 
-    //VertexAttribute<GLfloat> attributes[3][2] = {
-    //    {positions[0], colors[0]},
-    //    {positions[1], colors[1]},
-    //    {positions[2], colors[2]}
-    //};
-    //std::vector<VertexData<GLfloat>> verts;
-    //for (int i = 0; i < 3; i++) {
-    //    std::vector<VertexAttribute<GLfloat>> attribs;
-    //    attribs.push_back(attributes[i][0]);
-    //    attribs.push_back(attributes[i][1]);
-    //    VertexData<GLfloat> data(attribs);
-    //    verts.push_back(data);
-    //} 
-    ////Mesh<GLfloat> mesh(verts);
-    //Mesh<GLfloat> mesh;
-    //MeshLoader meshLoader(mesh);
-    ////meshLoader.Export(L"Triangle.polygon", mesh);
-    //meshLoader.Import(L"Triangle.polygon");
-    //mesh = meshLoader.mesh;
-
-    //GLfloat* ptr = mesh.GetRawData(); 
-    //GLfloat vertices[3][8] = {
-    //    {-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-    //    {0.0f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-    //    {0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f}
-    //};
-
-    ////GLuint surface[3] = {
-    ////    0, 1, 2
-    ////};
-    //std::unique_ptr<GLuint[]> surface 
-    //    = std::make_unique<GLuint[]>(mesh.vertices.size());
-    //for (int i = 0; i < mesh.vertices.size(); i++) {
-    //    surface[i] = i;
-    //}
-
-    //
-    //Disk<GLfloat> disk(0.4);
-    Ring<GLfloat> ring(0.4, 0.7);
+    glFrontFace(GL_CCW); 
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Mesh<GLfloat> mesh = Mesh<GLfloat>::CreateFromShape(disk, color, 360);
-    Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
-    VertexArrayObject vertexArray;
-    vertexArray.Create();
-    vertexArray.Bind();
-    BufferObject arrayBuffer;
-    BufferObject elementArrayBuffer;
-    arrayBuffer.Create();
-    elementArrayBuffer.Create();
-    arrayBuffer.Bind(GL_ARRAY_BUFFER);
-    elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
-    arrayBuffer.SetData(mesh.GetSize(), 
-                        nullptr, 
-                        GL_STATIC_DRAW);
-    elementArrayBuffer.SetData(sizeof(GLuint) * mesh.indices.size(), 
-                               nullptr, 
-                               GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, 
-                          GL_FLOAT, GL_FALSE, 
-                          sizeof(GLfloat) * 4 * 2, 
-                          reinterpret_cast<const GLvoid*>(0));
-    glVertexAttribPointer(1, 4, 
-                          GL_FLOAT, GL_FALSE, 
-                          sizeof(GLfloat) * 4 * 2, 
-                          reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    arrayBuffer.SetSubData(0, mesh.GetSize(), 
-                           reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
-    elementArrayBuffer.SetSubData(
-                        0, mesh.indices.size() * sizeof(GLuint),
-                        reinterpret_cast<const GLvoid*>(mesh.GetRawIndices()));
+    Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
+    Disk<GLfloat> disk(0.2);
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
+    core.renderer.AddMesh(mesh);
+    Ring<GLfloat> ring(0.1, 0.28);
+    mesh = ring.ToMesh(colorBorder, 720);
+    core.renderer.AddMesh(mesh);
+
+    //mesh = ring1.ToMesh(color, 720);
+    //core.renderer.AddMesh(mesh);
+
+
+    
+    //Ring<GLfloat> ring(0.4, 0.7);
+    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    //Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
+    //VertexArrayObject vertexArray;
+    //vertexArray.Create();
+    //vertexArray.Bind();
+    //BufferObject arrayBuffer;
+    //BufferObject elementArrayBuffer;
+    //arrayBuffer.Create();
+    //elementArrayBuffer.Create();
+    //arrayBuffer.Bind(GL_ARRAY_BUFFER);
+    //elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
+    //arrayBuffer.SetData(mesh.GetSize(), 
+    //                    nullptr, 
+    //                    GL_STATIC_DRAW);
+    //elementArrayBuffer.SetData(sizeof(GLuint) * mesh.indices.size(), 
+    //                           nullptr, 
+    //                           GL_STATIC_DRAW);
+    //glVertexAttribPointer(0, 4, 
+    //                      GL_FLOAT, GL_FALSE, 
+    //                      sizeof(GLfloat) * 4 * 2, 
+    //                      reinterpret_cast<const GLvoid*>(0));
+    //glVertexAttribPointer(1, 4, 
+    //                      GL_FLOAT, GL_FALSE, 
+    //                      sizeof(GLfloat) * 4 * 2, 
+    //                      reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
+    //glEnableVertexAttribArray(0);
+    //glEnableVertexAttribArray(1);
+    //arrayBuffer.SetSubData(0, mesh.GetSize(), 
+    //                       reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
+    //elementArrayBuffer.SetSubData(
+    //                    0, mesh.indices.size() * sizeof(GLuint),
+    //                    reinterpret_cast<const GLvoid*>(mesh.GetRawIndices()));
     //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
     //glBufferData(GL_ARRAY_BUFFER, 
     //             sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
@@ -223,7 +187,7 @@ void Context::SetupDemo() {
 }
 
 void Context::Show() {
-    ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+    //ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 }
 
 void Context::Update() {
@@ -234,7 +198,7 @@ void Context::Destroy() {
     DestroyWindow(hWnd);
 }
 
-void Context::Loop() {
+void Context::Loop(Core& core) {
     while (true) { 
         MSG msg;
         while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) == TRUE) { 
@@ -247,7 +211,7 @@ void Context::Loop() {
         } 
         core.renderer.Render();
         SwapBuffers(GetDC(hWnd));
-        Sleep(50);
+        Sleep(150);
     }  
 }
 

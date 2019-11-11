@@ -1,6 +1,8 @@
 #pragma once
 
-#include "MeshManager.h"
+#include "BufferObject.h"
+#include "VertexArrayObject.h"
+#include "Mesh.h"
 
 namespace White {
 namespace Engine {
@@ -8,13 +10,19 @@ namespace Graphics {
 
 class Renderer {
 public:
-    Renderer(MeshManager& meshManager);
+    Renderer();
 
     void Render();
-    void DrawCall(Mesh<GLfloat> mesh);
+    void DrawCall(int indicesCnt);
+    void UpdateData(Mesh<GLfloat> mesh);
+    void AddMesh(Mesh<GLfloat> mesh);
 
-private:
-    MeshManager& meshManager;
+protected:
+    std::vector<Mesh<GLfloat>> list;
+    int indicesCnt;
+    BufferObject arrayBuffer;
+    BufferObject elementArrayBuffer;
+    VertexArrayObject vertexArray;
 };
 
 }

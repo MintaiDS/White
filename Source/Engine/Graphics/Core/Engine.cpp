@@ -5,12 +5,13 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
                     LPWSTR lpCmdLine, int nCmdShow) {  
-    White::Engine::Graphics::Core core;
-    White::Engine::Graphics::Context context(core); 
+    White::Engine::Graphics::Context context; 
     context.Init();
     context.Show();
     context.Update();
-    context.Loop();
+    White::Engine::Graphics::Core core;
+    context.SetupDemo(core);
+    context.Loop(core);
     context.Destroy();
   
     return 0;
