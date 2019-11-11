@@ -160,10 +160,20 @@ Matrix<T> Matrix<T>::Rotation(const Vector<T>& rotation) {
 
 template<typename T>
 Matrix<T> Matrix<T>::Translation(const Vector<T>& translation) {
-    Matrix<T> ret = Identity(translation.size);
+    Matrix<T> ret = Identity(translation.size + 1);
+    for (int i = 0; i < translation.size; i++) {
+        ret[i][translation.size] = translation[i];
+    } 
 
     return ret;
 
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::Scale(const Vector<T>& scale) {
+    Matrix<T> ret = Diagonal(scale);
+
+    return ret;
 }
 
 template<typename T>
