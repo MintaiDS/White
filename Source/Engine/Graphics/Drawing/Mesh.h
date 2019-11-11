@@ -23,6 +23,11 @@ public:
 
     std::size_t GetSize() const;
     std::size_t GetCount() const;
+
+    void Rotate(const Vector<T>& rotation);
+    void Scale(const Vector<T>& scaling);
+    void Translate(const Vector<T>& translation);
+
     T* GetRawData();
     U* GetRawIndices();
 
@@ -32,6 +37,9 @@ public:
 protected:
         T* rawData;
         U* rawIndices;
+        Vector<T> rotation;
+        Vector<T> scaling;
+        Vector<T> translation;
 };
 
 template<typename T, typename U = unsigned>

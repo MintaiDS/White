@@ -5,7 +5,6 @@
 
 using json = nlohmann::json;
 
-
 void Graph::AppendEdge(Edge* e) 
 {
   Vertex* v = GetVByIdx(e->GetFrom());
@@ -69,8 +68,8 @@ Graph* ParseGraphFromJSON(std::string filename)
 }
 
 
-int main()
-{
-  Graph* g = ParseGraphFromJSON("big_graph.json");
-  return 0;
-}
+//int main()
+//{
+//  Graph* g = ParseGraphFromJSON("big_graph.json");
+//  return 0;
+//}
