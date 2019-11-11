@@ -2,6 +2,8 @@
 
 #include "Vector.h"
 
+using namespace White::Util::Math;
+
 namespace White {
 namespace Engine {
 namespace Graphics {
@@ -14,13 +16,13 @@ struct IDrawable {
 };
 
 template<typename T>
-void IDrawable::Rotate(const Vector<T>& rotation) {}
+void IDrawable<T>::Rotate(const Vector<T>& rotation) {}
 
 template<typename T>
-void IDrawable::Scale(const Vector<T>& rotation) {}
+void IDrawable<T>::Scale(const Vector<T>& rotation) {}
 
 template<typename T>
-void IDrawable::Translate(const Vector<T>& rotation) {}
+void IDrawable<T>::Translate(const Vector<T>& rotation) {}
 
 }
 }

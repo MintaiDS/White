@@ -3,6 +3,7 @@
 #include "VertexData.h"
 #include "IDrawable.h"
 #include "Polygon.h"
+#include "Matrix.h"
 
 #include <windows.h>
 #include <gl/gl.h>
@@ -14,7 +15,7 @@ namespace Engine {
 namespace Graphics {
 
 template<typename T, typename U = unsigned>
-class Mesh : public IDrawable {
+class Mesh : public IDrawable<T> {
 public:
     Mesh();
     Mesh(const Mesh<T, U>& other);
@@ -131,17 +132,17 @@ Matrix<T> Mesh<T, U>::GetTranslation() const {
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Rotate( Vector<T>& rotation) {
+void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
     this->rotation += rotation; 
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Scale( Vector<T>& scaling) {
+void Mesh<T, U>::Scale(const Vector<T>& scaling) {
     this->scaling += scaling;
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Translate(Vector<T>& translation) {
+void Mesh<T, U>::Translate(const Vector<T>& translation) {
     this->translation += translation;
 }
 

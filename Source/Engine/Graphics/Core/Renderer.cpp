@@ -37,14 +37,16 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     GLint prevCnt = prevSize / sizeof(GLfloat); 
     GLint newCnt = prevCnt + (newSize - prevSize) / sizeof(GLfloat);
     GLfloat* newArrayData = mesh.GetRawData();
-    GLfloat* oldArrayData = nullptr;
-    oldArrayData = new GLfloat[prevCnt];
+    //GLfloat* oldArrayData = nullptr;
+    std::unique_ptr<GLfloat[]> oldArrayData
+        = std::make_unique<GLfloat[]>(prevCnt);
+    //oldArrayData = new GLfloat[prevCnt];
     arrayBuffer.GetSubData(0, prevSize, 
-                           reinterpret_cast<GLvoid*>(oldArrayData));
+                           reinterpret_cast<GLvoid*>(oldArrayData.get()));
     arrayBuffer.SetData(newSize, 
                     reinterpret_cast<const GLvoid*>(nullptr), GL_DYNAMIC_DRAW);
     arrayBuffer.SetSubData(0, prevSize, 
-                           reinterpret_cast<const GLvoid*>(oldArrayData));
+                        reinterpret_cast<const GLvoid*>(oldArrayData.get()));
     arrayBuffer.SetSubData(prevSize, (newSize - prevSize), 
                            reinterpret_cast<const GLvoid*>(newArrayData));
     GLint prevArrayCnt = prevCnt / 8;
@@ -54,17 +56,18 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     prevCnt = prevSize / sizeof(GLuint);
     newCnt = prevCnt + (newSize - prevSize) / sizeof(GLuint);
     GLuint* newElementArrayData = mesh.GetRawIndices();
-
     for (int i = 0; i < mesh.indices.size(); i++) {
         newElementArrayData[i] += prevArrayCnt;
     }
-    GLuint* oldElementArrayData = new GLuint[prevCnt];
+    //GLuint* oldElementArrayData = new GLuint[prevCnt];
+    std::unique_ptr<GLuint[]> oldElementArrayData 
+        = std::make_unique<GLuint[]>(prevCnt);
     elementArrayBuffer.GetSubData(0, prevSize, 
-                    reinterpret_cast<GLvoid*>(oldElementArrayData));
+                    reinterpret_cast<GLvoid*>(oldElementArrayData.get()));
     elementArrayBuffer.SetData(newSize, 
                 reinterpret_cast<const GLvoid*>(nullptr), GL_DYNAMIC_DRAW);
     elementArrayBuffer.SetSubData(0, prevSize,
-                    reinterpret_cast<const GLvoid*>(oldElementArrayData));
+                reinterpret_cast<const GLvoid*>(oldElementArrayData.get()));
     elementArrayBuffer.SetSubData(prevSize, (newSize - prevSize),
                     reinterpret_cast<const GLvoid*>(newElementArrayData));
 
@@ -73,14 +76,14 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
                           sizeof(GLfloat) * 4 * 2, 
                           reinterpret_cast<const GLvoid*>(0));
     glVertexAttribPointer(1, 4, 
-                          GL_FLOAT, GL_FALSE, 
-                          sizeof(GLfloat) * 4 * 2, 
-                          reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
+                        GL_FLOAT, GL_FALSE, 
+                        sizeof(GLfloat) * 4 * 2, 
+                        reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
      
-    delete[] oldArrayData;
-    delete[] oldElementArrayData;     
+    //delete[] oldArrayData;
+    //delete[] oldElementArrayData;     
 }
 
 void Renderer::AddMesh(Mesh<GLfloat> mesh) {

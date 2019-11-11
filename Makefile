@@ -15,6 +15,7 @@ src_engine_graphics_core_path = $(src_engine_graphics_path)Core/
 src_engine_graphics_gl_path = $(src_engine_graphics_path)GL/
 src_engine_graphics_shader_path = $(src_engine_graphics_path)Shader/
 src_engine_graphics_drawing_path = $(src_engine_graphics_path)Drawing/
+src_engine_graphics_interface_path = $(src_engine_graphics_path)Interface/
 cl_compiler = "cl.exe"
 compiler = $(cl_compiler)
 linker = "link.exe"
@@ -27,6 +28,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_gl_path) \
                            /I $(src_engine_graphics_drawing_path) \
                            /I $(src_engine_graphics_shader_path) \
+						   /I $(src_engine_graphics_interface_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
@@ -38,7 +40,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
-		Pipeline.o Engine.exe 
+		Pipeline.o IDrawable.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -51,6 +53,12 @@ Shape.o : $(src_util_math_path)Shape.cpp
     $(compiler_options_out)Shape.o \
     $(compiler_options_include) \
     $(src_util_math_path)Shape.cpp"    
+IDrawable.o : $(src_engine_graphics_interface_path)IDrawable.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)IDrawable.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_interface_path)IDrawable.cpp"
 Common.o : $(src_util_math_path)Common.cpp
     "$(compiler) \
     $(compiler_options) \
