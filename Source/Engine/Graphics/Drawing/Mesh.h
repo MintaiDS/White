@@ -49,24 +49,38 @@ protected:
 };
 
 template<typename T, typename U = unsigned>
-Mesh<T, U>::Mesh() : rawData(nullptr), rawIndices(nullptr) {}
+Mesh<T, U>::Mesh() 
+        : rawData(nullptr)
+        , rawIndices(nullptr)
+        , rotation({0, 0, 0})
+        , translation({0, 0, 0})
+        , scaling({1, 1, 1}) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const Mesh<T, U>& other) 
         : vertices(other.vertices)
         , indices(other.indices)
         , rawData(nullptr)
-        , rawIndices(nullptr) {}
+        , rawIndices(nullptr) 
+        , rotation({0, 0, 0})
+        , translation({0, 0, 0})
+        , scaling({1, 1, 1}) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices) 
         : vertices(vertices)
         , rawData(nullptr)
-        , rawIndices(nullptr) {}
+        , rawIndices(nullptr) 
+        , rotation({0, 0, 0})
+        , translation({0, 0, 0})
+        , scaling({1, 1, 1}) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
-        : rawData(nullptr) {
+        : rawData(nullptr) 
+        , rotation({0, 0, 0})
+        , translation({0, 0, 0})
+        , scaling({1, 1, 1}) {
     for (int i = 0; i < size; i++) {
         this->vertices.push_back(vertices[i]);
     }
