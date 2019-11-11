@@ -21,14 +21,17 @@ void Renderer::Render() {
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
     indicesCnt = 0;
     for (int i = 0; i < list.size(); i++) {
+        DrawCall(list[i].indices.size(), indicesCnt);
         indicesCnt += list[i].indices.size();
     }
-    DrawCall(indicesCnt);
+    //DrawCall(indicesCnt);
 }
 
 void Renderer::DrawCall(int indicesCnt, int skip) {
-    glDrawElements(GL_TRIANGLES, indicesCnt, 
-                GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(skip)); 
+    glDrawElements(GL_TRIANGLES, 
+                   indicesCnt, 
+                   GL_UNSIGNED_INT, 
+                   reinterpret_cast<const GLvoid*>(skip * sizeof(GLuint))); 
 }
 
 void Renderer::UpdateData(Mesh<GLfloat> mesh) { 
