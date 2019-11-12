@@ -33,9 +33,9 @@ public:
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
 
-    void Rotate(const Vector<T>& rotation);
-    void Scale(const Vector<T>& scaling);
-    void Translate(const Vector<T>& translation);
+    virtual void Rotate(const Vector<T>& rotation);
+    virtual void Scale(const Vector<T>& scaling);
+    virtual void Translate(const Vector<T>& translation);
 
     T* GetRawData();
     U* GetRawIndices();
@@ -65,9 +65,9 @@ Mesh<T, U>::Mesh(const Mesh<T, U>& other)
         , indices(other.indices)
         , rawData(nullptr)
         , rawIndices(nullptr) 
-        , rotation({0, 0, 0})
-        , translation({0, 0, 0})
-        , scaling({1, 1, 1}) {}
+        , rotation(other.rotation)
+        , translation(other.translation)
+        , scaling(other.scaling) {}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices) 
@@ -176,7 +176,7 @@ void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<T>& scaling) {
-    this->scaling += scaling;
+    this->scaling = scaling;
 }
 
 template<typename T, typename U = unsigned>

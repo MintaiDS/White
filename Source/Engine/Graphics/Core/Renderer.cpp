@@ -43,12 +43,18 @@ void Renderer::Init() {
     glFrontFace(GL_CCW); 
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
-    Disk<GLfloat> disk(0.2);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
-    AddMesh(mesh);
-    Ring<GLfloat> ring(0.1, 0.28);
-    mesh = ring.ToMesh(colorBorder, 720);
-    AddMesh(mesh);
+    for (int i = 0; i < 10; i++) {
+        Disk<GLfloat> disk(0.2);
+        Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
+        mesh.Scale({0.2f, 0.2f, 1.0f});
+        mesh.Translate({0.18f * i, 0.18f * i, 0.0f});
+        AddMesh(mesh);
+        Ring<GLfloat> ring(0.1, 0.28);
+        mesh = ring.ToMesh(colorBorder, 720);
+        mesh.Scale({0.2f, 0.2f, 1.0f});
+        mesh.Translate({0.18f * i, 0.18f * i, 0.0f});
+        AddMesh(mesh);
+    }
 }
 
 void Renderer::Render() {
@@ -62,14 +68,14 @@ void Renderer::Render() {
             = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
                                          rotation[2], 1.0f});  
         Vector<GLfloat> translation = mesh.GetTranslation();
-        translation += {0.5f, 0.0f, 0.0f, 0.0f};
+        //translation += {0.5f, 0.0f, 0.0f, 0.0f};
         Matrix<GLfloat> translationMatrix
             = Matrix<GLfloat>::Translation(translation);
         Vector<GLfloat> scaling = mesh.GetScaling();
-        scaling *= 0.1f;
+        //scaling *= 0.1f;
         Matrix<GLfloat> scalingMatrix 
             = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
-                                       scaling[2], 1.0f});
+                                        scaling[2], 1.0f});
         Matrix<GLfloat> model = translationMatrix 
                                 * rotationMatrix 
                                 * scalingMatrix;

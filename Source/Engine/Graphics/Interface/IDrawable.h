@@ -10,9 +10,9 @@ namespace Graphics {
 
 template<typename T>
 struct IDrawable {
-    void Rotate(const Vector<T>& rotation);
-    void Scale(const Vector<T>& scaling);
-    void Translate(const Vector<T>& translation);
+    virtual void Rotate(const Vector<T>& rotation);
+    virtual void Scale(const Vector<T>& scaling);
+    virtual void Translate(const Vector<T>& translation);
 };
 
 template<typename T>
