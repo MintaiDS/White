@@ -18,6 +18,7 @@ public:
 
     void LoadGraph(std::string path);
     void DisplayNode(Vector<GLfloat>& pos);
+    void DisplayEdge(Vector<GLfloat>& begin, Vector<GLfloat>& end);
 
     virtual void Play();
 

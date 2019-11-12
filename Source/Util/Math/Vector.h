@@ -194,16 +194,18 @@ Vector<T> Vector<T>::operator*(const T value) const {
 template<typename T>
 T Vector<T>::Length() const {
     T ret = 0;
-    for (auto value : values) {
-        ret += std::sqrt(value * value);
+    for (int i = 0; i < size; i++) {
+        ret += values.get()[i] * values.get()[i];
     }
+
+    return std::sqrt(ret);
 }
 
 template<typename T>
 T Vector<T>::Dot(const Vector<T>& other) const {
     T ret = 0;
     for (int i = 0; i < size; i++) {
-        ret += *this[i] * other[i];
+        ret += values.get()[i] * other[i];
     }
 
     return ret;

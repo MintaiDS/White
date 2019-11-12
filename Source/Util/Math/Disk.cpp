@@ -19,6 +19,7 @@ Polygon<GLfloat> Disk<GLfloat>::ToPolygon(int verticesCnt) {
 
     return ret;
 }
+
 }
 }
 }
