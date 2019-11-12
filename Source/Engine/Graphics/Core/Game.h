@@ -4,15 +4,19 @@
 
 namespace White {
 namespace Engine {
+namespace Graphics {
+
+class Renderer;
 
 class Game {
 public:
-    Game(Graphics::Renderer& renderer);
+    Game(Renderer& renderer);
     virtual void Play();
 
 protected:
-    Graphics::Renderer& renderer;
+    Renderer& renderer;
 };
 
+}
 }
 }

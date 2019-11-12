@@ -10,6 +10,7 @@ src_engine_path = $(src_path)Engine/
 src_engine_graphics_path = $(src_engine_path)Graphics/
 src_util_system_path = $(src_util_path)System/
 src_util_math_path = $(src_util_path)Math/
+src_graph_vizualizer_path = $(src_path)GraphVizualizer/
 src_engine_graphics_util_path = $(src_engine_graphics_path)Util/
 src_engine_graphics_core_path = $(src_engine_graphics_path)Core/
 src_engine_graphics_gl_path = $(src_engine_graphics_path)GL/
@@ -29,6 +30,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_drawing_path) \
                            /I $(src_engine_graphics_shader_path) \
 						   /I $(src_engine_graphics_interface_path) \
+						   /I $(src_graph_vizualizer_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
@@ -40,7 +42,14 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
-		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o Engine.exe 
+		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVizualizer.o \
+		Engine.exe 
+GraphVizualizer.o : $(src_graph_vizualizer_path)GraphVizualizer.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)GraphVizualizer.o \
+    $(compiler_options_include) \
+    $(src_graph_vizualizer_path)GraphVizualizer.cpp"    
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
