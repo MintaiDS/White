@@ -72,6 +72,10 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETBUFFERSUBDATAPROC,
                         glGetBufferSubData);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETBUFFERPARAMETERIVPROC,
                         glGetBufferParameteriv);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETUNIFORMLOCATIONPROC, 
+                        glGetUniformLocation);
+EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX4FVPROC, 
+                        glUniformMatrix4fv);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

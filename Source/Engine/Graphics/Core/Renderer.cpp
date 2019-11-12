@@ -1,7 +1,12 @@
+#include "GLFunctions.h"
 #include "Renderer.h"
+#include "Disk.h"
+#include "Ring.h"
 
 #include <fstream>
 #include <iostream>
+
+using namespace White::Util::Math;
 
 namespace White {
 namespace Engine {
@@ -16,11 +21,67 @@ Renderer::Renderer() {
     elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER); 
 }
 
+void Renderer::Init() {
+    Shader shader(GL_VERTEX_SHADER);
+    std::wstring path = L"Engine/Shaders/default.vsh";
+    shader.Source(path);
+    shader.Compile();
+    program.Attach(shader);
+    //shader.Delete();
+    path = L"Engine/Shaders/default.fsh";
+    shader.Create(GL_FRAGMENT_SHADER);
+    shader.Source(path);
+    shader.Compile();
+    program.Attach(shader);
+    //shader.Delete();
+    program.Link();
+    program.Use();
+    //program.Delete();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW); 
+    Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
+    Disk<GLfloat> disk(0.2);
+    Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
+    AddMesh(mesh);
+    Ring<GLfloat> ring(0.1, 0.28);
+    mesh = ring.ToMesh(colorBorder, 720);
+    AddMesh(mesh);
+}
+
 void Renderer::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
     indicesCnt = 0;
     for (int i = 0; i < list.size(); i++) {
+        Mesh<GLfloat>& mesh = list[i]; 
+        Vector<GLfloat> rotation = mesh.GetRotation();
+        Matrix<GLfloat> rotationMatrix 
+            = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
+                                         rotation[2], 1.0f});  
+        Vector<GLfloat> translation = mesh.GetTranslation();
+        translation += {0.5f, 0.0f, 0.0f, 0.0f};
+        Matrix<GLfloat> translationMatrix
+            = Matrix<GLfloat>::Translation(translation);
+        Vector<GLfloat> scaling = mesh.GetScaling();
+        scaling *= 0.1f;
+        Matrix<GLfloat> scalingMatrix 
+            = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
+                                       scaling[2], 1.0f});
+        Matrix<GLfloat> model = translationMatrix 
+                                * rotationMatrix 
+                                * scalingMatrix;
+        std::unique_ptr<GLfloat[]> raw 
+            = std::make_unique<GLfloat[]>(model.rows * model.columns);
+        for (int i = 0; i < model.rows; i++) {
+            for (int j = 0; j < model.columns; j++) {
+                raw.get()[i * model.columns + j] = model[i][j];
+            }
+        }
+        GLint location = glGetUniformLocation(program.id, "model");
+        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
         DrawCall(list[i].indices.size(), indicesCnt);
         indicesCnt += list[i].indices.size();
     }

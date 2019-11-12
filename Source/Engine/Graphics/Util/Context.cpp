@@ -62,8 +62,8 @@ void Context::RegisterWindowClass() {
 void Context::CreateContextWindow() {
     hWnd = CreateWindowExW(0, L"Context", L"White Engine",
                            WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                           100, 100,  
-                           500, 500, 
+                           10, 10,  
+                           760, 760, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
 }
 
@@ -104,34 +104,35 @@ void Context::Create() {
 }
 
 void Context::SetupDemo(Core& core) {
-    Program program;
-    Shader shader(GL_VERTEX_SHADER);
-    std::wstring path = L"Engine/Shaders/default.vsh";
-    shader.Source(path);
-    shader.Compile();
-    program.Attach(shader);
-    //shader.Delete();
-    path = L"Engine/Shaders/default.fsh";
-    shader.Create(GL_FRAGMENT_SHADER);
-    shader.Source(path);
-    shader.Compile();
-    program.Attach(shader);
-    //shader.Delete();
-    program.Link();
-    program.Use();
-    //program.Delete();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW); 
-    Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
-    Disk<GLfloat> disk(0.2);
-    Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
-    core.renderer.AddMesh(mesh);
-    Ring<GLfloat> ring(0.1, 0.28);
-    mesh = ring.ToMesh(colorBorder, 720);
-    core.renderer.AddMesh(mesh);
+    core.renderer.Init();
+    //Program program;
+    //Shader shader(GL_VERTEX_SHADER);
+    //std::wstring path = L"Engine/Shaders/default.vsh";
+    //shader.Source(path);
+    //shader.Compile();
+    //program.Attach(shader);
+    ////shader.Delete();
+    //path = L"Engine/Shaders/default.fsh";
+    //shader.Create(GL_FRAGMENT_SHADER);
+    //shader.Source(path);
+    //shader.Compile();
+    //program.Attach(shader);
+    ////shader.Delete();
+    //program.Link();
+    //program.Use();
+    ////program.Delete();
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_FRONT);
+    //glFrontFace(GL_CCW); 
+    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
+    //Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
+    //Disk<GLfloat> disk(0.2);
+    //Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
+    //core.renderer.AddMesh(mesh);
+    //Ring<GLfloat> ring(0.1, 0.28);
+    //mesh = ring.ToMesh(colorBorder, 720);
+    //core.renderer.AddMesh(mesh);
 
     //mesh = ring1.ToMesh(color, 720);
     //core.renderer.AddMesh(mesh);

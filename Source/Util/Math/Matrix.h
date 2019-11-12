@@ -23,7 +23,7 @@ struct Matrix {
     static Matrix Diagonal(const Vector<T>& diagonal);
     static Matrix Rotation(const Vector<T>& rotation);
     static Matrix Translation(const Vector<T>& translation);
-    static Matrix Scale(const Vector<T>& scale);
+    static Matrix Scaling(const Vector<T>& scale);
     
     Matrix& Transpose();
     Matrix& RemoveRow(const std::size_t row);
@@ -33,6 +33,7 @@ struct Matrix {
     T Determinant() const;
     T Minor() const;
     T Minor(const std::size_t row, const std::size_t column) const;
+    Matrix& operator=(const Matrix<T>& other);
     Vector<T> operator[](std::size_t index) const;
     Vector<T>& operator[](std::size_t index);
     Matrix& operator+=(const Matrix<T>& other);
@@ -63,9 +64,9 @@ template<typename T>
 Matrix<T>::Matrix(std::size_t dimension) 
         : rows(dimension)
         , columns(dimension)
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) { 
-    for (auto& row : values) {
-        row = std::make_unique<Vector>(columns);
+        , values(std::make_unique<Vector<T>[]>(rows)) {
+    for (int i = 0; i < rows; i++) {
+        values[i] = Vector<T>(dimension);
     }
 }
 
@@ -101,11 +102,11 @@ Matrix<T>::Matrix(std::vector<std::vector<T>> values)
 
 template<typename T>
 Matrix<T>::Matrix(const Matrix<T>& other) 
-        : rows(other.rows),
+        : rows(other.rows)
         , columns(other.columns)
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
+        , values(std::make_unique<Vector<T>[]>(rows)) {
     for (int i = 0; i < rows; i++) {
-        this->values[i] = std::make_unique<Vector>(other.values[i]);
+        this->values[i] = other.values[i];
     }
 }
 
@@ -113,7 +114,7 @@ template<typename T>
 Matrix<T>::Matrix(std::initializer_list<Vector<T>> args) 
         : rows(args.size())
         , columns(*args.begin().size)
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
+        , values(std::make_unique<Vector<T>[]>(rows))  {
     std::initializer_list<T>::iterator it; 
     int i = 0;
     for (it = args.begin(); it != args.end(); ++it) {
@@ -136,10 +137,10 @@ template<typename T>
 Matrix<T> Matrix<T>::Diagonal(const Vector<T>& diagonal)  {
     Matrix<T> ret(diagonal.size);
     for (int i = 0; i < diagonal.size; i++) {
-        values[i][i] = diagonal[i];
+        ret[i][i] = diagonal[i];
     }
 
-    return ret
+    return ret;
 }
 
 template<typename T>
@@ -175,8 +176,8 @@ Matrix<T> Matrix<T>::Translation(const Vector<T>& translation) {
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::Scale(const Vector<T>& scale) {
-    Matrix<T> diag = Diagonal(scale);
+Matrix<T> Matrix<T>::Scaling(const Vector<T>& scale) {
+    Matrix<T> ret = Diagonal(scale);
 
     return ret;
 }
@@ -260,6 +261,18 @@ T Matrix<T>::Minor(const std::size_t row, const std::size_t column) const {
 }
 
 template<typename T>
+Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
+    rows = other.rows;
+    columns = other.columns;
+    values = std::make_unique<Vector<T>[]>(rows);
+    for (int i = 0; i < rows; i++) {
+        this->values[i] = other.values[i];
+    }
+
+    return *this;
+}
+
+template<typename T>
 Vector<T> Matrix<T>::operator[](std::size_t index) const {
     return Vector<T>(values[index]);
 }
@@ -294,9 +307,9 @@ Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
     Matrix<T> tmp(*this);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
-            *this[i][j] = 0;
+            values[i][j] = 0;
             for (int k = 0; k < columns; k++) {
-                *this[i][j] += *this[i][k] * other[k][j];
+                values[i][j] += tmp[i][k] * other[k][j];
             }
         }
     }

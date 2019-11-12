@@ -26,9 +26,12 @@ public:
     std::size_t GetSize() const;
     std::size_t GetCount() const;
 
-    Matrix<T> GetRotation() const;
-    Matrix<T> GetScaling() const;
-    Matrix<T> GetTranslation() const;
+    Matrix<T> GetRotationMatrix() const;
+    Matrix<T> GetScalingMatrix() const;
+    Matrix<T> GetTranslationMatrix() const;
+    Vector<T> GetRotation() const;
+    Vector<T> GetScaling() const;
+    Vector<T> GetTranslation() const;
 
     void Rotate(const Vector<T>& rotation);
     void Scale(const Vector<T>& scaling);
@@ -131,18 +134,39 @@ std::size_t Mesh<T, U>::GetCount() const {
 }
 
 template<typename T, typename U = unsigned>
-Matrix<T> Mesh<T, U>::GetRotation() const {
+Matrix<T> Mesh<T, U>::GetRotationMatrix() const {
     return Matrix::Rotation(rotation);
 }
 
 template<typename T, typename U = unsigned>
-Matrix<T> Mesh<T, U>::GetScaling() const {
+Matrix<T> Mesh<T, U>::GetScalingMatrix() const {
     return Matrix::Scaling(scaling);
 }
 
 template<typename T, typename U = unsigned>
-Matrix<T> Mesh<T, U>::GetTranslation() const {
+Matrix<T> Mesh<T, U>::GetTranslationMatrix() const {
     return Matrix::Translation(translation);
+}
+
+template<typename T, typename U = unsigned>
+Vector<T> Mesh<T, U>::GetRotation() const {
+    Vector<T> ret(rotation);
+
+    return ret;
+}
+
+template<typename T, typename U = unsigned>
+Vector<T> Mesh<T, U>::GetScaling() const {
+    Vector<T> ret(scaling);
+
+    return ret;
+}
+
+template<typename T, typename U = unsigned>
+Vector<T> Mesh<T, U>::GetTranslation() const {
+    Vector<T> ret(translation);
+
+    return ret;
 }
 
 template<typename T, typename U = unsigned>

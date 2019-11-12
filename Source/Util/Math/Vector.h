@@ -47,8 +47,8 @@ template<typename T>
 Vector<T>::Vector(std::size_t size) 
         : size(size)
         , values(std::make_unique<T[]>(size)) {
-    for (auto& value : values) {
-        value = 0;
+    for (int i = 0; i < size; i++) {
+        values[i] = 0;
     }
 }
 
