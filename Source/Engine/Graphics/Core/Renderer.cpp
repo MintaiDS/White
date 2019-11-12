@@ -2,6 +2,8 @@
 #include "Renderer.h"
 #include "Disk.h"
 #include "Ring.h"
+#include "Rectangle.h"
+#include "Game.h"
 
 #include <fstream>
 #include <iostream>
@@ -43,17 +45,26 @@ void Renderer::Init() {
     glFrontFace(GL_CCW); 
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
+    Util::Math::Rectangle<GLfloat> rect(5, 0.4);
+    Mesh<GLfloat> rectMesh 
+        = rect.ToMesh(color + Vector<GLfloat>{-0.2, -0.2, 0.3, 0.0f}, 0);
+    rectMesh.Scale({0.3f, 0.3f, 1.0f});
+    rectMesh.Translate({0.6f, 0.6f, 0.3f});
+    rectMesh.Rotate({0.0f, 0.0f, 20.0f});
+    Disk<GLfloat> disk(0.2);
+    Mesh<GLfloat> diskMesh = disk.ToMesh(color, 720);
+    diskMesh.Scale({0.2f, 0.2f, 1.0f});
+    diskMesh.Translate({-0.97f, -0.97f, 0.0f});
+    Ring<GLfloat> ring(0.1, 0.28);
+    Mesh<GLfloat> ringMesh = ring.ToMesh(colorBorder, 720);
+    ringMesh.Scale({0.2f, 0.2f, 1.0f});
+    ringMesh.Translate({-0.97f, -0.97f, 0.0f});
+    AddMesh(rectMesh);
     for (int i = 0; i < 10; i++) {
-        Disk<GLfloat> disk(0.2);
-        Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
-        mesh.Scale({0.2f, 0.2f, 1.0f});
-        mesh.Translate({0.18f * i, 0.18f * i, 0.0f});
-        AddMesh(mesh);
-        Ring<GLfloat> ring(0.1, 0.28);
-        mesh = ring.ToMesh(colorBorder, 720);
-        mesh.Scale({0.2f, 0.2f, 1.0f});
-        mesh.Translate({0.18f * i, 0.18f * i, 0.0f});
-        AddMesh(mesh);
+        ringMesh.Translate({0.18f, 0.18f, 0.0f});
+        diskMesh.Translate({0.18f, 0.18f, 0.0f});
+        AddMesh(diskMesh);
+        AddMesh(ringMesh);
     }
 }
 
@@ -87,6 +98,14 @@ void Renderer::Render() {
             }
         }
         GLint location = glGetUniformLocation(program.id, "model");
+        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+        Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
+        location = glGetUniformLocation(program.id, "view");
+        for (int i = 0; i < view.rows; i++) {
+            for (int j = 0; j < view.columns; j++) {
+                raw.get()[i * view.columns + j] = view[i][j];
+            }
+        }
         glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
         DrawCall(list[i].indices.size(), indicesCnt);
         indicesCnt += list[i].indices.size();

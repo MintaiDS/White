@@ -40,7 +40,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
-		Pipeline.o IDrawable.o Engine.exe 
+		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o Engine.exe 
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -167,6 +167,18 @@ Core.o : $(src_engine_graphics_core_path)Core.cpp
     $(compiler_options_out)Core.o \
     $(compiler_options_include) \
     $(src_engine_graphics_core_path)Core.cpp"   
+Game.o : $(src_engine_graphics_core_path)Game.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Game.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)Game.cpp" 
+ObjectIDProvider.o : $(src_engine_graphics_core_path)ObjectIDProvider.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)ObjectIDProvider.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_core_path)ObjectIDProvider.cpp"   
 Pipeline.o : $(src_engine_graphics_core_path)Pipeline.cpp
     "$(compiler) \
     $(compiler_options) \

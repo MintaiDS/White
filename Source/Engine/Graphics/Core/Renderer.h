@@ -17,10 +17,11 @@ public:
     void Render();
     void DrawCall(int indicesCnt = 0, int skip = 0);
     void UpdateData(Mesh<GLfloat> mesh);
-    void AddMesh(Mesh<GLfloat> mesh);
+    void AddMesh(Mesh<GLfloat> mesh); 
 
 protected:
     Program program;
+    std::vector<Game> games;
     std::vector<Mesh<GLfloat>> list;
     int indicesCnt;
     BufferObject arrayBuffer;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ObjectIDProvider.h"
 #include "VertexData.h"
 #include "IDrawable.h"
 #include "Polygon.h"
@@ -25,6 +26,7 @@ public:
 
     std::size_t GetSize() const;
     std::size_t GetCount() const;
+    unsigned GetID() const;
 
     Matrix<T> GetRotationMatrix() const;
     Matrix<T> GetScalingMatrix() const;
@@ -44,11 +46,12 @@ public:
     std::vector<U> indices;
 
 protected:
-        T* rawData;
-        U* rawIndices;
-        Vector<T> rotation;
-        Vector<T> scaling;
-        Vector<T> translation;
+    unsigned id; 
+    T* rawData;
+    U* rawIndices;
+    Vector<T> rotation;
+    Vector<T> scaling;
+    Vector<T> translation;
 };
 
 template<typename T, typename U = unsigned>
@@ -80,7 +83,8 @@ Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices)
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
-        : rawData(nullptr) 
+        : id(ObjectIDProvider::GetNextID())
+        , rawData(nullptr) 
         , rotation({0, 0, 0})
         , translation({0, 0, 0})
         , scaling({1, 1, 1}) {
@@ -95,25 +99,6 @@ Mesh<T, U>::~Mesh() {
     delete[] rawIndices;
 }
 
-//template<typename T, typename U = unsigned>
-//Mesh<T, U> Mesh<T, U>::CreateFromShape(
-//        const Util::Math::Rectangle<T>& rectangle, const Vector<T>& color) {
-//    Polygon<T> polygon = Polygon::CreateFromShape(rectangle);
-//    std::vector<VertexData<T>> vertices; 
-//    for (int i = 0; i < polygon.vertices.size(); i++) {
-//        VertexData<T> vertex;
-//        Vector<T> position = {polygon.vertices[i][0], 
-//                              polygon.vertices[i][1],
-//                              0, 1};
-//        vertex.attributes.push_back(position);
-//        vertex.attributes.push_back(color);
-//        vertices.push_back(vertex);
-//    }
-//    Mesh<T, U> ret(vertices);
-// 
-//    return ret;
-//}
-//
 //template<typename T, typename U = unsigned>
 //Mesh<T, U> Mesh<T, U>::CreateFromShape(
 //                        const Segment<T>& segment, const Vector<T>& color) {
@@ -131,6 +116,11 @@ std::size_t Mesh<T, U>::GetSize() const {
 template<typename T, typename U = unsigned>
 std::size_t Mesh<T, U>::GetCount() const {
     return vertices.size() * vertices[0].GetCount();
+}
+
+template<typename T, typename U = unsigned>
+std::size_t Mesh<T, U>::GetID() const {
+    return id;
 }
 
 template<typename T, typename U = unsigned>

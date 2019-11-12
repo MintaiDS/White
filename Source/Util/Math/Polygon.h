@@ -2,8 +2,6 @@
 
 #include "GLFunctions.h"
 #include "Vector.h"
-#include "Rectangle.h"
-#include "Segment.h"
 #include "Common.h"
 
 namespace White {
@@ -14,9 +12,6 @@ template<typename T>
 struct Polygon {
     Polygon();
     Polygon(const std::vector<Vector<T>>& vertices);
-
-    static Polygon<GLfloat> CreateFromShape(const Rectangle<GLfloat>& rectangle);
-    static Polygon<GLfloat> CreateFromShape(const Segment<GLfloat>& segment);
 
     void Add(const Vector<T>& vertex);
 

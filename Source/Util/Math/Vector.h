@@ -32,6 +32,7 @@ struct Vector {
     Vector operator-(const T value) const;
     Vector operator*(const T value) const;
 
+    T Length() const;
     T Dot(const Vector<T>& other) const;
     Vector Cross(const Vector<T>& other) const;
     T Mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
@@ -188,6 +189,14 @@ Vector<T> Vector<T>::operator*(const T value) const {
     ret *= value;
 
     return ret;
+}
+
+template<typename T>
+T Vector<T>::Length() const {
+    T ret = 0;
+    for (auto value : values) {
+        ret += std::sqrt(value * value);
+    }
 }
 
 template<typename T>

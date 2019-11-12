@@ -147,18 +147,18 @@ template<typename T>
 Matrix<T> Matrix<T>::Rotation(const Vector<T>& rotation) {
     Matrix<T> ret = Identity(rotation.size);  
     Matrix<T> rotations[3] = {ret, ret, ret};
-    rotations[0][1][1] = std::cos(rotation[0]);
-    rotations[0][1][2] = -std::sin(rotation[0]);
-    rotations[0][2][1] = std::sin(rotation[0]);
-    rotations[0][2][2] = std::cos(rotation[0]);
-    rotations[1][0][0] = std::cos(rotation[0]);
-    rotations[1][2][0] = -std::sin(rotation[0]);
-    rotations[1][0][2] = std::sin(rotation[0]);
-    rotations[1][2][2] = std::cos(rotation[0]);
-    rotations[2][0][0] = std::cos(rotation[0]);
-    rotations[2][0][1] = -std::sin(rotation[0]);
-    rotations[2][1][0] = std::sin(rotation[0]);
-    rotations[2][1][1] = std::cos(rotation[0]);
+    rotations[0][1][1] = std::cos(ToRadians(rotation[0]));
+    rotations[0][1][2] = -std::sin(ToRadians(rotation[0]));
+    rotations[0][2][1] = std::sin(ToRadians(rotation[0]));
+    rotations[0][2][2] = std::cos(ToRadians(rotation[0]));
+    rotations[1][0][0] = std::cos(ToRadians(rotation[1]));
+    rotations[1][2][0] = -std::sin(ToRadians(rotation[1]));
+    rotations[1][0][2] = std::sin(ToRadians(rotation[1]));
+    rotations[1][2][2] = std::cos(ToRadians(rotation[1]));
+    rotations[2][0][0] = std::cos(ToRadians(rotation[2]));
+    rotations[2][0][1] = -std::sin(ToRadians(rotation[2]));
+    rotations[2][1][0] = std::sin(ToRadians(rotation[2]));
+    rotations[2][1][1] = std::cos(ToRadians(rotation[2]));
     ret = rotations[2] * rotations[1] * rotations[0] * ret;
     
     return ret;
