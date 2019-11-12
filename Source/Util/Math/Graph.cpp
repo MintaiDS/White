@@ -1,4 +1,4 @@
-#include "nlohmann\json.hpp"
+#include "json.hpp"
 #include "Graph.h"
 #include <iostream>
 #include <fstream>

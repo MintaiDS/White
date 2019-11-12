@@ -4,6 +4,7 @@ bin_path = $(build_output_path)Bin/
 src_path = Source/
 external_path = External/
 external_gl_path = $(external_path)OpenGL/
+external_json_path = $(external_path)nlohmann/json/
 src_test_path = $(src_path)Test/
 src_util_path = $(src_path)Util/
 src_engine_path = $(src_path)Engine/
@@ -31,6 +32,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_shader_path) \
 						   /I $(src_engine_graphics_interface_path) \
 						   /I $(src_graph_vizualizer_path) \
+						   /I $(external_json_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
@@ -43,7 +45,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
 		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVizualizer.o \
-		Engine.exe 
+		Graph.o Engine.exe 
 GraphVizualizer.o : $(src_graph_vizualizer_path)GraphVizualizer.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -56,6 +58,12 @@ Matrix.o : $(src_util_math_path)Matrix.cpp
     $(compiler_options_out)Matrix.o \
     $(compiler_options_include) \
     $(src_util_math_path)Matrix.cpp"    
+Graph.o : $(src_util_math_path)Graph.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Graph.o \
+    $(compiler_options_include) \
+    $(src_util_math_path)Graph.cpp"  
 Shape.o : $(src_util_math_path)Shape.cpp
     "$(compiler) \
     $(compiler_options) \
