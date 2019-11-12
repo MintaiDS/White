@@ -31,14 +31,21 @@ void GraphVizualizer::LoadGraph(std::string path) {
         }
     }
     int curCell = 0;
-    for (int i = 0; i < 100; i++) {
-        Vertex* vertex = graph->GetVByIdx(i);
-        if (vertex) {
-            DisplayNode(grid[curCell++]);     
-            if (curCell < grid.size()) {
-                DisplayEdge(grid[curCell], grid[curCell - 1]);
-            }
-        }
+    //for (int i = 0; i < 100; i++) {
+    //    Vertex* vertex = graph->GetVByIdx(i);
+    //    if (vertex) {
+    //        DisplayNode(grid[curCell]);     
+    //        if (curCell == 0) {
+    //            DisplayEdge(grid[curCell], grid[curCell + 1]);
+    //        } 
+    //        curCell++;
+    //    }
+    //}
+    for (int i = 0; i < grid.size(); i++) {
+        DisplayNode(grid[i]);
+    }
+    for (int i = 0; i < grid.size() - 1; i++) {
+        DisplayEdge(grid[i], grid[i + 1]);
     }
 }
 
@@ -66,21 +73,22 @@ void GraphVizualizer::DisplayNode(Vector<GLfloat>& pos) {
 
 void GraphVizualizer::DisplayEdge(Vector<GLfloat>& begin, 
                                   Vector<GLfloat>& end) { 
-    GLfloat halfLen = (begin - end).Length() / 2.0f;
-    Vector<GLfloat> dir = begin - end;
-    Vector<GLfloat> initial = {halfLen, 0};
-    GLfloat lenDir = dir.Length();
-    GLfloat lenInitial = initial.Length();
+    //GLfloat halfLen = (begin - end).Length() / 2.0f;
+    Vector<GLfloat> dir = end - begin;
+    Vector<GLfloat> mid = begin + dir * (1.0 / 2.0f);
+    Vector<GLfloat> initial = {dir.Length(), 0};
     GLfloat cross = initial.Dot(dir);
-    GLfloat phi = Util::Math::ToDegrees(std::acos(cross 
-                                                  / (lenDir * lenInitial)));
-    GLfloat halfLenY = (begin[1] - end[1]) / 2.0f;
-    GLfloat halfLenX = (begin[0] - end[0]) / 2.0f;
+    GLfloat phi 
+        = Util::Math::ToDegrees(std::acos(cross 
+                                          / (dir.Length() 
+                                             * initial.Length())));
+    //GLfloat halfLenY = (begin[1] - end[1]) / 2.0f;
+    //GLfloat halfLenX = (begin[0] - end[0]) / 2.0f;
     Vector<GLfloat> color = {0.0f, 0.0f, 0.0f, 1.0f}; 
-    Vector<GLfloat> mid(begin);
-    Vector<GLfloat> rotation = {0.0f, 0.0f, phi};
-    mid[0] += halfLenX;
-    mid[1] += halfLenY;
+    //Vector<GLfloat> mid(begin);
+    Vector<GLfloat> rotation = {0.0f, 0.0f, -phi};
+    //mid[0] += halfLenX;
+    //mid[1] += halfLenY;
     Segment<GLfloat> segment(begin, end);
     Mesh<GLfloat> segmentMesh = segment.ToMesh(color, 4);
     segmentMesh.Translate({mid[0], mid[1], 0.1f});
