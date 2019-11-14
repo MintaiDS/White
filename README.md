@@ -1,6 +1,11 @@
 # White Engine.
 ## Wargaming Forge 2019 Project.
 
+### Authors
+- Dmitry Sipeyko
+- Dmitry Lisay
+- Taras Makarevich
+
 ### Building 
 #### Windows
 Open Visual Studio Command Promt and run one of the following
