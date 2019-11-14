@@ -45,7 +45,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
 		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
-		Graph.o GraphView.o Graph.o Cell.o Engine.exe 
+		Graph.o GraphView.o Graph.o Grid.o Cell.o Engine.exe 
 GraphVisualizer.o : $(src_graph_vizualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \

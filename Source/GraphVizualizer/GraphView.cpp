@@ -11,7 +11,7 @@ GraphView::GraphView()
         , grid(nullptr) {}
 
 void GraphView::Init() {
-    for (int i = 0; i < graph->GetVCnt(); i++) {
+    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         int row = i / (grid->gridSize[1]);
         int column = i % (grid->gridSize[1]);
         cells.push_back(grid->cells[row][column]);
@@ -19,8 +19,14 @@ void GraphView::Init() {
 }
 
 void GraphView::Display() {
-    for (int i = 0; i < graph->GetVCnt(); i++) {
+    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayNode(i);
+    }
+    for (int i = 0; i < graph->GetEdgesCnt(); i++) {
+        Edge* edge = graph->GetEdgeById(i);
+        int from = graph->GetVByIdx(edge->GetFrom())->GetId();
+        int to = graph->GetVByIdx(edge->GetTo())->GetId();
+        DisplayEdge(from, to);
     }
 }
 

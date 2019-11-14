@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Graph.h"
 #include "Vector.h"
+#include "GraphView.h"
 
 #include <string>
 
@@ -24,7 +25,9 @@ public:
 
 protected:
     Graph* graph;
-    std::vector<Vector<GLfloat>> grid;
+    //std::vector<Vector<GLfloat>> grid;
+    Grid* grid;
+    GraphView graphView;
 };
 
 }

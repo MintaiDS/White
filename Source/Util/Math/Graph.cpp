@@ -15,6 +15,7 @@ void Graph::AppendEdge(Edge* e)
   v->AppendEdge(e);
   v = GetVByIdx(e->GetTo());
   v->AppendEdge(e);
+  e->SetId(edges.size());
   edges.push_back(e); 
 }
 
@@ -37,7 +38,6 @@ Vertex* Graph::GetVByIdx(int idx)
 
 Vertex* Graph::GetVById(size_t id)
 {
-  std::map<int, size_t>::iterator it;
   for (auto it : vertices) {
       if (it->GetId() == id) {
           return it;
@@ -46,8 +46,32 @@ Vertex* Graph::GetVById(size_t id)
   return nullptr; 
 }
 
-size_t Graph::GetVCnt() const {
+Edge* Graph::GetEdgeById(size_t id)
+{
+  for (auto it : edges) {
+      if (it->GetId() == id) {
+          return it;
+      }
+  }
+  return nullptr; 
+}
+
+Edge* Graph::GetEdgeByIdx(int idx)
+{
+  for (auto it : edges) {
+      if (it->GetIdx() == idx) {
+          return it;
+      }
+  }
+  return nullptr; 
+}
+
+size_t Graph::GetVerticesCnt() const {
     return vertices.size();
+}
+
+size_t Graph::GetEdgesCnt() const {
+    return edges.size();
 }
 
 Graph* ParseGraphFromJSON(std::string filename)

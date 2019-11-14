@@ -20,8 +20,12 @@ public:
   int GetFrom() { return v[0]; }
   int GetTo() { return v[1]; }
   int GetLength() { return length; }
+  void SetId(size_t id) { this->id = id; }
+  size_t GetId() const { return id; };
+  int GetIdx() const { return idx; }
 
 private:
+  size_t id;
   int idx;
   int length;
   int v[2];
@@ -57,9 +61,12 @@ public:
   void AppendEdge(Edge* e);
   void AppendVertex(Vertex* v);
 
-  size_t GetVCnt() const;
+  size_t GetVerticesCnt() const;
+  size_t GetEdgesCnt() const;
   Vertex* GetVByIdx(int idx);
   Vertex* GetVById(size_t id);
+  Edge* GetEdgeByIdx(int idx);
+  Edge* GetEdgeById(size_t id);
 
 private:
   int idx;
