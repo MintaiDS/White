@@ -1,14 +1,14 @@
 #include "GraphView.h"
 #include "Disk.h"
-//#include "Grid.h"
-//#include "Cell.h"
-//#include "Renderer.h"
-//#include "Disk.h"
 #include "Ring.h"
 #include "Segment.h"
-//
 
 using namespace White::Util;
+
+GraphView::GraphView() 
+        : renderer(nullptr)
+        , graph(nullptr)
+        , grid(nullptr) {}
 
 void GraphView::Init() {
     for (int i = 0; i < graph->GetVCnt(); i++) {
@@ -51,7 +51,7 @@ void GraphView::DisplayEdge(int from, int to) {
     Math::Vector<float> initial = {dir.Length(), 0};
     float cross = initial.Dot(dir);
     float phi = Math::ToDegrees(std::acos(cross / (dir.Length() 
-                                            * initial.Length())));
+                                          * initial.Length())));
     Math::Vector<float> rotation = {0.0f, 0.0f, -phi};
     Math::Segment<float> segment(begin, end);
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);

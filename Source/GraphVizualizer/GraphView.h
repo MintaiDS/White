@@ -5,20 +5,10 @@
 #include "Grid.h"
 #include "Renderer.h"
 
-//namespace White {
-//namespace Engine {
-//namespace Graphics {
-//
-//class Renderer;
-//
-//}
-//}
-//}
-
-//struct White::Cell;
-
 class GraphView {
 public:
+    GraphView();
+
     void Init();
     void Display();
     void DisplayNode(int node);
