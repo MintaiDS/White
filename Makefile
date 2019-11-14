@@ -44,14 +44,32 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
-		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVizualizer.o \
-		Graph.o Engine.exe 
-GraphVizualizer.o : $(src_graph_vizualizer_path)GraphVizualizer.cpp
+		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
+		Graph.o GraphView.o Graph.o Cell.o Engine.exe 
+GraphVisualizer.o : $(src_graph_vizualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \
-    $(compiler_options_out)GraphVizualizer.o \
+    $(compiler_options_out)GraphVisualizer.o \
     $(compiler_options_include) \
-    $(src_graph_vizualizer_path)GraphVizualizer.cpp"    
+    $(src_graph_vizualizer_path)GraphVisualizer.cpp"    
+GraphView.o : $(src_graph_vizualizer_path)GraphView.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)GraphView.o \
+    $(compiler_options_include) \
+    $(src_graph_vizualizer_path)GraphView.cpp"    
+Cell.o : $(src_graph_vizualizer_path)Cell.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Cell.o \
+    $(compiler_options_include) \
+    $(src_graph_vizualizer_path)Cell.cpp"    
+Grid.o : $(src_graph_vizualizer_path)Grid.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Grid.o \
+    $(compiler_options_include) \
+    $(src_graph_vizualizer_path)Grid.cpp"    
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \

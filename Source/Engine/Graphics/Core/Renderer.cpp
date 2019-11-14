@@ -4,7 +4,7 @@
 #include "Ring.h"
 #include "Rectangle.h"
 #include "Game.h"
-#include "GraphVizualizer.h"
+#include "GraphVisualizer.h"
 
 #include <fstream>
 #include <iostream>
@@ -69,7 +69,7 @@ void Renderer::Init() {
     //}
     //game = std::make_shared<GraphVizualizer>(*this);
     //games.push_back(game);
-    game = new GraphVizualizer(*this);
+    game = new GraphVisualizer(*this);
 }
 
 void Renderer::Render() {

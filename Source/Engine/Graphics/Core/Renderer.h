@@ -5,12 +5,11 @@
 #include "Program.h"
 #include "Mesh.h"
 
-
 namespace White {
 namespace Engine {
 namespace Graphics {
 
-class GraphVizualizer;
+class GraphVisualizer;
 class Game;
 
 class Renderer {
@@ -25,7 +24,7 @@ public:
 
 protected:
     Program program; 
-    GraphVizualizer* game;
+    GraphVisualizer* game;
     std::vector<Mesh<GLfloat>> list;
     int indicesCnt;
     BufferObject arrayBuffer;

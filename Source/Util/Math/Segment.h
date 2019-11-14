@@ -2,6 +2,7 @@
 
 #include "Vector.h"
 #include "Polygon.h"
+#include "Rectangle.h"
 #include "Shape.h"
 
 namespace White {

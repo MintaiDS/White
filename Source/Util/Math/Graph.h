@@ -4,6 +4,10 @@
 #include <map>
 #include <string>
 
+namespace White {
+namespace Util {
+namespace Math {
+
 class Edge {
 public:
   Edge() {}
@@ -53,7 +57,9 @@ public:
   void AppendEdge(Edge* e);
   void AppendVertex(Vertex* v);
 
+  size_t GetVCnt() const;
   Vertex* GetVByIdx(int idx);
+  Vertex* GetVById(size_t id);
 
 private:
   int idx;
@@ -64,3 +70,8 @@ private:
 };
 
 Graph* ParseGraphFromJSON(std::string filename);
+
+}
+}
+}
+

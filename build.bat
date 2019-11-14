@@ -20,3 +20,4 @@ if "%arg%" equ "cmake" (
     md Build\Obj
     nmake engine 
 )
+exit

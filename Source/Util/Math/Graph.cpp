@@ -5,6 +5,10 @@
 
 using json = nlohmann::json;
 
+namespace White {
+namespace Util {
+namespace Math {
+
 void Graph::AppendEdge(Edge* e) 
 {
   Vertex* v = GetVByIdx(e->GetFrom());
@@ -29,6 +33,21 @@ Vertex* Graph::GetVByIdx(int idx)
     return vertices[it->second];
   }
   return nullptr;
+}
+
+Vertex* Graph::GetVById(size_t id)
+{
+  std::map<int, size_t>::iterator it;
+  for (auto it : vertices) {
+      if (it->GetId() == id) {
+          return it;
+      }
+  }
+  return nullptr; 
+}
+
+size_t Graph::GetVCnt() const {
+    return vertices.size();
 }
 
 Graph* ParseGraphFromJSON(std::string filename)
@@ -73,3 +92,8 @@ Graph* ParseGraphFromJSON(std::string filename)
 //  Graph* g = ParseGraphFromJSON("big_graph.json");
 //  return 0;
 //}
+
+}
+}
+}
+

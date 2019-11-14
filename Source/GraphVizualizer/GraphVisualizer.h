@@ -12,9 +12,9 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-class GraphVizualizer : Game {
+class GraphVisualizer : Game {
 public:
-    GraphVizualizer(Renderer& renderer);
+    GraphVisualizer(Renderer& renderer);
 
     void LoadGraph(std::string path);
     void DisplayNode(Vector<GLfloat>& pos);

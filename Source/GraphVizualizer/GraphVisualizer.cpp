@@ -1,4 +1,4 @@
-#include "GraphVizualizer.h"
+#include "GraphVisualizer.h"
 #include "Renderer.h"
 #include "Rectangle.h"
 #include "Ring.h"
@@ -10,11 +10,11 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-GraphVizualizer::GraphVizualizer(Renderer& renderer) 
+GraphVisualizer::GraphVisualizer(Renderer& renderer) 
         : Game(renderer) 
         , graph(nullptr) {}
 
-void GraphVizualizer::LoadGraph(std::string path) {
+void GraphVisualizer::LoadGraph(std::string path) {
     graph = ParseGraphFromJSON(path);
     Vector<GLfloat> cur = {-0.9f, 0.9};
     Vector<GLfloat> moveRight = {0.4, 0.0};
@@ -31,6 +31,7 @@ void GraphVizualizer::LoadGraph(std::string path) {
         }
     }
     int curCell = 0;
+
     //for (int i = 0; i < 100; i++) {
     //    Vertex* vertex = graph->GetVByIdx(i);
     //    if (vertex) {
@@ -49,7 +50,7 @@ void GraphVizualizer::LoadGraph(std::string path) {
     }
 }
 
-void GraphVizualizer::DisplayNode(Vector<GLfloat>& pos) {
+void GraphVisualizer::DisplayNode(Vector<GLfloat>& pos) {
     Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Vector<GLfloat> colorBorder = {0.0f, 0.0f, 0.5f, 1.0f};
     //Util::Math::Rectangle<GLfloat> rect(5, 0.4);
@@ -71,7 +72,7 @@ void GraphVizualizer::DisplayNode(Vector<GLfloat>& pos) {
     renderer.AddMesh(ringMesh);
 }
 
-void GraphVizualizer::DisplayEdge(Vector<GLfloat>& begin, 
+void GraphVisualizer::DisplayEdge(Vector<GLfloat>& begin, 
                                   Vector<GLfloat>& end) { 
     //GLfloat halfLen = (begin - end).Length() / 2.0f;
     Vector<GLfloat> dir = end - begin;
@@ -96,7 +97,7 @@ void GraphVizualizer::DisplayEdge(Vector<GLfloat>& begin,
     renderer.AddMesh(segmentMesh);
 }
 
-void GraphVizualizer::Play() {
+void GraphVisualizer::Play() {
     if (!graph) {
         LoadGraph("Temp/small_graph.json"); 
     }
