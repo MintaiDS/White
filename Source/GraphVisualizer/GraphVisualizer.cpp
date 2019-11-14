@@ -24,7 +24,7 @@ void GraphVisualizer::LoadGraph(std::string path) {
 
 void GraphVisualizer::Play() {
     if (!graph) {
-        LoadGraph("Temp/big_graph.json"); 
+        LoadGraph("Temp/small_graph.json"); 
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = std::sqrt(verticesCnt) + 1;
         grid.reset(new Grid({0.0f, 0.0f}, 
