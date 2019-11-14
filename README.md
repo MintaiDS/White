@@ -6,7 +6,7 @@
 - Dmitry Lisay
 - Taras Makarevich
 
-### Building 
+### Building instructions 
 #### Windows
 Open Visual Studio Command Promt and run one of the following
 commands.
