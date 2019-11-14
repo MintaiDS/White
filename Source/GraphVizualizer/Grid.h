@@ -16,8 +16,6 @@ struct Grid {
          const Util::Math::Vector<float>& cellSize = {0.0f, 0.0f});
     Grid(const Grid& other);
 
-//    Grid& operator=(const Grid& other);
-
     Util::Math::Vector<float> gridPosition;
     Util::Math::Vector<int> gridSize;
     Util::Math::Vector<float> cellSize; 

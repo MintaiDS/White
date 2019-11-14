@@ -7,11 +7,4 @@ Cell::Cell(const Util::Math::Vector<int>& cellPosition,
         : cellPosition(cellPosition)
         , vertexPosition(vertexPosition) {}
 
-//Cell& Cell::operator=(const Cell& other) {
-//    cellPosition = other.cellPosition;
-//    vertexPosition = other.vertexPosition;
-//
-//    return *this;
-//}
-
 }
