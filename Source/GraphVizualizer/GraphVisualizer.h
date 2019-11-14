@@ -18,15 +18,12 @@ public:
     GraphVisualizer(Renderer& renderer);
 
     void LoadGraph(std::string path);
-    void DisplayNode(Vector<GLfloat>& pos);
-    void DisplayEdge(Vector<GLfloat>& begin, Vector<GLfloat>& end);
 
     virtual void Play();
 
 protected:
-    Graph* graph;
-    //std::vector<Vector<GLfloat>> grid;
-    Grid* grid;
+    std::shared_ptr<Graph> graph;
+    std::shared_ptr<Grid> grid;
     GraphView graphView;
 };
 
