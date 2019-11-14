@@ -6,9 +6,7 @@
 using namespace White::Util;
 
 GraphView::GraphView() 
-        : renderer(nullptr)
-        , graph(nullptr)
-        , grid(nullptr) {}
+        : renderer(nullptr) {}
 
 void GraphView::Init() {
     for (int i = 0; i < graph->GetVerticesCnt(); i++) {
@@ -69,10 +67,10 @@ void GraphView::DisplayEdge(int from, int to) {
 void GraphView::SetRenderer(White::Engine::Graphics::Renderer* renderer) {
     this->renderer = renderer;
 }
-void GraphView::SetGraph(Math::Graph* graph) {
+void GraphView::SetGraph(std::shared_ptr<Math::Graph> graph) {
     this->graph = graph;
 }
 
-void GraphView::SetGrid(White::Grid* grid) {
+void GraphView::SetGrid(std::shared_ptr<White::Grid> grid) {
     this->grid = grid;
 }

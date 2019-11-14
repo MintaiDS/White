@@ -26,8 +26,8 @@ void GraphVisualizer::Play() {
                             {verticesCnt / 2, verticesCnt / 2}, 
                             {0.15f, 0.15f}));
         graphView.SetRenderer(&renderer);
-        graphView.SetGraph(graph.get());
-        graphView.SetGrid(grid.get());
+        graphView.SetGraph(graph);
+        graphView.SetGrid(grid);
         graphView.Init();
         graphView.Display();
     }

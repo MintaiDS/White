@@ -13,13 +13,13 @@ public:
     void Display();
     void DisplayNode(int node);
     void DisplayEdge(int from, int to);
-    void SetRenderer(White::Engine::Graphics::Renderer* renderer);
-    void SetGraph(White::Util::Math::Graph* graph);
-    void SetGrid(White::Grid* grid); 
+    void SetRenderer( White::Engine::Graphics::Renderer* renderer);
+    void SetGraph(std::shared_ptr<White::Util::Math::Graph> graph);
+    void SetGrid(std::shared_ptr<White::Grid> grid); 
 
 protected:
     White::Engine::Graphics::Renderer* renderer;
-    White::Util::Math::Graph* graph;
-    White::Grid* grid;
+    std::shared_ptr<White::Util::Math::Graph> graph;
+    std::shared_ptr<White::Grid> grid;
     std::vector<White::Cell> cells;
 };
