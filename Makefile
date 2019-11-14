@@ -11,7 +11,7 @@ src_engine_path = $(src_path)Engine/
 src_engine_graphics_path = $(src_engine_path)Graphics/
 src_util_system_path = $(src_util_path)System/
 src_util_math_path = $(src_util_path)Math/
-src_graph_vizualizer_path = $(src_path)GraphVizualizer/
+src_graph_visualizer_path = $(src_path)GraphVisualizer/
 src_engine_graphics_util_path = $(src_engine_graphics_path)Util/
 src_engine_graphics_core_path = $(src_engine_graphics_path)Core/
 src_engine_graphics_gl_path = $(src_engine_graphics_path)GL/
@@ -31,7 +31,7 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_drawing_path) \
                            /I $(src_engine_graphics_shader_path) \
 						   /I $(src_engine_graphics_interface_path) \
-						   /I $(src_graph_vizualizer_path) \
+						   /I $(src_graph_visualizer_path) \
 						   /I $(external_json_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
@@ -46,30 +46,30 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
 		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
 		Graph.o GraphView.o Graph.o Grid.o Cell.o Engine.exe 
-GraphVisualizer.o : $(src_graph_vizualizer_path)GraphVisualizer.cpp
+GraphVisualizer.o : $(src_graph_visualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \
     $(compiler_options_out)GraphVisualizer.o \
     $(compiler_options_include) \
-    $(src_graph_vizualizer_path)GraphVisualizer.cpp"    
-GraphView.o : $(src_graph_vizualizer_path)GraphView.cpp
+    $(src_graph_visualizer_path)GraphVisualizer.cpp"    
+GraphView.o : $(src_graph_visualizer_path)GraphView.cpp
     "$(compiler) \
     $(compiler_options) \
     $(compiler_options_out)GraphView.o \
     $(compiler_options_include) \
-    $(src_graph_vizualizer_path)GraphView.cpp"    
-Cell.o : $(src_graph_vizualizer_path)Cell.cpp
+    $(src_graph_visualizer_path)GraphView.cpp"    
+Cell.o : $(src_graph_visualizer_path)Cell.cpp
     "$(compiler) \
     $(compiler_options) \
     $(compiler_options_out)Cell.o \
     $(compiler_options_include) \
-    $(src_graph_vizualizer_path)Cell.cpp"    
-Grid.o : $(src_graph_vizualizer_path)Grid.cpp
+    $(src_graph_visualizer_path)Cell.cpp"    
+Grid.o : $(src_graph_visualizer_path)Grid.cpp
     "$(compiler) \
     $(compiler_options) \
     $(compiler_options_out)Grid.o \
     $(compiler_options_include) \
-    $(src_graph_vizualizer_path)Grid.cpp"    
+    $(src_graph_visualizer_path)Grid.cpp"    
 Matrix.o : $(src_util_math_path)Matrix.cpp
     "$(compiler) \
     $(compiler_options) \

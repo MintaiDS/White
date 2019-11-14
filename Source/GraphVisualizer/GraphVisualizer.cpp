@@ -7,6 +7,10 @@
 #include "Common.h"
 #include "Grid.h"
 
+#include <sstream>
+#include <fstream>
+#include <iostream>
+
 namespace White {
 namespace Engine {
 namespace Graphics {
@@ -20,11 +24,12 @@ void GraphVisualizer::LoadGraph(std::string path) {
 
 void GraphVisualizer::Play() {
     if (!graph) {
-        LoadGraph("Temp/small_graph.json"); 
+        LoadGraph("Temp/big_graph.json"); 
         int verticesCnt = graph->GetVerticesCnt();
+        int dimension = std::sqrt(verticesCnt) + 1;
         grid.reset(new Grid({0.0f, 0.0f}, 
-                            {verticesCnt / 2, verticesCnt / 2}, 
-                            {0.15f, 0.15f}));
+                            {dimension, dimension}, 
+                            {0.25f, 0.25f}));
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
