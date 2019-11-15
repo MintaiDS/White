@@ -129,14 +129,14 @@ void Renderer::Render() {
         glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
         Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
         program.Use();
-        //location = glGetUniformLocation(program.id, "view");
+        location = glGetUniformLocation(program.id, "view");
         //out << "View uniform location: " << location << std::endl;
         for (int i = 0; i < view.rows; i++) {
             for (int j = 0; j < view.columns; j++) {
                 raw.get()[i * view.columns + j] = view[i][j];
-                out << raw.get()[i * view.columns + j] <<  " ";
+                //out << raw.get()[i * view.columns + j] <<  " ";
             }
-            out << std::endl;
+            //out << std::endl;
         }
 
         //out.close();
