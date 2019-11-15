@@ -335,11 +335,13 @@ Matrix<T>& Matrix<T>::operator-=(const T value) {
 
 template<typename T>
 Matrix<T>& Matrix<T>::operator*=(const T value) {
-    for (auto& row : values) {
-        for (auto& column : row) {
-            column *= value;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            values[i][j] *= value;
         }
     }
+
+    return *this;
 }
 
 template<typename T>
