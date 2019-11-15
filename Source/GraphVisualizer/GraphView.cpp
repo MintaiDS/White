@@ -51,12 +51,12 @@ void GraphView::DisplayEdge(int from, int to) {
     Math::Vector<float> begin = cells[from].vertexPosition;
     Math::Vector<float> end = cells[to].vertexPosition; 
     Math::Vector<float> dir = end - begin;
-    Math::Vector<float> mid = begin + dir * (1.0 / 2.0f);
+    Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};
     float cross = initial.Dot(dir);
     float phi = Math::ToDegrees(std::acos(cross / (dir.Length() 
                                           * initial.Length())));
-    Math::Vector<float> rotation = {0.0f, 0.0f, -phi};
+    Math::Vector<float> rotation = {0.0f, 0.0f, phi};
     Math::Segment<float> segment(begin, end);
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     segmentMesh.Translate({mid[0], mid[1], 0.1f});
