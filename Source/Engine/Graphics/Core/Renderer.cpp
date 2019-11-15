@@ -36,12 +36,12 @@ void Renderer::Init() {
     shader.Source(path);
     shader.Compile();
 
-    std::ofstream out("shader-log.txt", std::ios::app);
-    out << shader.GetSource() << std::endl;
-    out << shader.GetSourceLength() << std::endl;
-    out << shader.IsCompiled() << std::endl;
-    out << shader.GetInfoLog() << std::endl;
-    out.close();
+    //std::ofstream out("shader-log.txt", std::ios::app);
+    //out << shader.GetSource() << std::endl;
+    //out << shader.GetSourceLength() << std::endl;
+    //out << shader.IsCompiled() << std::endl;
+    //out << shader.GetInfoLog() << std::endl;
+    //out.close();
 
     program.Attach(shader);
     shader.Delete();
@@ -113,7 +113,7 @@ void Renderer::Render() {
                                 * rotationMatrix 
                                 * scalingMatrix;
 
-        std::ofstream out("log.txt", std::ios::app);
+        //std::ofstream out("log.txt", std::ios::app);
         std::unique_ptr<GLfloat[]> raw 
             = std::make_unique<GLfloat[]>(model.rows * model.columns);
         for (int i = 0; i < model.rows; i++) {
@@ -123,14 +123,14 @@ void Renderer::Render() {
         }
         program.Use();
         GLint location = glGetUniformLocation(program.id, "model");
-        out << "Model uniform location: " << location << std::endl;
+        //out << "Model uniform location: " << location << std::endl;
 
         program.Use();
         glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
         Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
         program.Use();
-        location = glGetUniformLocation(program.id, "view");
-        out << "View uniform location: " << location << std::endl;
+        //location = glGetUniformLocation(program.id, "view");
+        //out << "View uniform location: " << location << std::endl;
         for (int i = 0; i < view.rows; i++) {
             for (int j = 0; j < view.columns; j++) {
                 raw.get()[i * view.columns + j] = view[i][j];
@@ -139,7 +139,7 @@ void Renderer::Render() {
             out << std::endl;
         }
 
-        out.close();
+        //out.close();
 
         program.Use();
         glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
