@@ -87,3 +87,109 @@ ERROR: 0:1: '' :  illegal non-ASCII character (0xc0)
 ERROR: 0:1: '' :  illegal non-ASCII character (0xc0)
 
 
+ÜJ
+0
+1
+
+H	
+0
+1
+
+#version 430
+
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
+
+layout(location = 0) uniform mat4 model;
+
+out vec4 vertexColor;
+
+void main() { 
+    gl_Position = model * vPosition; 
+    vertexColor = vColor;
+}
+
+252
+1
+
+À
+2
+0
+ERROR: 0:1: '' :  illegal non-ASCII character (0xc0)
+
+
+#version 430
+
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
+
+layout(location = 0) uniform mat4 model;
+
+out vec4 vertexColor;
+
+void main() { 
+    gl_Position = model * vPosition; 
+    vertexColor = vColor;
+}
+
+252
+1
+
+#version 430
+
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
+
+layout(location = 0) uniform mat4 model;
+
+out vec4 vertexColor;
+
+void main() { 
+    gl_Position = model * vPosition; 
+    vertexColor = vColor;
+}
+
+252
+1
+
+#version 430
+
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
+
+layout(location = 0) uniform mat4 model;
+
+out vec4 vertexColor;
+
+void main() { 
+    gl_Position = model * vPosition; 
+    vertexColor = vColor;
+}
+
+252
+1
+
+À
+2
+0
+ERROR: 0:1: '' :  illegal non-ASCII character (0xc0)
+
+
+#version 430
+
+layout(location = 0) in vec4 vPosition;
+layout(location = 1) in vec4 vColor;
+
+layout(location = 0) uniform mat4 model;
+layout(location = 1) uniform mat4 view;
+
+out vec4 vertexColor;
+
+void main() { 
+    gl_Position = model * vPosition; 
+    vertexColor = vColor;
+}
+
+293
+1
+

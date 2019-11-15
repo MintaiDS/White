@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
 
 namespace White {
 namespace Engine {
@@ -23,9 +24,11 @@ void Shader::Source(const std::wstring& path) {
     std::ifstream file(path, std::ios::binary); 
     std::stringstream buffer;
     buffer << file.rdbuf();
+    std::string source = buffer.str();
+    source += '\0'; 
     file.close();
-    GLchar* src = const_cast<GLchar*>(buffer.str().c_str());
-    glShaderSource(id, 1, &src, 0);
+    GLchar* src = const_cast<GLchar*>(source.data());  
+    glShaderSource(id, 1, &src, NULL);
 }
 
 void Shader::Compile() {
