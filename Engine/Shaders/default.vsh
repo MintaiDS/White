@@ -9,6 +9,6 @@ layout(location = 1) uniform mat4 view;
 out vec4 vertexColor;
 
 void main() { 
-    gl_Position = model * vPosition; 
+    gl_Position = view * model * vPosition; 
     vertexColor = vColor;
 }
