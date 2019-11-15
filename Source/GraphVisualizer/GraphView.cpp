@@ -53,8 +53,8 @@ void GraphView::DisplayEdge(int from, int to) {
     Math::Vector<float> dir = end - begin;
     Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};
-    float cross = initial.Dot(dir);
-    float phi = Math::ToDegrees(std::acos(cross / (dir.Length() 
+    float dot = initial.Dot(dir);
+    float phi = Math::ToDegrees(std::acos(dot / (dir.Length() 
                                           * initial.Length())));
     Math::Vector<float> rotation = {0.0f, 0.0f, phi};
     Math::Segment<float> segment(begin, end);
