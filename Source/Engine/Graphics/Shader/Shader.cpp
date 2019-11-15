@@ -36,6 +36,52 @@ void Shader::Delete() {
     glDeleteShader(id);
 }
 
+bool Shader::IsCompiled() {
+    GLint param;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &param);
+
+    return param == GL_TRUE;
+}
+
+int Shader::GetInfoLogLength() {
+    GLint param;
+    glGetShaderiv(id, GL_INFO_LOG_LENGTH, &param);
+
+    return param;
+}
+
+int Shader::GetSourceLength() {
+    GLint param;
+    glGetShaderiv(id, GL_SHADER_SOURCE_LENGTH, &param);
+
+    return param;
+}
+
+GLenum Shader::GetType() {
+    GLint param;
+    glGetShaderiv(id, GL_SHADER_TYPE, &param);
+
+    return param;
+}
+
+std::string Shader::GetInfoLog() {
+    int maxLength = GetInfoLogLength();
+    int length;
+    std::unique_ptr<GLchar[]> infoLog = std::make_unique<GLchar[]>(maxLength);
+    glGetShaderInfoLog(id, maxLength, &length, infoLog.get());
+
+    return std::string(infoLog.get());
+}
+
+std::string Shader::GetSource() {
+    int bufSize = GetSourceLength();
+    int length;
+    std::unique_ptr<GLchar[]> source = std::make_unique<GLchar[]>(bufSize);
+    glGetShaderSource(id, bufSize, &length, source.get());
+
+    return std::string(source.get());
+}
+
 }
 }
 }

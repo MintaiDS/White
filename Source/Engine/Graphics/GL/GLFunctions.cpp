@@ -41,6 +41,12 @@ FUNCTION_ADDRESS(glGetBufferSubData);
 FUNCTION_ADDRESS(glGetBufferParameteriv);
 FUNCTION_ADDRESS(glGetUniformLocation);
 FUNCTION_ADDRESS(glUniformMatrix4fv);
+FUNCTION_ADDRESS(glProgramUniformMatrix4fv);
+FUNCTION_ADDRESS(glGetShaderInfoLog);
+FUNCTION_ADDRESS(glGetShaderSource);
+FUNCTION_ADDRESS(glGetProgramBinary);
+FUNCTION_ADDRESS(glGetProgramInfoLog);
+FUNCTION_ADDRESS(glGetError);
 
 void* GetFunctionAddress(char* name, HMODULE hModule) {
     PROC address = wglGetProcAddress(name);
@@ -84,6 +90,13 @@ void LoadFunctions() {
     LOAD_FUNCTION(glGetBufferParameteriv);
     LOAD_FUNCTION(glGetUniformLocation);
     LOAD_FUNCTION(glUniformMatrix4fv);
+    LOAD_FUNCTION(glProgramUniformMatrix4fv);
+    LOAD_FUNCTION(glGetShaderiv);
+    LOAD_FUNCTION(glGetShaderInfoLog);
+    LOAD_FUNCTION(glGetShaderSource);
+    LOAD_FUNCTION(glGetProgramBinary);
+    LOAD_FUNCTION(glGetProgramInfoLog);
+    LOAD_FUNCTION(glGetError);
 }
 
 }

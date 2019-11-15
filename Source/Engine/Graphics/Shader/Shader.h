@@ -16,6 +16,12 @@ struct Shader {
     void Source(const std::wstring& path);
     void Compile();
     void Delete();
+    bool IsCompiled();
+    int GetInfoLogLength();
+    int GetSourceLength();
+    GLenum GetType();
+    std::string GetInfoLog();
+    std::string GetSource();
 
     GLuint id;
 };

@@ -5,6 +5,7 @@
 #include "Rectangle.h"
 #include "Game.h"
 #include "GraphVisualizer.h"
+#include "Logger.h"
 
 #include <fstream>
 #include <iostream>
@@ -25,18 +26,31 @@ Renderer::Renderer() {
 }
 
 void Renderer::Init() {
+    White::Util::Logger& logger = White::Util::Logger::GetInstance();
+    //logger.Init(L"shader-log.txt");
+    //logger.Flush();
+
+    program.Create();
     Shader shader(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";
     shader.Source(path);
     shader.Compile();
+
+    std::ofstream out("shader-log.txt", std::ios::app);
+    out << shader.GetSource() << std::endl;
+    out << shader.GetSourceLength() << std::endl;
+    out << shader.IsCompiled() << std::endl;
+    out << shader.GetInfoLog() << std::endl;
+    out.close();
+
     program.Attach(shader);
-    //shader.Delete();
+    shader.Delete();
     path = L"Engine/Shaders/default.fsh";
     shader.Create(GL_FRAGMENT_SHADER);
     shader.Source(path);
     shader.Compile();
     program.Attach(shader);
-    //shader.Delete();
+    shader.Delete();
     program.Link();
     program.Use();
     //program.Delete();
@@ -98,6 +112,8 @@ void Renderer::Render() {
         Matrix<GLfloat> model = translationMatrix 
                                 * rotationMatrix 
                                 * scalingMatrix;
+
+        std::ofstream out("log.txt", std::ios::app);
         std::unique_ptr<GLfloat[]> raw 
             = std::make_unique<GLfloat[]>(model.rows * model.columns);
         for (int i = 0; i < model.rows; i++) {
@@ -105,16 +121,28 @@ void Renderer::Render() {
                 raw.get()[i * model.columns + j] = model[i][j];
             }
         }
+        program.Use();
         GLint location = glGetUniformLocation(program.id, "model");
-        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+        out << "Model uniform location: " << location << std::endl;
+
+        program.Use();
+        glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
         Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
+        program.Use();
         location = glGetUniformLocation(program.id, "view");
+        out << "View uniform location: " << location << std::endl;
         for (int i = 0; i < view.rows; i++) {
             for (int j = 0; j < view.columns; j++) {
                 raw.get()[i * view.columns + j] = view[i][j];
+                out << raw.get()[i * view.columns + j] <<  " ";
             }
+            out << std::endl;
         }
-        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+
+        out.close();
+
+        program.Use();
+        glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
         DrawCall(list[i].indices.size(), indicesCnt);
         indicesCnt += list[i].indices.size();
     }

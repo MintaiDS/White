@@ -76,6 +76,20 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETUNIFORMLOCATIONPROC,
                         glGetUniformLocation);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX4FVPROC, 
                         glUniformMatrix4fv);
+EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX4FVPROC, 
+                        glProgramUniformMatrix4fv);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERIVPROC,
+                        glGetShaderiv);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERINFOLOGPROC,
+                        glGetShaderInfoLog);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERSOURCEPROC,
+                        glGetShaderSource);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMBINARYPROC,
+                        glGetProgramBinary);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMINFOLOGPROC,
+                        glGetProgramInfoLog);
+EXTERN_FUNCTION_ADDRESS(PFNGLGETERRORPROC,
+                        glGetError);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

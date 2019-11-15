@@ -17,9 +17,11 @@ void MeshLoader::Import(std::wstring path) {
     std::ifstream file(path);
     int verticesCnt = 0;
     int attributesCnt = 0;
+    int indicesCnt = 0;
     std::vector<int> componentsCnts;
     file >> verticesCnt;
     file >> attributesCnt;
+    file >> indicesCnt;
     for (int i = 0; i < attributesCnt; i++) {
         int componentsCnt = 0;
         file >> componentsCnt;
@@ -41,6 +43,11 @@ void MeshLoader::Import(std::wstring path) {
         vertices.push_back(vertexData);
     }
     Mesh<GLfloat> imported(vertices);
+    for (int i = 0; i < indicesCnt; i++) {
+        int index;
+        file >> index;
+        imported.indices.push_back(index);
+    }
     mesh = imported;
     file.close();
 }
@@ -49,6 +56,7 @@ void MeshLoader::Export(std::wstring path, const Mesh<GLfloat>& mesh) {
     std::ofstream file(path);
     int verticesCnt = mesh.vertices.size();
     int attributesCnt = mesh.vertices[0].attributes.size();
+    int indicesCnt = mesh.indices.size();
     std::vector<int> componentsCnts;
     file << verticesCnt << std::endl;
     file << attributesCnt << std::endl;
@@ -64,6 +72,9 @@ void MeshLoader::Export(std::wstring path, const Mesh<GLfloat>& mesh) {
             }
             file << std::endl;
         }
+    }
+    for (int i = 0; i < indicesCnt; i++) {
+        file << mesh.indices[i] << " ";
     }
     file.close();
 }

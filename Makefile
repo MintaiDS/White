@@ -45,7 +45,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
 		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
-		Graph.o GraphView.o Graph.o Grid.o Cell.o Engine.exe 
+		Graph.o GraphView.o Graph.o Grid.o Cell.o Logger.o Engine.exe 
 GraphVisualizer.o : $(src_graph_visualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -172,6 +172,12 @@ Window.o : $(src_util_system_path)Window.cpp
     $(compiler_options_out)Window.o \
     $(compiler_options_include) \
     $(src_util_system_path)Window.cpp"  
+Logger.o : $(src_util_system_path)Logger.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)Logger.o \
+    $(compiler_options_include) \
+    $(src_util_system_path)Logger.cpp"  
 Test.o : $(src_test_path)Test.cpp
     "$(compiler) \
     $(compiler_options) \
