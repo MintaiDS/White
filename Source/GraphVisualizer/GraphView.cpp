@@ -2,6 +2,7 @@
 #include "Disk.h"
 #include "Ring.h"
 #include "Segment.h"
+#include "DigitMeshCreator.h"
 
 #include <algorithm>
 
@@ -28,6 +29,10 @@ void GraphView::Display() {
         int to = graph->GetVByIdx(edge->GetTo())->GetId();
         DisplayEdge(from, to);
     }
+    White::Engine::Graphics::DigitMeshCreator digitMeshCreator;
+    digitMeshCreator.Load();
+    Mesh<float> digitMesh = digitMeshCreator.GetMeshForDigit(8);
+    renderer->AddMesh(digitMesh);
 }
 
 void GraphView::DisplayNode(int node) {

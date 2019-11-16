@@ -5,6 +5,7 @@ namespace Engine {
 namespace Graphics {
 
 struct MeshLoader {
+    MeshLoader();
     MeshLoader(const Mesh<GLfloat>& mesh);
 
     void Import(std::wstring path);

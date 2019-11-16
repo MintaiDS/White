@@ -30,9 +30,9 @@ compiler_options_include = /I $(src_util_math_path) \
                            /I $(src_engine_graphics_gl_path) \
                            /I $(src_engine_graphics_drawing_path) \
                            /I $(src_engine_graphics_shader_path) \
-						   /I $(src_engine_graphics_interface_path) \
-						   /I $(src_graph_visualizer_path) \
-						   /I $(external_json_path) \
+                           /I $(src_engine_graphics_interface_path) \
+                           /I $(src_graph_visualizer_path) \
+                           /I $(external_json_path) \
                            /I $(external_gl_path)
 linker_options = -defaultlib:libcmt -subsystem:windows
 linker_options_out = -out:$(bin_path)
@@ -44,8 +44,9 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         GLInitializer.o Mesh.o Shader.o Program.o Context.o Engine.o \
         BufferObject.o VertexArrayObject.o VertexData.o VertexAttribute.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
-		Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
-		Graph.o GraphView.o Graph.o Grid.o Cell.o Logger.o Engine.exe 
+        Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
+        DigitMeshCreator.o Graph.o GraphView.o Graph.o Grid.o Cell.o Logger.o \
+		Engine.exe 
 GraphVisualizer.o : $(src_graph_visualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -268,6 +269,12 @@ Mesh.o : $(src_engine_graphics_drawing_path)Mesh.cpp
     $(compiler_options_out)Mesh.o \
     $(compiler_options_include) \
     $(src_engine_graphics_drawing_path)Mesh.cpp"
+DigitMeshCreator.o : $(src_engine_graphics_drawing_path)DigitMeshCreator.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)DigitMeshCreator.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_drawing_path)DigitMeshCreator.cpp"
 VertexData.o : $(src_engine_graphics_drawing_path)VertexData.cpp
     "$(compiler) \
     $(compiler_options) \

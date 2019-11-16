@@ -11,6 +11,8 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
+MeshLoader::MeshLoader() {}
+
 MeshLoader::MeshLoader(const Mesh<GLfloat>& mesh) : mesh(mesh) {}
 
 void MeshLoader::Import(std::wstring path) {
