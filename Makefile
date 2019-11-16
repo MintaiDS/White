@@ -46,7 +46,7 @@ engine: Vector.o Common.o Matrix.o Polygon.o Window.o Color.o GLFunctions.o \
         MeshManager.o MeshLoader.o Shape.o Renderer.o Core.o Renderer.o \
         Pipeline.o Game.o IDrawable.o ObjectIDProvider.o GraphVisualizer.o \
         DigitMeshCreator.o Graph.o GraphView.o Graph.o Grid.o Cell.o Logger.o \
-		Engine.exe 
+		CharacterBlock.o Engine.exe 
 GraphVisualizer.o : $(src_graph_visualizer_path)GraphVisualizer.cpp
     "$(compiler) \
     $(compiler_options) \
@@ -269,6 +269,12 @@ Mesh.o : $(src_engine_graphics_drawing_path)Mesh.cpp
     $(compiler_options_out)Mesh.o \
     $(compiler_options_include) \
     $(src_engine_graphics_drawing_path)Mesh.cpp"
+CharacterBlock.o : $(src_engine_graphics_drawing_path)CharacterBlock.cpp
+    "$(compiler) \
+    $(compiler_options) \
+    $(compiler_options_out)CharacterBlock.o \
+    $(compiler_options_include) \
+    $(src_engine_graphics_drawing_path)CharacterBlock.cpp"
 DigitMeshCreator.o : $(src_engine_graphics_drawing_path)DigitMeshCreator.cpp
     "$(compiler) \
     $(compiler_options) \

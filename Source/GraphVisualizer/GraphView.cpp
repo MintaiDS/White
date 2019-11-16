@@ -3,8 +3,10 @@
 #include "Ring.h"
 #include "Segment.h"
 #include "DigitMeshCreator.h"
+#include "CharacterBlock.h"
 
 #include <algorithm>
+#include <sstream>
 
 using namespace White::Util;
 
@@ -29,10 +31,10 @@ void GraphView::Display() {
         int to = graph->GetVByIdx(edge->GetTo())->GetId();
         DisplayEdge(from, to);
     }
-    White::Engine::Graphics::DigitMeshCreator digitMeshCreator;
-    digitMeshCreator.Load();
-    Mesh<float> digitMesh = digitMeshCreator.GetMeshForDigit(8);
-    renderer->AddMesh(digitMesh);
+    //White::Engine::Graphics::DigitMeshCreator digitMeshCreator;
+    //digitMeshCreator.Load();
+    //Mesh<float> digitMesh = digitMeshCreator.GetMeshForDigit(8);
+    //renderer->AddMesh(digitMesh);
 }
 
 void GraphView::DisplayNode(int node) {
@@ -42,15 +44,26 @@ void GraphView::DisplayNode(int node) {
     Math::Disk<float> disk(0.2);
     Mesh<float> diskMesh = disk.ToMesh(color, 720);
     diskMesh.Scale({0.2f, 0.2f, 1.0f});
-    diskMesh.Translate({pos[0], pos[1], 0.0f});
+    diskMesh.Translate({pos[0], pos[1], 0.3f});
     renderer->AddMesh(diskMesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
     Mesh<float> ringMesh = ring.ToMesh(color, 720);
     ringMesh.Scale({0.2f, 0.2f, 1.0f});
-    ringMesh.Translate({pos[0], pos[1], 0.0f}); 
+    ringMesh.Translate({pos[0], pos[1], 0.3f}); 
     renderer->AddMesh(ringMesh);
+    
+    std::stringstream str;
+    str << graph->GetVById(node)->GetIdx();
+    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.1f}, 
+                                                      {0.032, 0.032}, str.str());
+    charBlock.Scale({0.028f, 0.028f, 1.0f});
+    charBlock.Translate({-0.008f, 0.0f, 0.1f});
+    std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
+    for (int i = 0; i < meshes.size(); i++) {
+        renderer->AddMesh(meshes[i]);
+    }
 }
 
 void GraphView::DisplayEdge(int from, int to) {
@@ -67,7 +80,7 @@ void GraphView::DisplayEdge(int from, int to) {
     Math::Vector<float> rotation = {0.0f, 0.0f, phi};
     Math::Segment<float> segment(begin, end);
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
-    segmentMesh.Translate({mid[0], mid[1], 0.1f});
+    segmentMesh.Translate({mid[0], mid[1], 0.9f});
     segmentMesh.Rotate(rotation);
     renderer->AddMesh(segmentMesh);
 }
