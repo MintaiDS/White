@@ -1,3 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(IDrawable IDrawable.cpp)
+set(SRC IDrawable)
+add_library(IDrawable ${SRC})

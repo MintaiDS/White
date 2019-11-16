@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(System Window.cpp)
+set(SRC)
+set(SRC ${SRC} Window.cpp)
+add_library(System ${SRC})
 

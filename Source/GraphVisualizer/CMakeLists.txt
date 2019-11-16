@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(GraphVisualizer GraphVisualizer.cpp GraphView.cpp Grid.cpp Cell.cpp)
-target_link_libraries(GraphVisualizer Drawing Core Math)
+set(SRC)
+set(SRC ${SRC} GraphVisualizer.cpp) 
+set(SRC ${SRC} GraphView.cpp) 
+set(SRC ${SRC} Grid.cpp) 
+set(SRC ${SRC} Cell.cpp)
+set(LIBS)
+set(LIBS ${LIBS} Drawing)
+set(LIBS ${LIBS} Core)
+set(LIBS ${LIBS} Math)
+add_library(GraphVisualizer ${SRC})
+target_link_libraries(GraphVisualizer ${LIBS})
 
 
 

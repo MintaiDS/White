@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 project(White)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/Math)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/System)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine/Graphics/Core)
@@ -15,7 +14,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine/Graphics/Util)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/GraphVisualizer)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External/OpenGL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External/nlohmann/json)
-
 add_subdirectory(Engine)
 add_subdirectory(Util)
 add_subdirectory(GraphVisualizer)

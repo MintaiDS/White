@@ -1,3 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(Shader Shader.cpp Program.cpp)
+set(SRC)
+set(SRC ${SRC} Shader.cpp)
+set(SRC ${SRC} Program.cpp)
+add_library(Shader ${SRC})
