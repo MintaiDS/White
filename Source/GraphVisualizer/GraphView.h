@@ -12,7 +12,7 @@ public:
     void Init();
     void Display();
     void DisplayNode(int node);
-    void DisplayEdge(int from, int to);
+    void DisplayEdge(int edge);
     void SetRenderer( White::Engine::Graphics::Renderer* renderer);
     void SetGraph(std::shared_ptr<White::Util::Math::Graph> graph);
     void SetGrid(std::shared_ptr<White::Grid> grid); 

@@ -27,14 +27,8 @@ void GraphView::Display() {
     }
     for (int i = 0; i < graph->GetEdgesCnt(); i++) {
         Edge* edge = graph->GetEdgeById(i);
-        int from = graph->GetVByIdx(edge->GetFrom())->GetId();
-        int to = graph->GetVByIdx(edge->GetTo())->GetId();
-        DisplayEdge(from, to);
+        DisplayEdge(i);
     }
-    //White::Engine::Graphics::DigitMeshCreator digitMeshCreator;
-    //digitMeshCreator.Load();
-    //Mesh<float> digitMesh = digitMeshCreator.GetMeshForDigit(8);
-    //renderer->AddMesh(digitMesh);
 }
 
 void GraphView::DisplayNode(int node) {
@@ -66,8 +60,11 @@ void GraphView::DisplayNode(int node) {
     }
 }
 
-void GraphView::DisplayEdge(int from, int to) {
-    Math::Vector<float> color = {0.0f, 0.0f, 0.0f, 1.0f};
+void GraphView::DisplayEdge(int edge) {
+    Edge* edgePtr = graph->GetEdgeById(edge);
+    int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
+    int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
+    Math::Vector<float> color = {0.7f, 0.7f, 0.6f, 1.0f};
     Math::Vector<float> begin = cells[from].vertexPosition;
     Math::Vector<float> end = cells[to].vertexPosition; 
     Math::Vector<float> dir = end - begin;
@@ -83,6 +80,17 @@ void GraphView::DisplayEdge(int from, int to) {
     segmentMesh.Translate({mid[0], mid[1], 0.9f});
     segmentMesh.Rotate(rotation);
     renderer->AddMesh(segmentMesh);
+
+    std::stringstream str;
+    str << edgePtr->GetLength();
+    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.1f}, 
+                                                      {0.032, 0.032}, str.str());
+    charBlock.Scale({0.028f, 0.028f, 1.0f});
+    charBlock.Translate({-0.008f, 0.001f, 0.1f});
+    std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
+    for (int i = 0; i < meshes.size(); i++) {
+        renderer->AddMesh(meshes[i]);
+    }
 }
 
 void GraphView::SetRenderer(White::Engine::Graphics::Renderer* renderer) {
