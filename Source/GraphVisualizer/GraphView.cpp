@@ -3,6 +3,8 @@
 #include "Ring.h"
 #include "Segment.h"
 
+#include <algorithm>
+
 using namespace White::Util;
 
 GraphView::GraphView() 
@@ -54,8 +56,9 @@ void GraphView::DisplayEdge(int from, int to) {
     Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};
     float dot = initial.Dot(dir);
-    float phi = Math::ToDegrees(std::acos(dot / (dir.Length() 
-                                          * initial.Length())));
+    Math::Vector<float> diff = initial - dir;
+    float phi = Math::ToDegrees(atan2(initial[0] * dir[1] - dir[0] * initial[1],
+                                      initial[0] * dir[0] + initial[1] * dir[1]));
     Math::Vector<float> rotation = {0.0f, 0.0f, phi};
     Math::Segment<float> segment(begin, end);
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);

@@ -27,22 +27,11 @@ Renderer::Renderer() {
 
 void Renderer::Init() {
     White::Util::Logger& logger = White::Util::Logger::GetInstance();
-    //logger.Init(L"shader-log.txt");
-    //logger.Flush();
-
     program.Create();
     Shader shader(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";
     shader.Source(path);
     shader.Compile();
-
-    //std::ofstream out("shader-log.txt", std::ios::app);
-    //out << shader.GetSource() << std::endl;
-    //out << shader.GetSourceLength() << std::endl;
-    //out << shader.IsCompiled() << std::endl;
-    //out << shader.GetInfoLog() << std::endl;
-    //out.close();
-
     program.Attach(shader);
     shader.Delete();
     path = L"Engine/Shaders/default.fsh";
@@ -58,38 +47,22 @@ void Renderer::Init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW); 
-    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
-    //Util::Math::Rectangle<GLfloat> rect(5, 0.4);
-    //Mesh<GLfloat> rectMesh 
-    //    = rect.ToMesh(color + Vector<GLfloat>{-0.2, -0.2, 0.3, 0.0f}, 0);
-    //rectMesh.Scale({0.3f, 0.3f, 1.0f});
-    //rectMesh.Translate({0.6f, 0.6f, 0.3f});
-    //rectMesh.Rotate({0.0f, 0.0f, 20.0f});
-    //Disk<GLfloat> disk(0.2);
-    //Mesh<GLfloat> diskMesh = disk.ToMesh(color, 720);
-    //diskMesh.Scale({0.2f, 0.2f, 1.0f});
-    //diskMesh.Translate({-0.97f, -0.97f, 0.0f});
-    //Ring<GLfloat> ring(0.1, 0.28);
-    //Mesh<GLfloat> ringMesh = ring.ToMesh(colorBorder, 720);
-    //ringMesh.Scale({0.2f, 0.2f, 1.0f});
-    //ringMesh.Translate({-0.97f, -0.97f, 0.0f});
-    //AddMesh(rectMesh);
-    //for (int i = 0; i < 10; i++) {
-    //    ringMesh.Translate({0.18f, 0.18f, 0.0f});
-    //    diskMesh.Translate({0.18f, 0.18f, 0.0f});
-    //    AddMesh(diskMesh);
-    //    AddMesh(ringMesh);
-    //}
-    //game = std::make_shared<GraphVizualizer>(*this);
-    //games.push_back(game);
+    Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
+    std::unique_ptr<GLfloat[]> raw 
+        = std::make_unique<GLfloat[]>(view.rows * view.columns);
+    program.Use();
+    GLint location = glGetUniformLocation(program.id, "view");
+    for (int i = 0; i < view.rows; i++) {
+        for (int j = 0; j < view.columns; j++) {
+            raw.get()[i * view.columns + j] = view[i][j];
+        }
+    }
+    program.Use();
+    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
     game = new GraphVisualizer(*this);
 }
 
 void Renderer::Render() {
-    //for (int i = 0; i < games.size(); i++) {
-    //    games[i]->Play();
-    //}
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
@@ -101,19 +74,15 @@ void Renderer::Render() {
             = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
                                          rotation[2], 1.0f});  
         Vector<GLfloat> translation = mesh.GetTranslation();
-        //translation += {0.5f, 0.0f, 0.0f, 0.0f};
         Matrix<GLfloat> translationMatrix
             = Matrix<GLfloat>::Translation(translation);
         Vector<GLfloat> scaling = mesh.GetScaling();
-        //scaling *= 0.1f;
         Matrix<GLfloat> scalingMatrix 
             = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
                                         scaling[2], 1.0f});
         Matrix<GLfloat> model = translationMatrix 
                                 * rotationMatrix 
                                 * scalingMatrix;
-
-        //std::ofstream out("log.txt", std::ios::app);
         std::unique_ptr<GLfloat[]> raw 
             = std::make_unique<GLfloat[]>(model.rows * model.columns);
         for (int i = 0; i < model.rows; i++) {
@@ -123,24 +92,6 @@ void Renderer::Render() {
         }
         program.Use();
         GLint location = glGetUniformLocation(program.id, "model");
-        //out << "Model uniform location: " << location << std::endl;
-
-        program.Use();
-        glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
-        Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
-        program.Use();
-        location = glGetUniformLocation(program.id, "view");
-        //out << "View uniform location: " << location << std::endl;
-        for (int i = 0; i < view.rows; i++) {
-            for (int j = 0; j < view.columns; j++) {
-                raw.get()[i * view.columns + j] = view[i][j];
-                //out << raw.get()[i * view.columns + j] <<  " ";
-            }
-            //out << std::endl;
-        }
-
-        //out.close();
-
         program.Use();
         glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
         DrawCall(list[i].indices.size(), indicesCnt);
@@ -209,6 +160,10 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
 void Renderer::AddMesh(Mesh<GLfloat> mesh) {
     list.push_back(mesh);
     UpdateData(mesh);
+}
+
+Program& Renderer::GetProgram() {
+    return program;
 }
 
 }

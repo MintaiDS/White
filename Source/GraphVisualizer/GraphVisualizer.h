@@ -18,6 +18,7 @@ public:
     GraphVisualizer(Renderer& renderer);
 
     void LoadGraph(std::string path);
+    void UpdateCamera();
 
     virtual void Play();
 

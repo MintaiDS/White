@@ -21,11 +21,11 @@ Grid::Grid(const Util::Math::Vector<float>& gridPosition,
     for (int i = 0; i < gridSize[1]; i++) {
         for (int j = 0; j < gridSize[0]; j++) {
             Util::Math::Vector<float> vertexPosition = {leftBorder 
-                                                  + j * cellSize[0] 
-                                                  + cellSize[0] / 2.0f,
-                                                  topBorder 
-                                                  - i * cellSize[1]
-                                                  - cellSize[1] / 2.0f};
+                                                        + j * cellSize[0] 
+                                                        + cellSize[0] / 2.0f,
+                                                        topBorder 
+                                                        - i * cellSize[1]
+                                                        - cellSize[1] / 2.0f};
             vertexPosition += gridPosition;
             cells[i][j] = Cell({i, j}, vertexPosition);
         }
