@@ -7,12 +7,12 @@ if "%arg%" equ "cmake" (
     cd Build 
     cmake ../Source 
     cd .. 
-    copy Build\Engine\Render\Core\Debug\Engine.exe Build\Bin\
+    call copy-executable.bat
 ) else if "%arg%" equ "msbuild" (
     cd Build
     msbuild White.sln
-    copy Engine\Render\Core\Debug\Engine.exe Bin\
     cd ..
+    call copy-executable.bat 
 ) else (
     call clean
     md Build

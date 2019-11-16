@@ -1,12 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(Mesh Mesh.cpp)
-add_library(BufferObject BufferObject.cpp)
-add_library(CharacterBlock CharacterBlock.cpp)
-add_library(DigitMeshCreator DigitMeshCreator.cpp)
-add_library(DrawElements DrawElements.cpp)
-add_library(RawData RawData.cpp)
-add_library(VertexArrayObject VertexArrayObject.cpp)
-add_library(VertexAttribute VertexAttribute.cpp)
-add_library(VertexBuffer VertexBuffer.cpp)
-add_library(VertexData VertexData.cpp)
+add_library(Drawing Mesh.cpp VertexData.cpp VertexBuffer.cpp VertexAttribute.cpp VertexArrayObject.cpp RawData.cpp DrawElements.cpp DigitMeshCreator.cpp BufferObject.cpp CharacterBlock.cpp)
+

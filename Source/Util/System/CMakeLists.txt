@@ -1,4 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
 
-add_library(Window Window.cpp)
+add_library(System Window.cpp)
 
