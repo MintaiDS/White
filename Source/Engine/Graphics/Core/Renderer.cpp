@@ -5,7 +5,6 @@
 #include "Rectangle.h"
 #include "Game.h"
 #include "GraphVisualizer.h"
-#include "Logger.h"
 
 #include <fstream>
 #include <iostream>
@@ -26,7 +25,6 @@ Renderer::Renderer() {
 }
 
 void Renderer::Init() {
-    White::Util::Logger& logger = White::Util::Logger::GetInstance();
     program.Create();
     Shader shader(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";

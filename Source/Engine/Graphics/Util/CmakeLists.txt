@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 add_library(Context Context.cpp)
+add_library(MeshLoader MeshLoader.cpp)
 find_library(OpenGL32.lib REQUIRED)
 target_link_libraries(Context OpenGL32.lib)
 target_link_libraries(Context Window)
