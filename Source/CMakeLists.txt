@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 2.6)
 
+include(ExternalProject)
+ExternalProject_Add(project_json
+    GIT_REPOSITORY git@github.com:nlohmann/json.git
+    GIT_TAG        origin/release/v3.7.2
+)
+add_library(json STATIC IMPORTED)
+add_dependencies(json project_json)
+set_property(TARGET json PROPERTY IMPORTED_LOCATION /External/nlohman/json)
+
 project(White)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/Math)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/System)
