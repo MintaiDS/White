@@ -8,9 +8,9 @@
 # Wargaming Forge 2019 Project
 ## Game Client
 ### White Team
-- Dmitry Sipeyko
-- Dmitry Lisay
-- Taras Makarevich
+- [Dmitry Lisay](https://github.com/403)
+- [Dmitry Sipeyko](https://github.com/MintaiDS)
+- [Taras Makarevich](https://github.com/glisquery)
 ### Short description
 An educational project of the simple game client. 
 A game is built with a simple game engine
