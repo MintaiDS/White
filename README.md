@@ -17,14 +17,25 @@ including graphics, networking and input system.
 ### Building instructions 
 #### On Windows
 ##### Build project and grab test data in one step
-- build - Build using CMake tool and download test data required for 
-the first task.
-##### Build manually
-- cmake -E make_directory Build Build/Bin Build/Obj
-- cd Build
-- cmake ../Source
-- cd ..
-- cmake --build Build
+- Build using CMake tool and download test data required for 
+the first task, alose creates test script in root directory.
+'''bash
+build 
+'''
+##### Manual building
+'''bash
+cmake -E make_directory Build Build/Bin Build/Obj
+cd Build
+cmake ../Source
+cd ..
+cmake --build Build
+'''
 ### Running application
-- run - Pass a path to the json file as a command line argument.
-- test - Display all graphs from test data set.
+ - Pass a path to the json file as a command line argument.
+ '''bash
+ run
+ '''
+- Display all graphs from test data set.
+'''bash
+test
+'''
