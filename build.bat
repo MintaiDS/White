@@ -9,5 +9,5 @@ cmake -E copy Build/Engine/Graphics/Core/Debug/Engine.exe Build/Bin/
 cmake --build Build
 cmake -E copy Build/Engine/Graphics/Core/Debug/Engine.exe Build/Bin/
 cmake -E make_directory test_graphs
-cmake -E copy_directory External/WGForgeTestData/src/WGForgeTestData/Test ./test_graphs/
-cmake -E rename Test test_graphs
+cmake -E copy_directory External/WGForgeTestData/src/WGForgeTestData/Test ./Test/
+cmake -E copy External/WGForgeTestData/src/WGForgeTestData/test.bat ./
