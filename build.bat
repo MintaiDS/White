@@ -1,15 +1,13 @@
-set arg=%1
-call clean
-md Build
-md Build\Bin
-md Build\Obj
-cd Build 
+cmake -E remove_directory Build
+cmake -E make_directory Build
+cmake -E make_directory Build/Bin
+cmake -E make_directory Build/Obj
+cd Build
 cmake ../Source 
 cd .. 
-copy Build\Engine\Graphics\Core\Debug\Engine.exe Build\Bin\
-cd Build
-msbuild White.sln
-cd ..
-copy Build\Engine\Graphics\Core\Debug\Engine.exe Build\Bin\
-xcopy /e External\WGForgeTestData\src\WGForgeTestData
-ren Test test_graphs
+cmake -E copy Build/Engine/Graphics/Core/Debug/Engine.exe Build/Bin/
+cmake --build Build
+cmake -E copy Build/Engine/Graphics/Core/Debug/Engine.exe Build/Bin/
+cmake -E make_directory test_graphs
+cmake -E copy_directory External/WGForgeTestData/src/WGForgeTestData/Test ./test_graphs/
+cmake -E rename Test test_graphs
