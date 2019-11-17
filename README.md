@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/glisquery/white/master/LICENSE)
+[![GitHub license](https://img.batchields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/glisquery/white/master/LICENSE)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f6661ca68a4473fa4e2440c5c272532)](https://www.codacy.com/manual/makarevich.t/White?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=glisquery/White&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/glisquery/White/badge.svg)](https://coveralls.io/github/glisquery/White)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
@@ -20,13 +20,13 @@ including graphics, networking and input system.
 - Build using CMake tool and download test data required for 
 the first task, alose creates test script in root directory.
 
-```shell
+```batch
 build 
 ```
 
 ##### Manual building
-
-```shell
+- Perform all building steps manually.
+```batch
 cmake -E make_directory Build Build/Bin Build/Obj
 cd Build
 cmake ../Source
@@ -37,13 +37,13 @@ cmake --build Build
 ### Running application
  - Pass a path to the json file as a command line argument.
 
-```sh
+```batch
  run
 ```
 
 - Display all graphs from test data set.
 
-```shell
+```batch
 test
 ```
 
