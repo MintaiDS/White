@@ -5,6 +5,7 @@ set(JSON_INCLUDE_PATH External/nlohmann/src/json/single_include/nlohmann)
 set(JSON_PATH External/nlohmann)
 ExternalProject_Add(json
     GIT_REPOSITORY https://github.com/nlohmann/json
+    GIT_SHALLOW TRUE
     GIT_TAG v3.7.2
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -16,6 +17,7 @@ set(EGL_INCLUDE_PATH External/KhronosGroup/EGL-Registry/src/EGL-Registry/api)
 set(EGL_PATH External/KhronosGroup/EGL-Registry)
 ExternalProject_Add(EGL-Registry
     GIT_REPOSITORY https://github.com/KhronosGroup/EGL-Registry
+    GIT_SHALLOW TRUE
     GIT_TAG master
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -27,6 +29,7 @@ set(OPENGL_INCLUDE_PATH External/KhronosGroup/OpenGL-Registry/src/OpenGL-Registr
 set(OPENGL_PATH External/KhronosGroup/OpenGL-Registry)
 ExternalProject_Add(OpenGL-Registry
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenGL-Registry
+    GIT_SHALLOW TRUE
     GIT_TAG master
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -37,6 +40,7 @@ ExternalProject_Add(OpenGL-Registry
 set(TEST_PATH External/WGForgeTestData)
 ExternalProject_Add(WGForgeTestData
     GIT_REPOSITORY https://github.com/glisquery/WGForgeTestData
+    GIT_SHALLOW TRUE
     GIT_TAG master
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
