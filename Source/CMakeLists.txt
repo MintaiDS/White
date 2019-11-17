@@ -34,6 +34,17 @@ ExternalProject_Add(OpenGL-Registry
     INSTALL_COMMAND ""
     PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${OPENGL_PATH}
 )
+set(TEST_PATH External/WGForgeTestData)
+ExternalProject_Add(WGForgeTestData
+    GIT_REPOSITORY https://github.com/glisquery/WGForgeTestData
+    GIT_TAG master
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${TEST_PATH}
+)
+
 project(White)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/Math)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/System)
