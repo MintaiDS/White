@@ -21,12 +21,14 @@ public:
     void DrawCall(int indicesCnt = 0, int skip = 0);
     void UpdateData(Mesh<GLfloat> mesh);
     void AddMesh(Mesh<GLfloat> mesh); 
+    void UpdateVertexData();
     Program& GetProgram();
 
 protected:
     Program program; 
     GraphVisualizer* game;
     std::vector<Mesh<GLfloat>> list;
+    std::vector<Mesh<GLfloat>> unused;
     int indicesCnt;
     BufferObject arrayBuffer;
     BufferObject elementArrayBuffer;

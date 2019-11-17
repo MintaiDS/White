@@ -29,6 +29,7 @@ void GraphView::Display() {
         Edge* edge = graph->GetEdgeById(i);
         DisplayEdge(i);
     }
+    renderer->UpdateVertexData();
 }
 
 void GraphView::DisplayNode(int node) {
