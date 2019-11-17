@@ -10,10 +10,20 @@
 - Dmitry Lisay
 - Taras Makarevich
 ### Short description
-An educational project of the simple game client. A game is built with a simple game engine
+An educational project of the simple game client. 
+A game is built with a simple game engine
 including graphics, networking and input system.
 ### Building instructions 
 #### On Windows
-Open Visual Studio Command Promt and just run one command.
-- build - Build using CMake tool, also downloads test data required for 
+##### Build project and grab test data in one step
+- build - Build using CMake tool and download test data required for 
 the first task.
+##### Build manually
+- cmake -E make_directory Build Build/Bin Build/Obj
+- cd Build
+- cmake ../Source
+- cd ..
+- cmake --build Build
+### Running application
+- run - Pass a path to the json file as a command line argument.
+- test - Display all graphs from test data set.
