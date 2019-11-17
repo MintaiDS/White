@@ -1,14 +1,39 @@
 cmake_minimum_required(VERSION 2.6)
 
 include(ExternalProject)
-ExternalProject_Add(project_json
-    GIT_REPOSITORY git@github.com:nlohmann/json.git
-    GIT_TAG        origin/release/v3.7.2
+set(JSON_INCLUDE_PATH External/nlohmann/src/json/single_include/nlohmann)
+set(JSON_PATH External/nlohmann)
+ExternalProject_Add(json
+    GIT_REPOSITORY https://github.com/nlohmann/json
+    GIT_TAG v3.7.2
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${JSON_PATH}
 )
-add_library(json STATIC IMPORTED)
-add_dependencies(json project_json)
-set_property(TARGET json PROPERTY IMPORTED_LOCATION /External/nlohman/json)
-
+set(EGL_INCLUDE_PATH External/KhronosGroup/EGL-Registry/src/EGL-Registry/api)
+set(EGL_PATH External/KhronosGroup/EGL-Registry)
+ExternalProject_Add(EGL-Registry
+    GIT_REPOSITORY https://github.com/KhronosGroup/EGL-Registry
+    GIT_TAG master
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${EGL_PATH}
+)
+set(OPENGL_INCLUDE_PATH External/KhronosGroup/OpenGL-Registry/src/OpenGL-Registry/api)
+set(OPENGL_PATH External/KhronosGroup/OpenGL-Registry)
+ExternalProject_Add(OpenGL-Registry
+    GIT_REPOSITORY https://github.com/KhronosGroup/OpenGL-Registry
+    GIT_TAG master
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${OPENGL_PATH}
+)
 project(White)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/Math)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/System)
@@ -22,7 +47,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine/Graphics/Interface)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine/Graphics/Util)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/GraphVisualizer)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External/OpenGL)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External/nlohmann/json)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../${JSON_INCLUDE_PATH})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../${EGL_INCLUDE_PATH})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../${OPENGL_INCLUDE_PATH})
 add_subdirectory(Engine)
 add_subdirectory(Util)
 add_subdirectory(GraphVisualizer)

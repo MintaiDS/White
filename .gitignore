@@ -7,3 +7,6 @@
 
 # Ignore build output.
 Build/
+
+# Ignore third party and test cases.
+External/
