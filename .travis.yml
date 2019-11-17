@@ -1,5 +1,6 @@
 language: c++
 os: windows
 script:
-    - cd glisquery/White
+    - cd 
+    - cd glisquery\White
     - build.bat
