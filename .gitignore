@@ -10,6 +10,8 @@ Build/
 
 # Ignore third party and test cases.
 External/
+Test/
+test.bat
 
 # Prerequisites
 *.d
