@@ -1,3 +1,16 @@
+# Ignore Vim backup files.
+~
+*.sw
+*.un
+*.swp
+*.swo
+
+# Ignore build output.
+Build/
+
+# Ignore third party and test cases.
+External/
+
 # Prerequisites
 *.d
 

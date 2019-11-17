@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 2.6)
+
+set(SRC)
+set(SRC ${SRC} Mesh.cpp) 
+set(SRC ${SRC} VertexData.cpp) 
+set(SRC ${SRC} VertexBuffer.cpp) 
+set(SRC ${SRC} VertexAttribute.cpp) 
+set(SRC ${SRC} VertexArrayObject.cpp) 
+set(SRC ${SRC} RawData.cpp) 
+set(SRC ${SRC} DrawElements.cpp) 
+set(SRC ${SRC} DigitMeshCreator.cpp) 
+set(SRC ${SRC} BufferObject.cpp) 
+set(SRC ${SRC} CharacterBlock.cpp)
+add_library(Drawing ${SRC})
+
