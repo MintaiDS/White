@@ -1,4 +1,5 @@
 #include "GraphVisualizer.h"
+#include "StartupSettings.h"
 #include "Renderer.h"
 #include "Rectangle.h"
 #include "Ring.h"
@@ -6,6 +7,9 @@
 #include "Segment.h"
 #include "Common.h"
 #include "Grid.h"
+
+#include <AtlBase.h>
+#include <atlconv.h>
 
 #include <sstream>
 #include <fstream>
@@ -47,7 +51,13 @@ void GraphVisualizer::UpdateCamera() {
 
 void GraphVisualizer::Play() {
     if (!graph) {
-        LoadGraph("test_graphs/20graph.json"); 
+        StartupSettings& settings = StartupSettings::GetInstance();
+        settings.ParseCommandLineArgs();
+        std::vector<std::wstring> args = settings.GetArgs();
+        std::wstring graphPath = args[1];
+        CW2A cw2a(graphPath.c_str());
+        std::string path = cw2a;
+        LoadGraph(path); 
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = std::sqrt(verticesCnt) + 1;
         grid.reset(new Grid({0.0f, 0.0f}, 
