@@ -169,6 +169,7 @@ void Renderer::UpdateVertexData() {
         summarySize += unused[i].GetSize();
         summaryIndicesCnt += unused[i].indices.size();
     }
+    int summaryCnt = summarySize / sizeof(GLfloat);
     //unused.clear();
     
     GLint prevSize = arrayBuffer.GetSize();
@@ -178,6 +179,8 @@ void Renderer::UpdateVertexData() {
     GLint newCnt = prevCnt + (newSize - prevSize) / sizeof(GLfloat);
 
     //GLfloat* newArrayData = mesh.GetRawData();
+    std::unique_ptr<GLfloat[]> newArrayData
+        = std::make_unique<GLfloat[]>(summaryCnt);
     std::unique_ptr<GLfloat[]> oldArrayData
         = std::make_unique<GLfloat[]>(prevCnt);
     arrayBuffer.GetSubData(0, prevSize, 
@@ -188,12 +191,19 @@ void Renderer::UpdateVertexData() {
                         reinterpret_cast<const GLvoid*>(oldArrayData.get()));
 
     GLint curSize = 0;
+    int curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        GLfloat* newArrayData = unused[i].GetRawData();
-        arrayBuffer.SetSubData(prevSize + curSize, unused[i].GetSize(), 
-                               reinterpret_cast<const GLvoid*>(newArrayData));
-        curSize += unused[i].GetSize();
+        GLfloat* meshArrayData = unused[i].GetRawData();
+        int cnt = unused[i].GetSize() / sizeof(GLfloat);
+        for (int i = 0; i < cnt; i++) {
+            newArrayData[curIndex] = meshArrayData[i]; 
+            curIndex++;
+        }
+        //curSize += unused[i].GetSize();
     }
+    arrayBuffer.SetSubData(prevSize, summarySize, 
+                           reinterpret_cast<const GLvoid*>(newArrayData.get()));
+
     GLint prevArrayCnt = prevCnt / 8;
     
     prevSize = elementArrayBuffer.GetSize();
@@ -201,6 +211,8 @@ void Renderer::UpdateVertexData() {
     prevCnt = prevSize / sizeof(GLuint);
     newCnt = prevCnt + (newSize - prevSize) / sizeof(GLuint);
     //GLuint* oldElementArrayData = new GLuint[prevCnt];
+    std::unique_ptr<GLuint[]> newElementArrayData
+        = std::make_unique<GLuint[]>(summaryIndicesCnt);
     std::unique_ptr<GLuint[]> oldElementArrayData 
         = std::make_unique<GLuint[]>(prevCnt);
     elementArrayBuffer.GetSubData(0, prevSize, 
@@ -211,17 +223,20 @@ void Renderer::UpdateVertexData() {
                     reinterpret_cast<const GLvoid*>(oldElementArrayData.get()));
     GLint curVerticesCnt = 0;
     curSize = 0;
+    curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        GLuint* newElementArrayData = unused[i].GetRawIndices();
+        GLuint* meshElementArrayData = unused[i].GetRawIndices();
         for (int j = 0; j < unused[i].indices.size(); j++) {
-            newElementArrayData[j] += prevArrayCnt + curVerticesCnt;
+            newElementArrayData[curIndex] = meshElementArrayData[j];
+            newElementArrayData[curIndex] += prevArrayCnt + curVerticesCnt;
+            curIndex++;
         }
-        elementArrayBuffer.SetSubData(prevSize + curSize, 
-                        unused[i].indices.size() * sizeof(GLuint),
-                        reinterpret_cast<const GLvoid*>(newElementArrayData));
         curSize += unused[i].indices.size() * sizeof(GLuint);
         curVerticesCnt += unused[i].GetSize() / sizeof(GLfloat) / 8;
     }
+    elementArrayBuffer.SetSubData(prevSize, 
+                    summaryIndicesCnt * sizeof(GLuint),
+                    reinterpret_cast<const GLvoid*>(newElementArrayData.get()));
 
     glVertexAttribPointer(0, 4, 
                           GL_FLOAT, GL_FALSE, 
