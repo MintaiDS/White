@@ -44,7 +44,6 @@ ExternalProject_Add(WGForgeTestData
     INSTALL_COMMAND ""
     PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../${TEST_PATH}
 )
-
 project(White)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/Math)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Util/System)
