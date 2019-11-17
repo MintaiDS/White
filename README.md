@@ -1,5 +1,4 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f6661ca68a4473fa4e2440c5c272532)](https://www.codacy.com/manual/makarevich.t/White?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=glisquery/White&amp;utm_campaign=Badge_Grade)
-https://www.code-inspector.com/project/1816/status/svg
 [![CodeFactor](https://www.codefactor.io/repository/github/glisquery/white/badge)](https://www.codefactor.io/repository/github/glisquery/white)
 [![Coverage Status](https://coveralls.io/repos/github/glisquery/White/badge.svg)](https://coveralls.io/github/glisquery/White)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
