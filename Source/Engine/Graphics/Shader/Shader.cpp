@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
+#include <memory>
 
 namespace White {
 namespace Engine {

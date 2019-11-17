@@ -51,7 +51,7 @@ void GraphView::DisplayNode(int node) {
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
     White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.1f}, 
-                                                      {0.032, 0.032}, str.str());
+                                                      {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.1f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();

@@ -3,6 +3,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/glisquery/White/badge.svg)](https://coveralls.io/github/glisquery/White)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
 [![Build Status](https://travis-ci.com/glisquery/White.svg?branch=master)](https://travis-ci.com/glisquery/White)
+![Code Inspector](https://www.code-inspector.com/project/1816/status/svg?sanitize=true)
+<img src="https://www.code-inspector.com/project/1816/status/svg?sanitize=true">
 # Wargaming Forge 2019 Project
 ## Game Client
 ### White Team
