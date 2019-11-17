@@ -84,7 +84,7 @@ void GraphView::DisplayEdge(int edge) {
     std::stringstream str;
     str << edgePtr->GetLength();
     White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.1f}, 
-                                                      {0.032, 0.032}, str.str());
+                                                      {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
     charBlock.Translate({-0.008f, 0.001f, 0.1f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
