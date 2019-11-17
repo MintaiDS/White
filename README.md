@@ -19,11 +19,9 @@ including graphics, networking and input system.
 ##### Build project and grab test data in one step
 - Build using CMake tool and download test data required for 
 the first task, alose creates test script in root directory.
-
 ```batch
 build 
 ```
-
 ##### Manual building
 - Perform all building steps manually.
 ```batch
@@ -33,16 +31,12 @@ cmake ../Source
 cd ..
 cmake --build Build
 ```
-
 ### Running application
- - Pass a path to the json file as a command line argument.
-
+ - Pass a path to the json file as a command line argument to run script.
 ```batch
  run
 ```
-
 - Display all graphs from test data set.
-
 ```batch
 test
 ```
