@@ -19,7 +19,7 @@ including graphics, networking and input system.
 #### On Windows
 ##### Build project and grab test data in one step
 - Build using CMake tool and download test data required for 
-the first task, alose creates test script in root directory.
+the first task, also test script will be created in the root directory.
 ```batch
 build 
 ```
