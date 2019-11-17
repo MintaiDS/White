@@ -34,7 +34,7 @@ cmake --build Build
 ### Running application
  - Pass a path to the json file as a command line argument to run script.
 ```batch
- run
+ run <path>
 ```
 - Display all graphs from test data set.
 ```batch
