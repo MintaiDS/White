@@ -1,2 +1,2 @@
-build:
-    build.bat
+test_script:
+    build
