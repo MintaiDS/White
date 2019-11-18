@@ -37,14 +37,14 @@ void GraphView::DisplayNode(int node) {
 
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
-    Mesh<float> diskMesh = disk.ToMesh(color, 720);
+    Mesh<float> diskMesh = disk.ToMesh(color, 120);
     diskMesh.Scale({0.2f, 0.2f, 1.0f});
     diskMesh.Translate({pos[0], pos[1], 0.3f});
     renderer->AddMesh(diskMesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
-    Mesh<float> ringMesh = ring.ToMesh(color, 720);
+    Mesh<float> ringMesh = ring.ToMesh(color, 120);
     ringMesh.Scale({0.2f, 0.2f, 1.0f});
     ringMesh.Translate({pos[0], pos[1], 0.3f}); 
     renderer->AddMesh(ringMesh);
