@@ -195,8 +195,8 @@ void Renderer::UpdateVertexData() {
     for (int i = 0; i < unused.size(); i++) {
         GLfloat* meshArrayData = unused[i].GetRawData();
         int cnt = unused[i].GetSize() / sizeof(GLfloat);
-        for (int i = 0; i < cnt; i++) {
-            newArrayData[curIndex] = meshArrayData[i]; 
+        for (int j = 0; j < cnt; j++) {
+            newArrayData[curIndex] = meshArrayData[j]; 
             curIndex++;
         }
     }
