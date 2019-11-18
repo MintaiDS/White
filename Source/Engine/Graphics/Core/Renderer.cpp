@@ -150,8 +150,6 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
 }
 
 void Renderer::AddMesh(Mesh<GLfloat> mesh) {
-    //list.push_back(mesh);
-    //UpdateData(mesh);
     unused.push_back(mesh);
 }
 
