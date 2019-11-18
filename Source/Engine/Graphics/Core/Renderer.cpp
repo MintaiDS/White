@@ -239,7 +239,7 @@ void Renderer::UpdateVertexData() {
         reinterpret_cast<const GLvoid*>(0),
         reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4)
     };
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[0])
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[0]);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[1]);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
