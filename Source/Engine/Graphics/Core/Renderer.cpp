@@ -234,14 +234,13 @@ void Renderer::UpdateVertexData() {
     GLint size = summaryIndicesCnt * sizeof(GLuint);
     elementArrayBuffer.SetSubData(prevSize, size, srcDataPtr);
                 
-    glVertexAttribPointer(0, 4, 
-                          GL_FLOAT, GL_FALSE, 
-                          sizeof(GLfloat) * 4 * 2, 
-                          reinterpret_cast<const GLvoid*>(0));
-    glVertexAttribPointer(1, 4, 
-                        GL_FLOAT, GL_FALSE, 
-                        sizeof(GLfloat) * 4 * 2, 
-                        reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
+    GLint blockSize = sizeof(GLfloat) * 4 * 2;
+    const GLvoid* offsetPtrs[] = {
+        reinterpret_cast<const GLvoid*>(0),
+        reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4)
+    };
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[0])
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[1]);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
