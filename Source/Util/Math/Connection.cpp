@@ -51,11 +51,8 @@ bool Connection::Connect(const char * hostname, int port)
   WSAStartup(ver, (LPWSADATA)&wsaData);
 #endif
 
-    std::ofstream out("log.txt", std::ios::app);
 
-    //printf("Unable to create socket\n");
-    out << "Start connection.\n";
-    out.close();
+    printf("Unable to create socket\n");
 #
 
   //Создаем сокет
@@ -63,11 +60,8 @@ bool Connection::Connect(const char * hostname, int port)
 
   if (clientSocket == SOCKET_ERROR)
   {
-    out.open("log.txt", std::ios::app);
 
-    //printf("Unable to create socket\n");
-    out << "Unable to create socket\n";
-    out.close();
+    printf("Unable to create socket\n");
 #ifndef __unix__
     WSACleanup();
 #endif
@@ -83,12 +77,8 @@ bool Connection::Connect(const char * hostname, int port)
   if (!hostEnt)
   {
 
-    out.open("log.txt", std::ios::app);
 
-    //printf("Unable to create socket\n");
-    out << "Unable to collect gethostbyname\n";
-    out.close();
-    //printf("Unable to collect gethostbyname\n");
+    printf("Unable to collect gethostbyname\n");
 #ifndef __unix__
     WSACleanup();
 #endif
@@ -103,24 +93,15 @@ bool Connection::Connect(const char * hostname, int port)
   if (retVal == SOCKET_ERROR)
   {
 
-   out.open("log.txt", std::ios::app);
 
-    //printf("Unable to create socket\n");
-    out << "Unable to connect\n";
-    out.close();
  
-    //printf("Unable to connect\n");
+    printf("Unable to connect\n");
 #ifndef __unix__
     WSACleanup();
 #endif
     return false;
   }
-  //printf("Connection established\n");
-    out.open("log.txt", std::ios::app);
-
-    //printf("Unable to create socket\n");
-    out << "Connection established\n";
-    out.close();
+    printf("Connection established\n");
   return true;
 }
 
