@@ -7,6 +7,7 @@
 #include "Segment.h"
 #include "Common.h"
 #include "Grid.h"
+#include "Connection.h"
 
 #include <AtlBase.h>
 #include <atlconv.h>
@@ -22,8 +23,43 @@ namespace Graphics {
 GraphVisualizer::GraphVisualizer(Renderer& renderer) 
         : Game(renderer) {}
 
-void GraphVisualizer::LoadGraph(std::string path) {
-    graph.reset(ParseGraphFromJSON(path));
+void GraphVisualizer::LoadGraph(std::string name) {
+    // graph.reset(ParseGraphFromJSON(path));
+    Graph gr;
+    Connection& conn = Connection::GetInstance(SERVER_ADDR, SERVER_PORT);
+    std::string data = "{\"name\":\"" + name + "\"}";
+    ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
+    ResponseMessage resp;
+    conn.Request(msg, resp);
+    delete[](resp.data);
+    delete[](msg.data);
+    msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
+    conn.Request(msg, resp);
+    if (resp.result == Result::OKEY)
+    {
+      ParseGraphFromJSON(gr, resp.data);
+    }
+    delete[](resp.data);
+    delete[](msg.data);
+    msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
+    conn.Request(msg, resp);
+    if (resp.result == Result::OKEY)
+    {
+      ParseInfrastructureFromJSON(gr, resp.data);
+    }
+    delete[](resp.data);
+    delete[](msg.data);
+   /* data = "{\"layer\":10}";
+    msg = conn.FormActionMessage(Action::MAP, data);
+    conn.Request(msg, resp);
+    delete[](resp.data);
+    if (resp.result == Result::OKEY)
+    {
+      ParseCoordFromJSON(gr, resp.data);
+    }*/
+    //msg = conn.FormActionMessage(Action::LOGOUT, "");
+    //conn.Request(msg, resp);
+    graph.reset(&gr);
 }
 
 void GraphVisualizer::UpdateCamera() {
@@ -54,10 +90,14 @@ void GraphVisualizer::Play() {
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
         std::vector<std::wstring> args = settings.GetArgs();
-        std::wstring graphPath = args[1];
-        CW2A cw2a(graphPath.c_str());
-        std::string path = cw2a;
-        LoadGraph(path); 
+        //std::wstring graphPath = args[1];
+        std::wstring playerName = args[1];
+        //CW2A cw2a(graphPath.c_str());
+        CW2A cw2a(playerName.c_str());
+        // std::string path = cw2a;
+        std::string name = cw2a;
+        // LoadGraph(path); 
+        LoadGraph(name); 
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = std::sqrt(verticesCnt) + 1;
         grid.reset(new Grid({0.0f, 0.0f}, 
