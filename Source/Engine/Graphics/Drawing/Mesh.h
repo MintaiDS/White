@@ -5,6 +5,7 @@
 #include "IDrawable.h"
 #include "Polygon.h"
 #include "Matrix.h"
+#include "Object.h"
 
 #include <windows.h>
 #include <gl/gl.h>
@@ -16,7 +17,7 @@ namespace Engine {
 namespace Graphics {
 
 template<typename T, typename U = unsigned>
-class Mesh : public IDrawable<T> {
+class Mesh : public Object, IDrawable<T> {
 public:
     Mesh();
     Mesh(const Mesh<T, U>& other);
