@@ -20,8 +20,7 @@ including graphics, networking and input system.
 ### Building instructions 
 #### On Windows
 ##### Build project and grab test data in one step
-- Build using CMake tool and download test data required for 
-the first task, also test script will be created in the root directory.
+- Build using CMake.
 ```batch
 build 
 ```
@@ -35,12 +34,7 @@ cd ..
 cmake --build Build
 ```
 ### Running application
- - Pass a path to the json file as a command line argument to run script.
+ - Pass username as a command line argument to the run script.
 ```batch
- run <path>
+ run <username>
 ```
-- Display all graphs from test data set.
-```batch
-test
-```
-
