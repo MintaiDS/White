@@ -4,9 +4,17 @@
 #include <map>
 #include <string>
 
+#include "Post.h"
+#include "Train.h"
+
 namespace White {
 namespace Util {
 namespace Math {
+
+struct Pnt {
+  int x;
+  int y;
+};
 
 class Edge {
 public:
@@ -16,14 +24,13 @@ public:
     v[0] = from;
     v[1] = to;
   }
-
+  int GetIdx() { return idx; }
   int GetFrom() { return v[0]; }
   int GetTo() { return v[1]; }
   int GetLength() { return length; }
-  void SetId(size_t id) { this->id = id; }
   size_t GetId() const { return id; };
-  int GetIdx() const { return idx; }
-
+  void SetId(size_t id) { this->id = id; }
+  
 private:
   size_t id;
   int idx;
@@ -38,19 +45,25 @@ public:
   Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx) {}
 
   int GetIdx() { return idx; }
-
   size_t GetId() { return id; }
+  Post* GetPost() { return post; }
+
   void SetId(size_t id) { this->id = id; }
+  void SetSize(int x, int y);
+  void SetPost(Post* post) { this->post = post; }
 
   void AppendEdge(Edge* e) { edges.push_back(e); }
 
   std::vector<Edge*>& GetEdgeList() { return edges; }
+
 
 private:
   size_t id;
   int idx;
   int post_idx;
   std::vector<Edge*> edges;
+  Pnt coord;
+  Post* post;
 };
 
 class Graph {
@@ -60,6 +73,8 @@ public:
   
   void AppendEdge(Edge* e);
   void AppendVertex(Vertex* v);
+  void AppendTrain(Train* t);
+  void AppendPost(Post* p);
 
   size_t GetVerticesCnt() const;
   size_t GetEdgesCnt() const;
@@ -67,6 +82,12 @@ public:
   Vertex* GetVById(size_t id);
   Edge* GetEdgeByIdx(int idx);
   Edge* GetEdgeById(size_t id);
+  std::vector<Vertex*>& GetVertices() { return vertices; }
+
+  void SetIdx(int idx) { this->idx = idx; }
+  void SetName(const std::string& name) { this->name = name; }
+
+  void SetSize(int x, int y);
 
 private:
   int idx;
@@ -74,11 +95,18 @@ private:
   std::vector<Edge*> edges;
   std::vector<Vertex*> vertices;
   std::map<int, size_t> v_ids;
+  Pnt map_size;
+  std::vector<City*> cities;
+  std::vector<Market*> markets;
+  std::vector<Storage*> storages;
+  std::vector<Train*> trains;
 };
 
-Graph* ParseGraphFromJSON(std::string filename);
+Graph* ParseGraphFromJSONFile(std::string filename);
+void ParseGraphFromJSON(Graph& g, char* data);
+void ParseCoordFromJSON(Graph& g, char* data);
+void ParseInfrastructureFromJSON(Graph& g, char* data);
 
 }
 }
 }
-
