@@ -25,7 +25,7 @@ GraphVisualizer::GraphVisualizer(Renderer& renderer)
 
 void GraphVisualizer::LoadGraph(std::string name) {
     // graph.reset(ParseGraphFromJSON(path));
-    Graph gr;
+    graph = std::make_shared<Graph>();
     Connection& conn = Connection::GetInstance(SERVER_ADDR, SERVER_PORT);
     std::string data = "{\"name\":\"" + name + "\"}";
     ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
@@ -37,7 +37,7 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
-      ParseGraphFromJSON(gr, resp.data);
+      ParseGraphFromJSON(*graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -45,7 +45,7 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
-      ParseInfrastructureFromJSON(gr, resp.data);
+      ParseInfrastructureFromJSON(*graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -59,7 +59,7 @@ void GraphVisualizer::LoadGraph(std::string name) {
     }*/
     //msg = conn.FormActionMessage(Action::LOGOUT, "");
     //conn.Request(msg, resp);
-    graph.reset(&gr);
+    //graph.reset(&gr);
 }
 
 void GraphVisualizer::UpdateCamera() {

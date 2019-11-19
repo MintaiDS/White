@@ -6,6 +6,7 @@
 #include "Connection.h"
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
 
 namespace White {
@@ -50,12 +51,23 @@ bool Connection::Connect(const char * hostname, int port)
   WSAStartup(ver, (LPWSADATA)&wsaData);
 #endif
 
+    std::ofstream out("log.txt", std::ios::app);
+
+    //printf("Unable to create socket\n");
+    out << "Start connection.\n";
+    out.close();
+#
+
   //Создаем сокет
   clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
   if (clientSocket == SOCKET_ERROR)
   {
-    printf("Unable to create socket\n");
+    out.open("log.txt", std::ios::app);
+
+    //printf("Unable to create socket\n");
+    out << "Unable to create socket\n";
+    out.close();
 #ifndef __unix__
     WSACleanup();
 #endif
@@ -70,7 +82,13 @@ bool Connection::Connect(const char * hostname, int port)
 
   if (!hostEnt)
   {
-    printf("Unable to collect gethostbyname\n");
+
+    out.open("log.txt", std::ios::app);
+
+    //printf("Unable to create socket\n");
+    out << "Unable to collect gethostbyname\n";
+    out.close();
+    //printf("Unable to collect gethostbyname\n");
 #ifndef __unix__
     WSACleanup();
 #endif
@@ -84,13 +102,25 @@ bool Connection::Connect(const char * hostname, int port)
   retVal = connect(clientSocket, (LPSOCKADDR)&serverInfo, sizeof(serverInfo));
   if (retVal == SOCKET_ERROR)
   {
-    printf("Unable to connect\n");
+
+   out.open("log.txt", std::ios::app);
+
+    //printf("Unable to create socket\n");
+    out << "Unable to connect\n";
+    out.close();
+ 
+    //printf("Unable to connect\n");
 #ifndef __unix__
     WSACleanup();
 #endif
     return false;
   }
-  printf("Connection established\n");
+  //printf("Connection established\n");
+    out.open("log.txt", std::ios::app);
+
+    //printf("Unable to create socket\n");
+    out << "Connection established\n";
+    out.close();
   return true;
 }
 
