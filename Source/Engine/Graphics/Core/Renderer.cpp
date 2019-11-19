@@ -5,6 +5,8 @@
 #include "Rectangle.h"
 #include "Game.h"
 #include "GraphVisualizer.h"
+#include "ObjectManager.h"
+#include "InterfaceProvider.h"
 
 #include <fstream>
 #include <iostream>
@@ -154,10 +156,14 @@ void Renderer::AddMesh(Mesh<GLfloat> mesh) {
 }
 
 void Renderer::UpdateVertexData() {
+    auto& om = ObjectManager::GetInstance();
     GLint summarySize = 0;
     GLint summaryIndicesCnt = 0;
     for (int i = 0; i < unused.size(); i++) {
-        list.push_back(unused[i]);
+        auto meshId = om.Create<Mesh<float>>(unused[i]);
+        auto mesh = om.GetObjectById(meshId);
+        InterfaceProvider ip;
+        list.push_back(*ip.Query<Mesh<float>>(mesh));
         summarySize += unused[i].GetSize();
         summaryIndicesCnt += unused[i].indices.size();
     }

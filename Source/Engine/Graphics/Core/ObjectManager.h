@@ -11,8 +11,8 @@ public:
     static ObjectManager& GetInstance();
     std::weak_ptr<Object> GetObjectById(unsigned id);
     void AddObject(std::weak_ptr<Object> object);
-    template<typename T, typename... Args> 
-    std::shared_ptr<T> Create(Args&&... args);
+    template<class T, class... Args> 
+    unsigned Create(Args&&... args);
 
 protected:
     ObjectManager();
@@ -22,5 +22,14 @@ protected:
 
     ObjectStorage storage;
 };
+
+template<typename T, typename... Args>
+unsigned ObjectManager::Create(Args&&... args) {
+    unsigned ret = storage.GetNextId();
+    std::shared_ptr<T> sharedPtr = std::make_shared<T>(args...);
+    AddObject(sharedPtr);
+
+    return ret;
+}
 
 }
