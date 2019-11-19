@@ -3,7 +3,7 @@
 ![Code Inspector](https://www.code-inspector.com/project/1816/status/svg?sanitize=true)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?sanitize=true)](https://raw.githubusercontent.com/glisquery/White/master/LICENSE)
-
+[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/glisquery/White.svg)](https://GitHub.com/glisquery/White/pull/)
 # Wargaming Forge 2019 Project
 ## Game Client
 ### White Team

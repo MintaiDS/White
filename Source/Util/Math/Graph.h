@@ -41,8 +41,8 @@ private:
 class Vertex {
 
 public:
-  Vertex() {}
-  Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx) {}
+  Vertex() : post(nullptr) {}
+  Vertex(int idx, int post_idx = -1) : post(nullptr), idx(idx), post_idx(post_idx) {}
 
   int GetIdx() { return idx; }
   size_t GetId() { return id; }
@@ -86,7 +86,21 @@ public:
   Vertex* GetVById(size_t id);
   Edge* GetEdgeByIdx(int idx);
   Edge* GetEdgeById(size_t id);
+  Train* GetTrainByIdx(int idx);
+  Train* GetTrainById(size_t id);
+  Storage* GetStorageByIdx(int idx);
+  Storage* GetStorageById(size_t id);
+  Market* GetMarketByIdx(int idx);
+  Market* GetMarketById(size_t id);
+  City* GetCityByIdx(int idx);
+  City* GetCityById(size_t id);
+
   std::vector<Vertex*>& GetVertices() { return vertices; }
+  std::vector<Edge*>& GetEdges() { return edges; }
+  std::vector<Train*>& GetTrains() { return trains; }
+  std::vector<Market*>& GetMarkets() { return markets; }
+  std::vector<Storage*>& GetStorages() { return storages; }
+  std::vector<City*>& GetCities() { return cities; }
 
   void SetIdx(int idx) { this->idx = idx; }
   void SetName(const std::string& name) { this->name = name; }
