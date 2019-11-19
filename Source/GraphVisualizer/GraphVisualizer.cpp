@@ -7,6 +7,7 @@
 #include "Segment.h"
 #include "Common.h"
 #include "Grid.h"
+#include "Connection.h"
 
 #include <AtlBase.h>
 #include <atlconv.h>
@@ -58,7 +59,7 @@ void GraphVisualizer::LoadGraph(std::string name) {
     }*/
     //msg = conn.FormActionMessage(Action::LOGOUT, "");
     //conn.Request(msg, resp);
-    graph.reset(gr);
+    graph.reset(&gr);
 }
 
 void GraphVisualizer::UpdateCamera() {

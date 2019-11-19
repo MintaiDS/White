@@ -8,7 +8,9 @@
 #include <iomanip>
 
 
-
+namespace White {
+namespace Engine {
+namespace Graphics {
 
 void toLittleEndian(std::stringstream& ss, uint32_t n)
 {
@@ -172,4 +174,8 @@ ActionMessage Connection::FormActionMessage(Action a, std::string data)
   msg.data = new char[msg.dataLength + 1];
   strcpy(msg.data, data.c_str());
   return msg;
+}
+
+}
+}
 }

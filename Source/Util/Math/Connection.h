@@ -4,13 +4,17 @@
 #include <unistd>
 #define on_Windows 0
 #else
-#include <winsock2.h>
+#include <winsock.h>
 #define on_Windows 1
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
 #define SERVER_ADDR "wgforge-srv.wargaming.net"
 #define SERVER_PORT 443
+
+namespace White {
+namespace Engine {
+namespace Graphics {
 
 enum Action
 {
@@ -79,7 +83,9 @@ private:
   
 };
 
-
+}
+}
+}
 
 
 
