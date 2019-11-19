@@ -48,7 +48,7 @@ template<typename T>
 Vector<T>::Vector(std::size_t size) 
         : size(size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = 0;
     }
 }
@@ -57,7 +57,7 @@ template<typename T>
 Vector<T>::Vector(std::size_t size, T* values) 
         : size(size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         this->values[i] = values[i];
     }
 }
@@ -66,7 +66,7 @@ template<typename T>
 Vector<T>::Vector(std::vector<T> values) 
         : size(values.size())
         , values(std::make_unique<T[]>(size)) { 
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         this->values[i] = values[i];
     }
 }
@@ -75,7 +75,7 @@ template<typename T>
 Vector<T>::Vector(const Vector<T>& other)
         : size(other.size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = other[i];
     }
 }
@@ -85,7 +85,7 @@ Vector<T>::Vector(std::initializer_list<T> args)
         : size(args.size())
         , values(std::make_unique<T[]>(size)) {
     std::initializer_list<T>::iterator it; 
-    int i = 0;
+    std::size_t i = 0;
     for (it = args.begin(); it != args.end(); ++it) {
         values[i] = *it;
         ++i;
@@ -96,7 +96,7 @@ template<typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
     size = other.size;
     values = std::make_unique<T[]>(size);
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = other[i];
     }
 
@@ -115,7 +115,7 @@ T& Vector<T>::operator[](std::size_t index) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator+=(const Vector<T>& other) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] += other[i];
     }
 
@@ -124,7 +124,7 @@ Vector<T>& Vector<T>::operator+=(const Vector<T>& other) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator-=(const Vector<T>& other) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] -= other[i];
     }
 
@@ -133,7 +133,7 @@ Vector<T>& Vector<T>::operator-=(const Vector<T>& other) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator+=(const T value) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] += value;
     }
 
@@ -147,7 +147,7 @@ Vector<T>& Vector<T>::operator-=(const T value) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator*=(const T value) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] *= value;
     }
 
@@ -194,7 +194,7 @@ Vector<T> Vector<T>::operator*(const T value) const {
 template<typename T>
 T Vector<T>::Length() const {
     T ret = 0;
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         ret += values.get()[i] * values.get()[i];
     }
 
@@ -204,7 +204,7 @@ T Vector<T>::Length() const {
 template<typename T>
 T Vector<T>::Dot(const Vector<T>& other) const {
     T ret = 0;
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         ret += values.get()[i] * other[i];
     }
 
