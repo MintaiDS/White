@@ -7,6 +7,8 @@
 
 #include <algorithm>
 #include <sstream>
+#include <random>
+#include <iterator>
 
 using namespace White::Util;
 
@@ -14,11 +16,16 @@ GraphView::GraphView()
         : renderer(nullptr) {}
 
 void GraphView::Init() {
-    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
+    int cnt = grid->gridSize[1] * grid->gridSize[1];
+    for (int i = 0; i < cnt; i++) {
         int row = i / (grid->gridSize[1]);
         int column = i % (grid->gridSize[1]);
         cells.push_back(grid->cells[row][column]);
+        shuffledIndices.push_back(i);
     }
+    std::random_device rd;
+    std::mt19937 g(rd()); 
+    std::shuffle(shuffledIndices.begin(), shuffledIndices.end(), g);
 }
 
 void GraphView::Display() {
@@ -34,7 +41,7 @@ void GraphView::Display() {
 }
 
 void GraphView::DisplayNode(int node) {
-    Math::Vector<float> pos = cells[node].vertexPosition;
+    Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
 
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
@@ -63,7 +70,7 @@ void GraphView::DisplayNode(int node) {
 }
 
 void GraphView::DisplayPost(int node) {
-    Math::Vector<float> pos = cells[node].vertexPosition;
+    Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
 
     Post* post = graph->GetVById(node)->GetPost();
 
@@ -102,7 +109,7 @@ void GraphView::DisplayPost(int node) {
     //ringMesh.Translate({pos[0], pos[1], 0.3f}); 
     //renderer->AddMesh(ringMesh);
 
-    mesh.Scale({0.2f, 0.2f, 1.0f});
+    mesh.Scale({0.12f, 0.12f, 1.0f});
     mesh.Translate({pos[0], pos[1], 0.3f}); 
     renderer->AddMesh(mesh);
     
@@ -123,8 +130,8 @@ void GraphView::DisplayEdge(int edge) {
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
     Math::Vector<float> color = {0.7f, 0.7f, 0.6f, 1.0f};
-    Math::Vector<float> begin = cells[from].vertexPosition;
-    Math::Vector<float> end = cells[to].vertexPosition; 
+    Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+    Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
     Math::Vector<float> dir = end - begin;
     Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};

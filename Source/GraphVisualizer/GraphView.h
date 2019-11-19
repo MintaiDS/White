@@ -23,4 +23,5 @@ protected:
     std::shared_ptr<White::Util::Math::Graph> graph;
     std::shared_ptr<White::Grid> grid;
     std::vector<White::Cell> cells;
+    std::vector<int> shuffledIndices;
 };
