@@ -104,6 +104,22 @@ size_t Graph::GetEdgesCnt() const {
     return edges.size();
 }
 
+size_t Graph::GetTrainsCnt() const {
+    return trains.size();
+}
+
+size_t Graph::GetMarketsCnt() const {
+    return markets.size();
+}
+
+size_t Graph::GetCitiesCnt() const {
+    return cities.size();
+}
+
+size_t Graph::GetStoragesCnt() const {
+    return storages.size();
+}
+
 void Graph::SetSize(int x, int y)
 {
   map_size.x = x;

@@ -78,6 +78,10 @@ public:
 
   size_t GetVerticesCnt() const;
   size_t GetEdgesCnt() const;
+  size_t GetTrainsCnt() const;
+  size_t GetMarketsCnt() const;
+  size_t GetCitiesCnt() const;
+  size_t GetStoragesCnt() const;
   Vertex* GetVByIdx(int idx);
   Vertex* GetVById(size_t id);
   Edge* GetEdgeByIdx(int idx);
