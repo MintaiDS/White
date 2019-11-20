@@ -11,5 +11,7 @@ set(SRC ${SRC} DrawElements.cpp)
 set(SRC ${SRC} DigitMeshCreator.cpp) 
 set(SRC ${SRC} BufferObject.cpp) 
 set(SRC ${SRC} CharacterBlock.cpp)
+set(SRC ${SRC} Scene.cpp)
+set(SRC ${SRC} Camera.cpp)
 add_library(Drawing ${SRC})
 
