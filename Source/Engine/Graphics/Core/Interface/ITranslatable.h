@@ -9,6 +9,8 @@ namespace Engine {
 
 class ITranslatable {
 public:
+    virtual ~ITranslatable();
+
     void Translate(const Vector<T>& translatable) = 0;
 };
 
