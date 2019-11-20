@@ -10,6 +10,8 @@ namespace Engine {
 template<typename T = unsigned, typename U = unsigned>
 class IndexProvider {
 public:
+    IndexProvider();
+
     void Add(T key, U index);
     void Remove(T key);
     U Get(T key);
@@ -19,7 +21,10 @@ protected:
     std::deque<U> unused;
 };
 
-template<typename T = unsigned, typename U = unsigned>
+template<typename T, typename U>
+IndexProvider<T, U>::IndexProvider() {}
+
+template<typename T, typename U>
 void IndexProvider<T, U>::Add(T key, U index) {
     if (!unused.empty()) {
         index = unused.front();
@@ -29,7 +34,7 @@ void IndexProvider<T, U>::Add(T key, U index) {
     mapping.insert(std::make_pair(key, index));
 }
 
-template<typename T = unsigned, typename U = unsigned>
+template<typename T, typename U>
 void IndexProvider<T, U>::Remove(T key) {
     std::map<T, U>::iterator it = mapping.find(key);
     U index = it->second;
@@ -37,7 +42,7 @@ void IndexProvider<T, U>::Remove(T key) {
     unused.push_back(index);
 }
 
-template<typename T = unsigned, typename U = unsigned>
+template<typename T, typename U>
 U IndexProvider<T, U>::Get(T key) { 
     std::map<T, U>::iterator it = mapping.find(key);
     
