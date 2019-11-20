@@ -1,10 +1,12 @@
 #pragma once
 
 #include "ObjectStorage.h"
+#include "ObjectIDProvider.h"
 
 #include <memory>
 
 namespace White {
+namespace Engine {
 
 class ObjectManager {
 public:
@@ -21,15 +23,17 @@ protected:
     ObjectManager& operator=(const ObjectManager& other) = delete;
 
     ObjectStorage storage;
+    ObjectIDProvider<unsigned> idProvider;
 };
 
 template<typename T, typename... Args>
 unsigned ObjectManager::Create(Args&&... args) {
-    unsigned ret = storage.GetNextId();
+    unsigned ret = idProvider.GetNextID();
     std::shared_ptr<T> sharedPtr = std::make_shared<T>(args...);
     AddObject(sharedPtr);
 
     return ret;
 }
 
+}
 }

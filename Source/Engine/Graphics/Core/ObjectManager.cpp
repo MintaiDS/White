@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 
 namespace White {
+namespace Engine {
 
 ObjectManager::ObjectManager() {}
 
@@ -20,4 +21,5 @@ void ObjectManager::AddObject(std::weak_ptr<Object> object) {
     storage.AddObject(object);
 }
 
+}
 }
