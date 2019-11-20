@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.6)
+
+set(SRC)
+set(SRC ${SRC} IObject.cpp) 
+set(SRC ${SRC} IPipelineStage.cpp) 
+set(SRC ${SRC} IRotatable.cpp) 
+set(SRC ${SRC} IScalable.cpp) 
+set(SRC ${SRC} ITransformable.cpp) 
+set(SRC ${SRC} ITranslatable.cpp) 
+add_library(Core ${SRC})
