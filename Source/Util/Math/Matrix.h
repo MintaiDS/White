@@ -24,6 +24,10 @@ struct Matrix {
     static Matrix Rotation(const Vector<T>& rotation);
     static Matrix Translation(const Vector<T>& translation);
     static Matrix Scaling(const Vector<T>& scale);
+    static Matrix Projection(T l, T t, T r, T b, T n, T f);
+    static Matrix Projection(T fov, T aspect, T n, T f);
+    static Matrix OrtographicProjection(T l, T t, T r, T b, T n, T f);
+    static Matrix OrtographicProjection(T fox, T aspect, T n, T f);
     
     Matrix& Transpose();
     Matrix Transposed();
@@ -182,6 +186,34 @@ Matrix<T> Matrix<T>::Scaling(const Vector<T>& scale) {
 
     return ret;
 }
+
+template<typename T>
+Matrix<T> Matrix<T>::Projection(T l, T t, T r, T b, T n, T f) {
+    Matrix<T> ret = {{2 * n / (r - l), 0, (l + r) / (l - r), 0}, 
+                     {0, 2 * n / (t - b), (b + t) / (b - t), 0}, 
+                     {0, 0, (f + n) / (f - n), (2 * f * n) / (n - f)}
+                     {0, 0, 1, 0}};
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::Projection(T fov, T aspect, T n, T f) {
+    Matrix<T> ret = {{1 / (tan(fov / 2) * aspect), 0, 0, 0}, 
+                     {0, 1 / tan(fov / 2), 0, 0}
+                     {0, 0, (f + n) / (f - n), (2 * f * n) / (n - f)}
+                     {0, 0, 1, 0}}
+
+    return ret;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::OrtographicProjection(T l, T t, T r, T b, T n, T f) {
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::OrtographicProjection(T fox, T aspect, T n, T f) {
+}    
 
 template<typename T>
 Matrix<T>& Matrix<T>::Transpose() {
