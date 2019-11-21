@@ -77,10 +77,10 @@ void GraphView::DisplayNode(int node) {
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
-    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.1f}, 
+    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.3f + 0.00001f}, 
                                                       {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
-    charBlock.Translate({-0.008f, 0.0f, 0.1f});
+    charBlock.Translate({-0.008f, 0.0f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         mesh = om.Create<Mesh<float>>(meshes[i]);
@@ -149,15 +149,15 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(om.GetObjectById(seg))->Rotate<float>(rotation);
-    ip.Query<ITranslatable>(om.GetObjectById(seg))->Translate<float>({mid[0], mid[1], 0.9f}); 
+    ip.Query<ITranslatable>(om.GetObjectById(seg))->Translate<float>({mid[0], mid[1], 0.3f}); 
     renderer->AddMesh(seg);
 
     std::stringstream str;
     str << edgePtr->GetLength();
-    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.1f}, 
+    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.3f + 0.00001f}, 
                                                       {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
-    charBlock.Translate({-0.008f, 0.001f, 0.1f});
+    charBlock.Translate({-0.008f, 0.001f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         unsigned mesh = om.Create<Mesh<float>>(meshes[i]);

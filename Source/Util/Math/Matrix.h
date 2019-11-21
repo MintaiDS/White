@@ -224,7 +224,6 @@ Matrix<T> Matrix<T>::OrtographicProjection(T fov, T aspect, T n, T f) {
                      {0, 0, 2 / (f - n), (n + f) / (n - f)},
                      {0, 0, 1, 0}}
 
-
     return ret;
 }    
 
