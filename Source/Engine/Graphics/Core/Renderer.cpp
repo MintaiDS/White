@@ -61,12 +61,16 @@ void Renderer::Init() {
 }
 
 void Renderer::Render() {
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip; 
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
     indicesCnt = 0;
     for (int i = 0; i < list.size(); i++) {
-        Mesh<GLfloat>& mesh = list[i]; 
+        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(list[i]));
+
+        //Mesh<GLfloat>& mesh = list[i]; 
         Vector<GLfloat> rotation = mesh.GetRotation();
         Matrix<GLfloat> rotationMatrix 
             = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
@@ -90,8 +94,8 @@ void Renderer::Render() {
         }
         GLint location = glGetUniformLocation(program.id, "model");
         glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
-        DrawCall(list[i].indices.size(), indicesCnt);
-        indicesCnt += list[i].indices.size();
+        DrawCall(mesh.indices.size(), indicesCnt);
+        indicesCnt += mesh.indices.size();
     }
 }
 
@@ -102,12 +106,16 @@ void Renderer::DrawCall(int indicesCnt, int skip) {
                    reinterpret_cast<const GLvoid*>(skip * sizeof(GLuint))); 
 }
 
-void Renderer::UpdateData(Mesh<GLfloat> mesh) { 
+void Renderer::UpdateData(unsigned mesh) { 
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
+    auto meshPtr = *ip.Query<Mesh<float>>(om.GetObjectById(mesh));
+
     GLint prevSize = arrayBuffer.GetSize();
-    GLint newSize = prevSize + mesh.GetSize();
+    GLint newSize = prevSize + meshPtr.GetSize();
     GLint prevCnt = prevSize / sizeof(GLfloat); 
     GLint newCnt = prevCnt + (newSize - prevSize) / sizeof(GLfloat);
-    GLfloat* newArrayData = mesh.GetRawData();
+    GLfloat* newArrayData = meshPtr.GetRawData();
     std::unique_ptr<GLfloat[]> oldArrayData
         = std::make_unique<GLfloat[]>(prevCnt);
     arrayBuffer.GetSubData(0, prevSize, 
@@ -121,11 +129,11 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     GLint prevArrayCnt = prevCnt / 8;
     
     prevSize = elementArrayBuffer.GetSize();
-    newSize = prevSize + sizeof(GLuint) * mesh.indices.size();
+    newSize = prevSize + sizeof(GLuint) * meshPtr.indices.size();
     prevCnt = prevSize / sizeof(GLuint);
     newCnt = prevCnt + (newSize - prevSize) / sizeof(GLuint);
-    GLuint* newElementArrayData = mesh.GetRawIndices();
-    for (int i = 0; i < mesh.indices.size(); i++) {
+    GLuint* newElementArrayData = meshPtr.GetRawIndices();
+    for (int i = 0; i < meshPtr.indices.size(); i++) {
         newElementArrayData[i] += prevArrayCnt;
     }
     std::unique_ptr<GLuint[]> oldElementArrayData 
@@ -151,21 +159,23 @@ void Renderer::UpdateData(Mesh<GLfloat> mesh) {
     glEnableVertexAttribArray(1);
 }
 
-void Renderer::AddMesh(Mesh<GLfloat> mesh) {
+void Renderer::AddMesh(unsigned mesh) {
     unused.push_back(mesh);
 }
 
 void Renderer::UpdateVertexData() {
     auto& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
     GLint summarySize = 0;
     GLint summaryIndicesCnt = 0;
     for (int i = 0; i < unused.size(); i++) {
-        auto meshId = om.Create<Mesh<float>>(unused[i]);
-        auto mesh = om.GetObjectById(meshId);
-        InterfaceProvider ip;
-        list.push_back(*ip.Query<Mesh<float>>(mesh));
-        summarySize += unused[i].GetSize();
-        summaryIndicesCnt += unused[i].indices.size();
+        //auto meshId = om.Create<Mesh<float>>(unused[i]);
+        //auto mesh = om.GetObjectById(meshId);
+        //InterfaceProvider ip;
+        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        list.push_back(unused[i]);
+        summarySize += mesh.GetSize();
+        summaryIndicesCnt += mesh.indices.size();
     }
     int summaryCnt = summarySize / sizeof(GLfloat);
     
@@ -188,8 +198,9 @@ void Renderer::UpdateVertexData() {
     nullPtr = reinterpret_cast<const GLvoid*>(nullptr);
     int curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        GLfloat* meshArrayData = unused[i].GetRawData();
-        int cnt = unused[i].GetSize() / sizeof(GLfloat);
+        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        GLfloat* meshArrayData = mesh.GetRawData();
+        int cnt = mesh.GetSize() / sizeof(GLfloat);
         for (int j = 0; j < cnt; j++) {
             newArrayData[curIndex] = meshArrayData[j]; 
             curIndex++;
@@ -216,14 +227,15 @@ void Renderer::UpdateVertexData() {
     GLint curSize = 0;
     curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        GLuint* meshElementArrayData = unused[i].GetRawIndices();
-        for (int j = 0; j < unused[i].indices.size(); j++) {
+        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        GLuint* meshElementArrayData = mesh.GetRawIndices();
+        for (int j = 0; j < mesh.indices.size(); j++) {
             newElementArrayData[curIndex] = meshElementArrayData[j];
             newElementArrayData[curIndex] += prevArrayCnt + curVerticesCnt;
             curIndex++;
         }
-        curSize += unused[i].indices.size() * sizeof(GLuint);
-        curVerticesCnt += unused[i].GetSize() / sizeof(GLfloat) / 8;
+        curSize += mesh.indices.size() * sizeof(GLuint);
+        curVerticesCnt += mesh.GetSize() / sizeof(GLfloat) / 8;
     }
     elementArrayBuffer.GetSubData(0, prevSize, oldDestDataPtr);
     elementArrayBuffer.SetData(newSize, nullPtr, GL_DYNAMIC_DRAW); 

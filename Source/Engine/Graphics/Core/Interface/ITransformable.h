@@ -15,9 +15,9 @@ class ITransformable : public IScalable<T>,
 public:
     virtual ~ITransformable();
 
-    void Transform(const Vector<T>& scaling, 
-                   const Vector<T>& rotation, 
-                   const Vector<T>& translation) = 0;
+    virtual void Transform(const Vector<T>& scaling, 
+                           const Vector<T>& rotation, 
+                           const Vector<T>& translation) = 0;
 };
 
 }

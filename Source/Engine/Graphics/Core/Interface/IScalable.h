@@ -12,7 +12,7 @@ class IScalable {
 public:
     virtual ~IScalable();
 
-    void Scale(const Vector<T>& scaling) = 0;
+    virtual void Scale(const Vector<T>& scaling) = 0;
 };
 
 }

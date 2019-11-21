@@ -12,7 +12,7 @@ class IRotatable {
 public:
     virtual ~IRotatable();
 
-    void Rotate(const Vector<T>& rotation) = 0;
+    virtual void Rotate(const Vector<T>& rotation) = 0;
 };
 
 }

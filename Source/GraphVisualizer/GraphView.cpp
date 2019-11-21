@@ -4,6 +4,9 @@
 #include "Segment.h"
 #include "DigitMeshCreator.h"
 #include "CharacterBlock.h"
+#include "ObjectManager.h"
+#include "InterfaceProvider.h"
+#include "ITransformable.h"
 
 #include <algorithm>
 #include <sstream>
@@ -11,6 +14,8 @@
 #include <iterator>
 
 using namespace White::Util;
+using namespace White::Engine;
+using namespace White;
 
 GraphView::GraphView() 
         : renderer(nullptr) {}
@@ -41,6 +46,9 @@ void GraphView::Display() {
 }
 
 void GraphView::DisplayNode(int node) {
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
+
     Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
 
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
@@ -48,14 +56,20 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> diskMesh = disk.ToMesh(color, 120);
     diskMesh.Scale({0.2f, 0.2f, 1.0f});
     diskMesh.Translate({pos[0], pos[1], 0.3f});
-    renderer->AddMesh(diskMesh);
+    unsigned mesh = om.Create<Mesh<float>>(diskMesh);
+    //ip.Query<IScalable<float>>(om.GetObjectById(diskMesh))->Scale({0.2f, 0.2f, 1.0f});
+    //ip.Query<ITranslatable<float>>(om.GetObjectById(diskMesh))->Translate({pos[0], pos[1], 0.3f});
+    renderer->AddMesh(mesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
     Mesh<float> ringMesh = ring.ToMesh(color, 120);
     ringMesh.Scale({0.2f, 0.2f, 1.0f});
     ringMesh.Translate({pos[0], pos[1], 0.3f}); 
-    renderer->AddMesh(ringMesh);
+    mesh = om.Create<Mesh<float>>(ringMesh);
+    //ip.Query<IScalable<float>>(om.GetObjectById(ringMesh))->Scale({0.2f, 0.2f, 1.0f});
+    //ip.Query<ITranslatable<float>>(om.GetObjectById(ringMesh))->Translate({pos[0], pos[1], 0.3f});
+    renderer->AddMesh(mesh);
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
@@ -65,11 +79,17 @@ void GraphView::DisplayNode(int node) {
     charBlock.Translate({-0.008f, 0.0f, 0.1f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
-        renderer->AddMesh(meshes[i]);
+        mesh = om.Create<Mesh<float>>(meshes[i]);
+        //ip.Query<IScalable<float>>(om.GetObjectById(charMesh))->Scale({0.2f, 0.2f, 1.0f});
+        //ip.Query<ITranslatable<float>>(om.GetObjectById(charMesh))->Translate({pos[0], pos[1], 0.3f});
+        renderer->AddMesh(mesh);
     }
 }
 
 void GraphView::DisplayPost(int node) {
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
+
     Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
 
     Post* post = graph->GetVById(node)->GetPost();
@@ -111,7 +131,8 @@ void GraphView::DisplayPost(int node) {
 
     mesh.Scale({0.12f, 0.12f, 1.0f});
     mesh.Translate({pos[0], pos[1], 0.3f}); 
-    renderer->AddMesh(mesh);
+    unsigned postMesh = om.Create<Mesh<float>>(mesh);
+    renderer->AddMesh(postMesh);
     
     //std::stringstream str;
     //str << graph->GetVById(node)->GetIdx();
@@ -126,6 +147,9 @@ void GraphView::DisplayPost(int node) {
 }
 
 void GraphView::DisplayEdge(int edge) {
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
+
     Edge* edgePtr = graph->GetEdgeById(edge);
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
@@ -144,7 +168,8 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     segmentMesh.Translate({mid[0], mid[1], 0.9f});
     segmentMesh.Rotate(rotation);
-    renderer->AddMesh(segmentMesh);
+    unsigned seg = om.Create<Mesh<float>>(segmentMesh);
+    renderer->AddMesh(seg);
 
     std::stringstream str;
     str << edgePtr->GetLength();
@@ -154,7 +179,8 @@ void GraphView::DisplayEdge(int edge) {
     charBlock.Translate({-0.008f, 0.001f, 0.1f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
-        renderer->AddMesh(meshes[i]);
+        unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
+        renderer->AddMesh(mesh);
     }
 }
 

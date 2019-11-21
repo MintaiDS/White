@@ -2,4 +2,7 @@
 #include "ObjectManager.h"
 
 namespace White {
+
+Object::~Object() {}
+
 }

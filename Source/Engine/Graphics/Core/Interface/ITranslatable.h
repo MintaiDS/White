@@ -12,7 +12,7 @@ class ITranslatable {
 public:
     virtual ~ITranslatable();
 
-    void Translate(const Vector<T>& translatable) = 0;
+    virtual void Translate(const Vector<T>& translatable) = 0;
 };
 
 }

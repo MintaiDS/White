@@ -19,16 +19,16 @@ public:
     void Init();
     void Render();
     void DrawCall(int indicesCnt = 0, int skip = 0);
-    void UpdateData(Mesh<GLfloat> mesh);
-    void AddMesh(Mesh<GLfloat> mesh); 
+    void UpdateData(unsigned mesh);
+    void AddMesh(unsigned mesh); 
     void UpdateVertexData();
     Program& GetProgram();
 
 protected:
     Program program; 
     GraphVisualizer* game;
-    std::vector<Mesh<GLfloat>> list;
-    std::vector<Mesh<GLfloat>> unused;
+    std::vector<unsigned> list;
+    std::vector<unsigned> unused;
     int indicesCnt;
     BufferObject arrayBuffer;
     BufferObject elementArrayBuffer;
