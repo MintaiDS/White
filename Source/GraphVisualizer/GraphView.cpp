@@ -35,7 +35,6 @@ void GraphView::Init() {
 
 void GraphView::Display() {
     for (int i = 0; i < graph->GetVerticesCnt(); i++) {
-        //DisplayNode(i);
         DisplayPost(i);
     }
     for (int i = 0; i < graph->GetEdgesCnt(); i++) {
@@ -54,8 +53,6 @@ void GraphView::DisplayNode(int node) {
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
     Mesh<float> diskMesh = disk.ToMesh(color, 120);
-    //diskMesh.Scale({0.2f, 0.2f, 1.0f});
-    //diskMesh.Translate({pos[0], pos[1], 0.3f});
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(om.GetObjectById(mesh));
     ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
@@ -68,9 +65,7 @@ void GraphView::DisplayNode(int node) {
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
-    Mesh<float> ringMesh = ring.ToMesh(color, 120);
-    //ringMesh.Scale({0.2f, 0.2f, 1.0f});
-    //ringMesh.Translate({pos[0], pos[1], 0.3f}); 
+    Mesh<float> ringMesh = ring.ToMesh(color, 120); 
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
                                                                0.2f, 
@@ -89,12 +84,6 @@ void GraphView::DisplayNode(int node) {
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         mesh = om.Create<Mesh<float>>(meshes[i]);
-        //ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
-        //                                                           0.2f, 
-        //                                                           1.0f});
-        //ip.Query<ITranslatable>(om.GetObjectById(mesh))->Translate<float>({pos[0], 
-        //                                                                   pos[1], 
-        //                                                                   0.3f}); 
         renderer->AddMesh(mesh);
     }
 }
@@ -128,20 +117,6 @@ void GraphView::DisplayPost(int node) {
     }
     mesh = loader.mesh;
 
-    //Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Math::Disk<float> disk(0.2);
-    //Mesh<float> diskMesh = disk.ToMesh(color, 120);
-    //diskMesh.Scale({0.2f, 0.2f, 1.0f});
-    //diskMesh.Translate({pos[0], pos[1], 0.3f});
-    //renderer->AddMesh(diskMesh);
-
-    //color = {0.0f, 0.0f, 0.5f, 1.0f};
-    //Math::Ring<float> ring(0.1, 0.28);
-    //Mesh<float> ringMesh = ring.ToMesh(color, 120);
-    //ringMesh.Scale({0.2f, 0.2f, 1.0f});
-    //ringMesh.Translate({pos[0], pos[1], 0.3f}); 
-    //renderer->AddMesh(ringMesh);
-
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
     ip.Query<IScalable>(om.GetObjectById(postMesh))->Scale<float>({0.12f, 
                                                                    0.12f, 
@@ -150,17 +125,6 @@ void GraphView::DisplayPost(int node) {
                                                                            pos[1], 
                                                                            0.3f}); 
     renderer->AddMesh(postMesh);
-    
-    //std::stringstream str;
-    //str << graph->GetVById(node)->GetIdx();
-    //White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.1f}, 
-    //                                                  {0.032f, 0.032f}, str.str());
-    //charBlock.Scale({0.028f, 0.028f, 1.0f});
-    //charBlock.Translate({-0.008f, 0.0f, 0.1f});
-    //std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
-    //for (int i = 0; i < meshes.size(); i++) {
-    //    renderer->AddMesh(meshes[i]);
-    //}
 }
 
 void GraphView::DisplayEdge(int edge) {
