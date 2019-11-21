@@ -6,7 +6,7 @@ namespace White {
 
 class Object {
 protected:
-    std::vector<Object> childs;
+    std::vector<unsigned> childs;
 };
 
 }
