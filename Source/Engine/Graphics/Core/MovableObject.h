@@ -9,16 +9,16 @@ namespace White {
 namespace Engine {
 
 template<typename T>
-class MovableObject : public Object, public ITransformable<T> {
+class MovableObject : public Object, public ITransformable {
 public:
     MovableObject();
 
-    virtual void Scale(const Vector<T>& scaling);
-    virtual void Rotate(const Vector<T>& rotation);
-    virtual void Translate(const Vector<T>& translation);
-    virtual void Transform(const Vector<T>& scaling, 
-                           const Vector<T>& rotation, 
-                           const Vector<T>& translation); 
+    virtual void Scale(const Vector<float>& scaling);
+    virtual void Rotate(const Vector<float>& rotation);
+    virtual void Translate(const Vector<float>& translation);
+    virtual void Transform(const Vector<float>& scaling, 
+                           const Vector<float>& rotation, 
+                           const Vector<float>& translation); 
 
 protected:
     ObjectManager& om;
@@ -31,7 +31,7 @@ MovableObject<T>::MovableObject() : om(ObjectManager::GetInstance()) {
 }
     
 template<typename T>
-void MovableObject<T>::Scale(const Vector<T>& scaling) {
+void MovableObject<T>::Scale(const Vector<float>& scaling) {
     InterfaceProvider ip;
     std::shared_ptr<IScalable> mc;
     mc = op.Query<IScalable>(om.GetObjectById(motionController));
@@ -39,7 +39,7 @@ void MovableObject<T>::Scale(const Vector<T>& scaling) {
 }
 
 template<typename T>
-void MovableObject<T>::Rotate(const Vector<T>& rotation) {
+void MovableObject<T>::Rotate(const Vector<float>& rotation) {
     InterfaceProvider ip;
     std::shared_ptr<IRotatable> mc;
     mc = op.Query<IRotatable>(om.GetObjectById(motionController));
@@ -47,7 +47,7 @@ void MovableObject<T>::Rotate(const Vector<T>& rotation) {
 }
 
 template<typename T>
-void MovableObject<T>::Translate(const Vector<T>& translation) {
+void MovableObject<T>::Translate(const Vector<float>& translation) {
     InterfaceProvider ip;
     std::shared_ptr<ITranslatable> mc;
     mc = op.Query<IScalable>(om.GetObjectById(motionController));
@@ -55,9 +55,9 @@ void MovableObject<T>::Translate(const Vector<T>& translation) {
 }
 
 template<typename T>
-void MovableObject<T>::Transform(const Vector<T>& scaling, 
-                                 const Vector<T>& rotation, 
-                                 const Vector<T>& translation) {
+void MovableObject<T>::Transform(const Vector<float>& scaling, 
+                                 const Vector<float>& rotation, 
+                                 const Vector<float>& translation) {
     InterfaceProvider ip;
     std::shared_ptr<ITransformable> mc;
     mc = op.Query<ITransformable>(om.GetObjectById(motionController));

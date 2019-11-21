@@ -7,16 +7,21 @@ using namespace White::Util::Math;
 namespace White {
 namespace Engine {
 
-template<typename T>
 class ITranslatable {
 public:
     virtual ~ITranslatable();
-
-    virtual void Translate(const Vector<T>& translatable) = 0;
+    
+    template<typename T>
+    void Translate(const Vector<T>& translation);
+    
+private:
+    virtual void Translate(const Vector<float>& translation) = 0;
 };
 
 template<typename T>
-ITranslatable<T>::~ITranslatable() {}
+void ITranslatable::Translate(const Vector<T>& translation) {
+    Translate(translation);
+}
 
 }
 }

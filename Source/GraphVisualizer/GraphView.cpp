@@ -54,21 +54,30 @@ void GraphView::DisplayNode(int node) {
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
     Mesh<float> diskMesh = disk.ToMesh(color, 120);
-    diskMesh.Scale({0.2f, 0.2f, 1.0f});
-    diskMesh.Translate({pos[0], pos[1], 0.3f});
+    //diskMesh.Scale({0.2f, 0.2f, 1.0f});
+    //diskMesh.Translate({pos[0], pos[1], 0.3f});
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
-    //ip.Query<IScalable<float>>(om.GetObjectById(diskMesh))->Scale({0.2f, 0.2f, 1.0f});
-    //ip.Query<ITranslatable<float>>(om.GetObjectById(diskMesh))->Translate({pos[0], pos[1], 0.3f});
+    auto ptr = ip.Query<ITransformable>(om.GetObjectById(mesh));
+    ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
+                                                               0.2f, 
+                                                               1.0f});
+    ip.Query<ITranslatable>(om.GetObjectById(mesh))->Translate<float>({pos[0], 
+                                                                       pos[1], 
+                                                                       0.3f});
     renderer->AddMesh(mesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
     Mesh<float> ringMesh = ring.ToMesh(color, 120);
-    ringMesh.Scale({0.2f, 0.2f, 1.0f});
-    ringMesh.Translate({pos[0], pos[1], 0.3f}); 
+    //ringMesh.Scale({0.2f, 0.2f, 1.0f});
+    //ringMesh.Translate({pos[0], pos[1], 0.3f}); 
     mesh = om.Create<Mesh<float>>(ringMesh);
-    //ip.Query<IScalable<float>>(om.GetObjectById(ringMesh))->Scale({0.2f, 0.2f, 1.0f});
-    //ip.Query<ITranslatable<float>>(om.GetObjectById(ringMesh))->Translate({pos[0], pos[1], 0.3f});
+    ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
+                                                               0.2f, 
+                                                               1.0f});
+    ip.Query<ITranslatable>(om.GetObjectById(mesh))->Translate<float>({pos[0], 
+                                                                       pos[1], 
+                                                                       0.3f});
     renderer->AddMesh(mesh);
     
     std::stringstream str;
@@ -80,8 +89,12 @@ void GraphView::DisplayNode(int node) {
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         mesh = om.Create<Mesh<float>>(meshes[i]);
-        //ip.Query<IScalable<float>>(om.GetObjectById(charMesh))->Scale({0.2f, 0.2f, 1.0f});
-        //ip.Query<ITranslatable<float>>(om.GetObjectById(charMesh))->Translate({pos[0], pos[1], 0.3f});
+        //ip.Query<IScalable>(om.GetObjectById(mesh))->Scale<float>({0.2f, 
+        //                                                           0.2f, 
+        //                                                           1.0f});
+        //ip.Query<ITranslatable>(om.GetObjectById(mesh))->Translate<float>({pos[0], 
+        //                                                                   pos[1], 
+        //                                                                   0.3f}); 
         renderer->AddMesh(mesh);
     }
 }
@@ -129,9 +142,13 @@ void GraphView::DisplayPost(int node) {
     //ringMesh.Translate({pos[0], pos[1], 0.3f}); 
     //renderer->AddMesh(ringMesh);
 
-    mesh.Scale({0.12f, 0.12f, 1.0f});
-    mesh.Translate({pos[0], pos[1], 0.3f}); 
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
+    ip.Query<IScalable>(om.GetObjectById(postMesh))->Scale<float>({0.12f, 
+                                                                   0.12f, 
+                                                                   1.0f});
+    ip.Query<ITranslatable>(om.GetObjectById(postMesh))->Translate<float>({pos[0], 
+                                                                           pos[1], 
+                                                                           0.3f}); 
     renderer->AddMesh(postMesh);
     
     //std::stringstream str;
@@ -166,9 +183,9 @@ void GraphView::DisplayEdge(int edge) {
     Math::Vector<float> rotation = {0.0f, 0.0f, phi};
     Math::Segment<float> segment(begin, end);
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
-    segmentMesh.Translate({mid[0], mid[1], 0.9f});
-    segmentMesh.Rotate(rotation);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
+    ip.Query<IRotatable>(om.GetObjectById(seg))->Rotate<float>(rotation);
+    ip.Query<ITranslatable>(om.GetObjectById(seg))->Translate<float>({mid[0], mid[1], 0.9f}); 
     renderer->AddMesh(seg);
 
     std::stringstream str;

@@ -18,7 +18,7 @@ namespace Engine {
 namespace Graphics {
 
 template<typename T, typename U = unsigned>
-class Mesh : public Object, ITransformable<T> {
+class Mesh : public Object, public ITransformable {
 public:
     Mesh();
     Mesh(const Mesh<T, U>& other);
@@ -37,12 +37,12 @@ public:
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
 
-    virtual void Scale(const Vector<T>& scaling);
-    virtual void Rotate(const Vector<T>& rotation);
-    virtual void Translate(const Vector<T>& translation);
-    virtual void Transform(const Vector<T>& scaling, 
-                           const Vector<T>& rotation, 
-                           const Vector<T>& translation); 
+    virtual void Scale(const Vector<float>& scaling);
+    virtual void Rotate(const Vector<float>& rotation);
+    virtual void Translate(const Vector<float>& translation);
+    virtual void Transform(const Vector<float>& scaling, 
+                           const Vector<float>& rotation, 
+                           const Vector<float>& translation); 
 
     T* GetRawData();
     U* GetRawIndices();
@@ -54,9 +54,9 @@ protected:
     unsigned id; 
     T* rawData;
     U* rawIndices;
-    Vector<T> rotation;
-    Vector<T> scaling;
-    Vector<T> translation;
+    Vector<float> rotation;
+    Vector<float> scaling;
+    Vector<float> translation;
 };
 
 template<typename T, typename U = unsigned>
@@ -164,26 +164,30 @@ Vector<T> Mesh<T, U>::GetTranslation() const {
     return ret;
 }
 
+//template<typename T, typename U = unsigned>
+//void Mesh<T, U>::Scale(const Vector<T>& scaling) {
+//    this->scaling = scaling; 
+//}
+
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Scale(const Vector<T>& scaling) {
+void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 
 }
 
 template<typename T, typename U = unsigned>
-
-void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
+void Mesh<T, U>::Rotate(const Vector<float>& rotation) {
     this->rotation += rotation;
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Translate(const Vector<T>& translation) {
+void Mesh<T, U>::Translate(const Vector<float>& translation) {
     this->translation += translation;
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Transform(const Vector<T>& scaling, 
-                           const Vector<T>& rotation, 
-                           const Vector<T>& translation) {
+void Mesh<T, U>::Transform(const Vector<float>& scaling, 
+                           const Vector<float>& rotation, 
+                           const Vector<float>& translation) {
     Scale(scaling);
     Rotate(rotation);
     Translate(translation);

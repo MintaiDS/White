@@ -7,16 +7,23 @@ using namespace White::Util::Math;
 namespace White {
 namespace Engine {
 
-template<typename T>
 class IScalable {
 public:
     virtual ~IScalable();
 
-    virtual void Scale(const Vector<T>& scaling) = 0;
+    template<typename T>
+    void Scale(const Vector<T>& scaling); 
+
+private:
+    virtual void Scale(const Vector<float>& scaling) = 0;
 };
 
+//IScalable::~IScalable() {}
+
 template<typename T>
-IScalable<T>::~IScalable() {}
+void IScalable::Scale(const Vector<T>& scaling) {
+    Scale(scaling);
+}
 
 }
 }
