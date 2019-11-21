@@ -7,6 +7,7 @@ using namespace White::Util::Math;
 namespace White {
 namespace Engine {
 
+template<typename T>
 class ITranslatable {
 public:
     virtual ~ITranslatable();

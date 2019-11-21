@@ -99,7 +99,9 @@ void GraphVisualizer::Play() {
         // LoadGraph(path); 
         LoadGraph(name); 
         int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 2 * (std::sqrt(verticesCnt) + 1);
+        //int dimension = (std::log2(verticesCnt) - 1) 
+        //                * (std::sqrt(verticesCnt) + 1);
+        int dimension = 2 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, 0.0f}, 
                             {dimension, dimension}, 
                             {0.25f, 0.25f}));
