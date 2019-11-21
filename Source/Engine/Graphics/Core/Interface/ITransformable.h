@@ -20,5 +20,8 @@ public:
                            const Vector<T>& translation) = 0;
 };
 
+template<typename T>
+ITransformable<T>::~ITransformable() {}
+
 }
 }

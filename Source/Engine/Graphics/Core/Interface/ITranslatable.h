@@ -15,5 +15,8 @@ public:
     virtual void Translate(const Vector<T>& translatable) = 0;
 };
 
+template<typename T>
+ITranslatable<T>::~ITranslatable() {}
+
 }
 }

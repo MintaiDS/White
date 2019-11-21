@@ -15,5 +15,8 @@ public:
     virtual void Scale(const Vector<T>& scaling) = 0;
 };
 
+template<typename T>
+IScalable<T>::~IScalable() {}
+
 }
 }

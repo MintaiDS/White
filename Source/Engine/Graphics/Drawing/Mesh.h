@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ObjectIDProvider.h"
+#include "ITransformable.h"
 #include "VertexData.h"
 #include "IDrawable.h"
 #include "Polygon.h"
@@ -17,7 +18,7 @@ namespace Engine {
 namespace Graphics {
 
 template<typename T, typename U = unsigned>
-class Mesh : public Object, IDrawable<T> {
+class Mesh : public Object, ITransformable<T> {
 public:
     Mesh();
     Mesh(const Mesh<T, U>& other);
@@ -36,9 +37,12 @@ public:
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
 
-    virtual void Rotate(const Vector<T>& rotation);
     virtual void Scale(const Vector<T>& scaling);
+    virtual void Rotate(const Vector<T>& rotation);
     virtual void Translate(const Vector<T>& translation);
+    virtual void Transform(const Vector<T>& scaling, 
+                           const Vector<T>& rotation, 
+                           const Vector<T>& translation); 
 
     T* GetRawData();
     U* GetRawIndices();
@@ -161,18 +165,28 @@ Vector<T> Mesh<T, U>::GetTranslation() const {
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
-    this->rotation += rotation; 
+void Mesh<T, U>::Scale(const Vector<T>& scaling) {
+    this->scaling = scaling; 
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Scale(const Vector<T>& scaling) {
-    this->scaling = scaling;
+
+void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
+    this->rotation += rotation;
 }
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Translate(const Vector<T>& translation) {
     this->translation += translation;
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::Transform(const Vector<T>& scaling, 
+                           const Vector<T>& rotation, 
+                           const Vector<T>& translation) {
+    Scale(scaling);
+    Rotate(rotation);
+    Translate(translation);
 }
 
 template<typename T, typename U = unsigned>

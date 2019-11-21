@@ -15,5 +15,8 @@ public:
     virtual void Rotate(const Vector<T>& rotation) = 0;
 };
 
+template<typename T>
+IRotatable<T>::~IRotatable() {}
+
 }
 }
