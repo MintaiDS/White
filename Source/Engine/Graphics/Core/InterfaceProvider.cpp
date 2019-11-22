@@ -2,6 +2,6 @@
 
 namespace White {
 
-InterfaceProvider::InterfaceProvider() {}
+InterfaceProvider::InterfaceProvider(unsigned id) : id(id) {}
 
 }

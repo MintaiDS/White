@@ -68,7 +68,7 @@ void Renderer::Render() {
     glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
     indicesCnt = 0;
     for (int i = 0; i < list.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(list[i]));
+        auto mesh = *ip.Query<Mesh<float>>(list[i]);
 
         //Mesh<GLfloat>& mesh = list[i]; 
         Vector<GLfloat> rotation = mesh.GetRotation();
@@ -109,7 +109,7 @@ void Renderer::DrawCall(int indicesCnt, int skip) {
 void Renderer::UpdateData(unsigned mesh) { 
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
-    auto meshPtr = *ip.Query<Mesh<float>>(om.GetObjectById(mesh));
+    auto meshPtr = *ip.Query<Mesh<float>>(mesh);
 
     GLint prevSize = arrayBuffer.GetSize();
     GLint newSize = prevSize + meshPtr.GetSize();
@@ -172,7 +172,7 @@ void Renderer::UpdateVertexData() {
         //auto meshId = om.Create<Mesh<float>>(unused[i]);
         //auto mesh = om.GetObjectById(meshId);
         //InterfaceProvider ip;
-        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        auto mesh = *ip.Query<Mesh<float>>(unused[i]);
         list.push_back(unused[i]);
         summarySize += mesh.GetSize();
         summaryIndicesCnt += mesh.indices.size();
@@ -198,7 +198,7 @@ void Renderer::UpdateVertexData() {
     nullPtr = reinterpret_cast<const GLvoid*>(nullptr);
     int curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        auto mesh = *ip.Query<Mesh<float>>(unused[i]);
         GLfloat* meshArrayData = mesh.GetRawData();
         int cnt = mesh.GetSize() / sizeof(GLfloat);
         for (int j = 0; j < cnt; j++) {
@@ -227,7 +227,7 @@ void Renderer::UpdateVertexData() {
     GLint curSize = 0;
     curIndex = 0;
     for (int i = 0; i < unused.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(om.GetObjectById(unused[i]));
+        auto mesh = *ip.Query<Mesh<float>>(unused[i]);
         GLuint* meshElementArrayData = mesh.GetRawIndices();
         for (int j = 0; j < mesh.indices.size(); j++) {
             newElementArrayData[curIndex] = meshElementArrayData[j];
