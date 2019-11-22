@@ -50,6 +50,7 @@ struct Matrix {
     Matrix operator+(const Matrix<T>& other) const;
     Matrix operator-(const Matrix<T>& other) const;
     Matrix operator*(const Matrix<T>& other) const;
+    Vector<T> operator*(const Vector<T>& vec) const;
     Matrix operator+(const T value) const;
     Matrix operator-(const T value) const;
     Matrix operator*(const T value) const;
@@ -230,7 +231,7 @@ Matrix<T> Matrix<T>::OrtographicProjection(T fov, T aspect, T n, T f) {
 template<typename T>
 Matrix<T>& Matrix<T>::Transpose() {
     for (std::size_t i = 0; i < rows; i++) {
-        for (std::size_t j = 0; j < columns; j++) {
+        for (std::size_t j = i; j < columns; j++) {
             std::swap(values[i][j], values[j][i]);
         }
     }
@@ -441,6 +442,17 @@ template<typename T>
 Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
     Matrix<T> ret(*this);
     ret *= other;
+
+    return ret;
+}
+
+template<typename T>
+Vector<T> Matrix<T>::operator*(const Vector<T>& vec) const {
+    Vector<T> ret(vec);
+    for (int i = 0; i < rows; i++) {
+        Vector<T> row = this->values[i];
+        ret[i] = row.Dot(vec);
+    }
 
     return ret;
 }

@@ -214,9 +214,9 @@ T Vector<T>::Dot(const Vector<T>& other) const {
 template<typename T>
 Vector<T> Vector<T>::Cross(const Vector<T>& other) const {
     Vector<T> ret(size);
-    ret[0] = *this[1] * other[2] - *this[2] * other[1];
-    ret[1] = *this[0] * other[2] - *this[2] * other[0];
-    ret[2] = *this[0] * other[1] - *this[1] * other[0];
+    ret[0] = values[1] * other[2] - values[2] * other[1];
+    ret[1] = values[0] * other[2] - values[2] * other[0];
+    ret[2] = values[0] * other[1] - values[1] * other[0];
 
     return ret;
 }

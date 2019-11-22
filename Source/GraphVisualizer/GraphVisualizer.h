@@ -4,6 +4,7 @@
 #include "Graph.h"
 #include "Vector.h"
 #include "GraphView.h"
+#include "Camera.h"
 
 #include <string>
 
@@ -23,6 +24,7 @@ public:
     virtual void Play();
 
 protected:
+    Camera<float> camera;
     std::shared_ptr<Graph> graph;
     std::shared_ptr<Grid> grid;
     GraphView graphView;

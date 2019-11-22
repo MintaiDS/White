@@ -8,6 +8,7 @@
 #include "Common.h"
 #include "Grid.h"
 #include "Connection.h"
+#include "Camera.h"
 
 #include <AtlBase.h>
 #include <atlconv.h>
@@ -66,14 +67,18 @@ void GraphVisualizer::UpdateCamera() {
     Program& program = renderer.GetProgram();
 
     // Setup view matrix.
-    Matrix<GLfloat> view = Matrix<GLfloat>::Identity(2);
-    view[0][0] *= (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
-    view[1][1] *= (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
-    view.Inverse();
-    view = {{view[0][0], view[0][1], 0.0f, 0.0f}, 
-            {view[1][0], view[1][1], 0.0f, 0.0f}, 
-            {0.0f, 0.0f, 1.0f, 0.0f}, 
-            {0.0f, 0.0f, 0.0f, 1.0f}};
+    //Matrix<GLfloat> view = Matrix<GLfloat>::Identity(2);
+    //view[0][0] *= (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+    //view[1][1] *= (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+    //view.Inverse();
+    //view = {{view[0][0], view[0][1], 0.0f, 0.0f}, 
+    //        {view[1][0], view[1][1], 0.0f, 0.0f}, 
+    //        {0.0f, 0.0f, 1.0f, 0.0f}, 
+    //        {0.0f, 0.0f, 0.0f, 1.0f}};
+    //camera.Translate({0.0f, 0.0f, -0.1f});
+    camera.Rotate({0.0f, 0.0f, -20.0f});
+    camera.Scale({1.1f, 1.1f, 1.1f});
+    Matrix<GLfloat> view = camera.GetViewMatrix();
     std::unique_ptr<GLfloat[]> raw 
         = std::make_unique<GLfloat[]>(view.rows * view.columns);
     program.Use();
