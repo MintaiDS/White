@@ -56,7 +56,7 @@ void GraphView::DisplayNode(int node) {
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(mesh);
     ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.3f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
     renderer->AddMesh(mesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
@@ -64,12 +64,12 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> ringMesh = ring.ToMesh(color, 120); 
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.3f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
     renderer->AddMesh(mesh);
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
-    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.3f + 0.00001f}, 
+    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.00001f}, 
                                                       {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.0f});
@@ -111,7 +111,7 @@ void GraphView::DisplayPost(int node) {
 
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
     ip.Query<IScalable>(postMesh)->Scale<float>({0.12f, 0.12f, 1.0f});
-    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.3f}); 
+    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
     renderer->AddMesh(postMesh);
 }
 
@@ -137,12 +137,12 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(seg)->Rotate<float>(rotation);
-    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.3f}); 
+    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f}); 
     renderer->AddMesh(seg);
 
     std::stringstream str;
     str << edgePtr->GetLength();
-    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.3f + 0.00001f}, 
+    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.00001f}, 
                                                       {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
     charBlock.Translate({-0.008f, 0.001f, 0.0f});

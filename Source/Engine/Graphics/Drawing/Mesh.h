@@ -164,11 +164,6 @@ Vector<T> Mesh<T, U>::GetTranslation() const {
     return ret;
 }
 
-//template<typename T, typename U = unsigned>
-//void Mesh<T, U>::Scale(const Vector<T>& scaling) {
-//    this->scaling = scaling; 
-//}
-
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 

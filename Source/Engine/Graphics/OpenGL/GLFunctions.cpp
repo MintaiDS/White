@@ -47,6 +47,7 @@ FUNCTION_ADDRESS(glGetShaderSource);
 FUNCTION_ADDRESS(glGetProgramBinary);
 FUNCTION_ADDRESS(glGetProgramInfoLog);
 FUNCTION_ADDRESS(glGetError);
+FUNCTION_ADDRESS(glDisable);
 
 void* GetFunctionAddress(char* name, HMODULE hModule) {
     PROC address = wglGetProcAddress(name);
@@ -97,6 +98,7 @@ void LoadFunctions() {
     LOAD_FUNCTION(glGetProgramBinary);
     LOAD_FUNCTION(glGetProgramInfoLog);
     LOAD_FUNCTION(glGetError);
+    LOAD_FUNCTION(glDisable);
 }
 
 }

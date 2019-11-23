@@ -24,6 +24,9 @@ public:
     virtual void Play();
 
 protected:
+    float cameraScalingStep;
+    float cameraScaling;
+    Vector<float> cameraTranslation;
     Camera<float> camera;
     std::shared_ptr<Graph> graph;
     std::shared_ptr<Grid> grid;

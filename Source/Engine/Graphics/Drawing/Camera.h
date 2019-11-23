@@ -64,8 +64,11 @@ Matrix<T> Camera<T>::GetViewMatrix() const {
     Vector<T> u = {0, 1, 0};
     Vector<T> r = u.Cross(d);
     u = r.Cross(d);
-    Matrix<T> view = Matrix<T>{r, u, d}.Transposed();
+    Matrix<T> view = {{r[0], u[0], d[0]},
+                      {r[1], u[1], d[1]},
+                      {r[2], u[2], d[2]}};//Matrix<T>{r, u, d};//.Transposed();
     view = Matrix<T>::Rotation(rotation) * Matrix<T>::Scaling(scaling) * view;
+    //view.Transpose();
     view.Inverse();
     view = {{view[0][0], view[0][1], view[0][2], -translation[0]},
             {view[1][0], view[1][1], view[1][2], -translation[1]},

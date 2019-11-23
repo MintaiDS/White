@@ -199,6 +199,7 @@ void Context::Destroy() {
     DestroyWindow(hWnd);
 }
 
+
 void Context::Loop(Core& core) {
     while (true) { 
         MSG msg;
@@ -232,10 +233,12 @@ LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
     HDC hdc;
     HGLRC hglrc; 
 
+    //return 0;
     switch (uMsg) {
     case WM_PAINT:
         break;
     case WM_CREATE:
+        //MessageBox(NULL, NULL, NULL, MB_OK);
         break;
     case WM_SIZE:
         Update();

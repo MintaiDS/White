@@ -90,6 +90,8 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMINFOLOGPROC,
                         glGetProgramInfoLog);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETERRORPROC,
                         glGetError);
+EXTERN_FUNCTION_ADDRESS(PFNGLDISABLEPROC,
+                        glDisable);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

@@ -76,8 +76,8 @@ void GraphVisualizer::UpdateCamera() {
     //        {0.0f, 0.0f, 1.0f, 0.0f}, 
     //        {0.0f, 0.0f, 0.0f, 1.0f}};
     //camera.Translate({0.0f, 0.0f, -0.1f});
-    camera.Rotate({0.0f, 0.0f, -20.0f});
-    camera.Scale({1.1f, 1.1f, 1.1f});
+    //camera.Rotate({0.0f, 0.0f, -20.0f});
+    //camera.Scale({1.1f, 1.1f, 1.1f});
     Matrix<GLfloat> view = camera.GetViewMatrix();
     std::unique_ptr<GLfloat[]> raw 
         = std::make_unique<GLfloat[]>(view.rows * view.columns);
@@ -91,8 +91,13 @@ void GraphVisualizer::UpdateCamera() {
     program.Use();
     glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
 
+    GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+
     // Setup projection matrix.
-    Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-10.0f, 10.0f, 10.0f, -10.0f, 3.0f, 0.05f);
+    //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
+    Matrix<GLfloat> projection
+        = Matrix<GLfloat>::Projection(-1.0f, 1.0f, 
+                                      1.0f, -1.0f, 0.1f, 10.0f);
     //projection *= -1;
     for (int i = 0; i < projection.rows; i++) {
         for (int j = 0; j < projection.columns; j++) {
@@ -130,7 +135,45 @@ void GraphVisualizer::Play() {
         graphView.SetGrid(grid);
         graphView.Init();
         graphView.Display();
+        cameraScaling = 1.0f;
+        cameraScalingStep = 0.03f;
+        cameraTranslation = {0, 0, 0};
+        //camera.Translate({0.0f, 0.0f, -0.5f});
+        camera.Scale({1.0f, 1.0f, 1.0f});
+        GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+
+        camera.Scale({scaleFactor, scaleFactor, scaleFactor});
+
+        camera.Translate({0.0f, 0.0f, 1.0f});
+        //camera.Translate({0.0f, 0.0f, (grid->gridSize[1] * grid->cellSize[0]) / 2.0f});
+        //camera.Scale({1.8f, 1.8f, 1.8f});
+        //glDisable(GL_CULL_FACE);
+    
     }
+
+    Program& program = renderer.GetProgram();
+
+    cameraScaling += cameraScalingStep;
+    if (std::abs(cameraScaling) >= 1.1f) {
+        cameraScalingStep = -cameraScalingStep;
+    }
+    camera.Rotate({0.0f, 3.0f, 0.0f});
+    //camera.Translate(cameraTranslation);
+    //camera.Scale({std::abs(cameraScaling), std::abs(cameraScaling), 1.0f});
+    //camera.Translate(
+    Matrix<GLfloat> view = camera.GetViewMatrix();
+    std::unique_ptr<GLfloat[]> raw 
+        = std::make_unique<GLfloat[]>(view.rows * view.columns);
+    program.Use();
+    GLint location = glGetUniformLocation(program.id, "view");
+    for (int i = 0; i < view.rows; i++) {
+        for (int j = 0; j < view.columns; j++) {
+            raw.get()[i * view.columns + j] = view[i][j];
+        }
+    }
+    program.Use();
+    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
+
 }
 
 }
