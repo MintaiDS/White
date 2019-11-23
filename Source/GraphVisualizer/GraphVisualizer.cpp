@@ -1,8 +1,12 @@
 #include "GraphVisualizer.h"
 #include "StartupSettings.h"
+#include "InterfaceProvider.h"
+#include "MeshLoader.h"
+#include "ObjectManager.h"
 #include "Renderer.h"
 #include "Rectangle.h"
 #include "Ring.h"
+#include "ITranslatable.h"
 #include "Disk.h"
 #include "Segment.h"
 #include "Common.h"
@@ -94,10 +98,11 @@ void GraphVisualizer::UpdateCamera() {
     GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
 
     // Setup projection matrix.
-    //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
-    Matrix<GLfloat> projection
-        = Matrix<GLfloat>::Projection(-1.0f, 1.0f, 
-                                      1.0f, -1.0f, 0.1f, 10.0f);
+    //glDisable(GL_CULL_FACE);
+    Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
+    //Matrix<GLfloat> projection
+    //    = Matrix<GLfloat>::Projection(-1.0f, 1.0f, 
+    //                                  1.0f, -1.0f, 0.1f, 5.0f);
     //projection *= -1;
     for (int i = 0; i < projection.rows; i++) {
         for (int j = 0; j < projection.columns; j++) {
@@ -149,7 +154,108 @@ void GraphVisualizer::Play() {
         //camera.Scale({1.8f, 1.8f, 1.8f});
         //glDisable(GL_CULL_FACE);
     
+        ObjectManager& om = ObjectManager::GetInstance();
+        InterfaceProvider ip;
+        MeshLoader loader;
+        Mesh<float> mesh;
+        loader.Import(L"Engine/Models/Shapes/cube.polygon");
+        mesh = loader.mesh;
+        cubeId = om.Create<Mesh<float>>(mesh);
+        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 0.8f}); 
+        renderer.AddMesh(cubeId);
+
+        //for (int i = 0; i < graph->GetVerticesCnt(); i++) {
+        //    DisplayPost(i);
+        //}
+        //for (int i = 0; i < graph->GetEdgesCnt(); i++) {
+        //    Edge* edge = graph->GetEdgeById(i);
+        //    DisplayEdge(i);
+        //}
+        renderer.UpdateVertexData();
+
     }
+
+    InterfaceProvider ip;
+    if (mode == 1) {
+        if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
+            keys[0] = -keys[0];
+            ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.01f, 0.0f, 0.0f});
+        } 
+        if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
+            keys[0] = -keys[0];
+            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.01f, 0.0f, 0.0f});
+        }
+        if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
+            keys[0] = -keys[0];
+            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, +0.01f, 0.0f});
+        }
+        if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
+            keys[0] = -keys[0];
+            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.01f, 0.0f});
+        }
+        if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
+            keys[0] = -keys[0];
+            ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, 1.0f});
+        } 
+        if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
+            keys[0] = -keys[0];
+            ip.Query<IRotatable>(cubeId)->Rotate<float>({1.0f, 0.0f, 0.0f});
+        }
+        if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
+            keys[0] = -keys[0];
+            ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, -1.0f});
+        }
+        if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
+            keys[0] = -keys[0];
+            ip.Query<IRotatable>(cubeId)->Rotate<float>({-1.0f, -0.0f, 0.0f});
+        }
+    } else if (mode == 0) {
+        if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
+            keys[0] = -keys[0];
+            camera.Translate({-0.01f, 0.0f, 0.0f});
+        } 
+        if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
+            keys[0] = -keys[0];
+            camera.Translate({0.01f, 0.0f, 0.0f});
+        }
+        if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
+            keys[0] = -keys[0];
+            camera.Translate({0.0f, +0.0f, +0.01f});
+        }
+        if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
+            keys[0] = -keys[0];
+            camera.Translate({0.0f, -0.0f, -0.01f});
+        }
+        if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
+            keys[0] = -keys[0];
+            camera.Rotate({0.0f, 1.0f, 0.0f});
+        } 
+        if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
+            keys[0] = -keys[0];
+            camera.Rotate({1.0f, 0.0f, 0.0f});
+        }
+        if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
+            keys[0] = -keys[0];
+            camera.Rotate({0.0f, -1.0f, -0.0f});
+        }
+        if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
+            keys[0] = -keys[0];
+            camera.Rotate({-1.0f, -0.0f, 0.0f});
+        }
+ 
+    }
+
+    if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
+        keys[8] = -keys[8];
+        mode = (mode + 1) % 2;
+    }
+
+        //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.1f, 0.0f, 0.1f}); 
+    //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 0.0008f}); 
+
+
+
 
     Program& program = renderer.GetProgram();
 
@@ -157,7 +263,7 @@ void GraphVisualizer::Play() {
     if (std::abs(cameraScaling) >= 1.1f) {
         cameraScalingStep = -cameraScalingStep;
     }
-    camera.Rotate({0.0f, 3.0f, 0.0f});
+    //camera.Rotate({0.0f, 2.0f, 0.0f});
     //camera.Translate(cameraTranslation);
     //camera.Scale({std::abs(cameraScaling), std::abs(cameraScaling), 1.0f});
     //camera.Translate(

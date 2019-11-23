@@ -24,6 +24,9 @@ public:
     virtual void Play();
 
 protected:
+    int mode = 1;
+    bool keys[9] = {false, false, false, false, false, false, false, false, false};
+    unsigned cubeId;
     float cameraScalingStep;
     float cameraScaling;
     Vector<float> cameraTranslation;

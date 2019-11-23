@@ -190,9 +190,9 @@ Matrix<T> Matrix<T>::Scaling(const Vector<T>& scale) {
 
 template<typename T>
 Matrix<T> Matrix<T>::Projection(T l, T t, T r, T b, T n, T f) {
-    Matrix<T> ret = {{2 * n / (r - l), 0, (l + r) / (l - r), 0}, 
-                     {0, 2 * n / (t - b), (b + t) / (b - t), 0}, 
-                     {0, 0, (f + n) / (f - n), -(2 * f * n) / (n - f)},
+    Matrix<T> ret = {{2 * n / (r - l), 0, (l + r) / (r - l), 0}, 
+                     {0, 2 * n / (t - b), (b + t) / (t - b), 0}, 
+                     {0, 0, -(f + n) / (f - n), -(2 * f * n) / (f - n)},
                      {0, 0, -1, 0}};
 
     return ret;

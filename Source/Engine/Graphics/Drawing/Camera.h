@@ -69,11 +69,15 @@ Matrix<T> Camera<T>::GetViewMatrix() const {
                       {r[2], u[2], d[2]}};//Matrix<T>{r, u, d};//.Transposed();
     view = Matrix<T>::Rotation(rotation) * Matrix<T>::Scaling(scaling) * view;
     //view.Transpose();
+    //view.Inverse();
+    //view.Transpose();
     view.Inverse();
     view = {{view[0][0], view[0][1], view[0][2], -translation[0]},
             {view[1][0], view[1][1], view[1][2], -translation[1]},
             {view[2][0], view[2][1], view[2][2], -translation[2]},
             {0, 0, 0, 1}};
+            //view.Inverse();
+    //view = Matrix<T>::Identity(4);
 
     return view;
 }

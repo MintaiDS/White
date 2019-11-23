@@ -34,14 +34,25 @@ void GraphView::Init() {
 }
 
 void GraphView::Display() {
-    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
-        DisplayPost(i);
-    }
-    for (int i = 0; i < graph->GetEdgesCnt(); i++) {
-        Edge* edge = graph->GetEdgeById(i);
-        DisplayEdge(i);
-    }
-    renderer->UpdateVertexData();
+    //ObjectManager& om = ObjectManager::GetInstance();
+    //InterfaceProvider ip;
+    //MeshLoader loader;
+    //Mesh<float> mesh;
+    //loader.Import(L"Engine/Models/Shapes/cube.polygon");
+    //mesh = loader.mesh;
+    //unsigned newMesh = om.Create<Mesh<float>>(mesh);
+    ////ip.Query<IScalable>(newMesh)->Scale<float>({0.12f, 0.12f, 1.0f});
+    //ip.Query<ITranslatable>(newMesh)->Translate<float>({0.0f, 0.0f, 2.0f}); 
+    //renderer->AddMesh(newMesh);
+
+    ////for (int i = 0; i < graph->GetVerticesCnt(); i++) {
+    ////    DisplayPost(i);
+    ////}
+    ////for (int i = 0; i < graph->GetEdgesCnt(); i++) {
+    ////    Edge* edge = graph->GetEdgeById(i);
+    ////    DisplayEdge(i);
+    ////}
+    //renderer->UpdateVertexData();
 }
 
 void GraphView::DisplayNode(int node) {
