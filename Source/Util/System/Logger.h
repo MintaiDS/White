@@ -12,6 +12,37 @@ public:
     void Close();
     template<typename T>
     void Log(T value);
+    Logger& 
+    operator<<(short value);
+    Logger& 
+    operator<<(unsigned short value);
+    Logger& 
+    operator<<(int value);
+    Logger& 
+    operator<<(unsigned int value);
+    Logger& 
+    operator<<(long value);
+    Logger& 
+    operator<<(unsigned long value);
+    Logger& 
+    operator<<(long long value);
+    Logger& 
+    operator<<(unsigned long long value);
+    Logger& 
+    operator<<(float value);
+    Logger& 
+    operator<<(double value);
+    Logger& 
+    operator<<(long double value);
+    Logger& 
+    operator<<(bool value);
+    Logger& 
+    operator<<(const void* value);
+    Logger& 
+    operator<<(std::nullptr_t);
+    Logger&
+    operator<<(std::string value);
+
 
 protected:
     std::string filename;

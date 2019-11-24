@@ -83,6 +83,8 @@ void GraphVisualizer::UpdateCamera() {
     //camera.Translate({0.0f, 0.0f, -0.1f});
     //camera.Rotate({0.0f, 0.0f, -20.0f});
     //camera.Scale({1.1f, 1.1f, 1.1f});
+
+
     Matrix<GLfloat> view = camera.GetViewMatrix();
     std::unique_ptr<GLfloat[]> raw 
         = std::make_unique<GLfloat[]>(view.rows * view.columns);
@@ -181,7 +183,8 @@ void GraphVisualizer::Play() {
 
     //White::Util::Logger& logger = White::Util::Logger::GetInstance();
     //logger.Init("log.txt");
-    //logger.Log<std::string>("log line" + 1);
+    //logger << "Log : ";
+    //logger << 1.1f << 2;
 
     InterfaceProvider ip;
     if (mode == 1) {
@@ -229,42 +232,57 @@ void GraphVisualizer::Play() {
         if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
             keys[0] = -keys[0];
             camera.Translate({-0.1f, 0.0f, 0.0f});
+            UpdateCamera();
         } 
         if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
             keys[1] = -keys[1];
             camera.Translate({0.1f, 0.0f, 0.0f});
+            UpdateCamera();
         }
         if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
             keys[2] = -keys[2];
             camera.Translate({0.0f, +0.0f, +0.1f});
+            UpdateCamera();
         }
         if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
             keys[3] = -keys[3];
             camera.Translate({0.0f, -0.0f, -0.1f});
+            UpdateCamera();
         }
         if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
             keys[4] = -keys[4];
             camera.Rotate({0.0f, -2.0f, 0.0f});
+            UpdateCamera();
+
         } 
         if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
             keys[5] = -keys[5];
             camera.Rotate({2.0f, 0.0f, 0.0f});
+            UpdateCamera();
+
         }
         if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
             keys[6] = -keys[6];
             camera.Rotate({0.0f, 2.0f, -0.0f});
+            UpdateCamera();
+
         }
         if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
             keys[7] = -keys[7];
             camera.Rotate({-2.0f, -0.0f, 0.0f});
+            UpdateCamera();
         }
         if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
             keys[9] = -keys[9];
             camera.Rotate({0.0f, 0.0f, 2.0f});
+            UpdateCamera();
+
         }
         if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
             keys[10] = -keys[10];
             camera.Rotate({-0.0f, 0.0f, -2.0f});
+            UpdateCamera();
+
         }
  
     }
@@ -276,33 +294,6 @@ void GraphVisualizer::Play() {
 
         //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.1f, 0.0f, 0.1f}); 
     //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 0.0008f}); 
-
-
-
-
-    Program& program = renderer.GetProgram();
-
-    cameraScaling += cameraScalingStep;
-    if (std::abs(cameraScaling) >= 1.1f) {
-        cameraScalingStep = -cameraScalingStep;
-    }
-    //camera.Rotate({0.0f, 2.0f, 0.0f});
-    //camera.Translate(cameraTranslation);
-    //camera.Scale({std::abs(cameraScaling), std::abs(cameraScaling), 1.0f});
-    //camera.Translate(
-    Matrix<GLfloat> view = camera.GetViewMatrix();
-    std::unique_ptr<GLfloat[]> raw 
-        = std::make_unique<GLfloat[]>(view.rows * view.columns);
-    program.Use();
-    GLint location = glGetUniformLocation(program.id, "view");
-    for (int i = 0; i < view.rows; i++) {
-        for (int j = 0; j < view.columns; j++) {
-            raw.get()[i * view.columns + j] = view[i][j];
-        }
-    }
-    program.Use();
-    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
-
 }
 
 }
