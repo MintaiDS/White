@@ -289,7 +289,7 @@ Matrix<T>& Matrix<T>::RemoveColumn(const std::size_t column) {
 template<typename T>
 Matrix<T> Matrix<T>::Inversed() const {
     Matrix<T> ret(*this);
-    ret.Inserse();
+    ret.Inverse();
 
     return ret;
 }

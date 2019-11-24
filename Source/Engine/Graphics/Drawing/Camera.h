@@ -3,6 +3,9 @@
 #include "ITransformable.h"
 #include "Matrix.h"
 
+#include <sstream>
+#include <fstream>
+
 using namespace White::Util::Math;
 
 namespace White {
@@ -60,26 +63,45 @@ void Camera<T>::Transform(const Vector<float>& scaling,
 
 template<typename T>
 Matrix<T> Camera<T>::GetViewMatrix() const {
+    //Vector<T> d = {0, 0, -1};
     Vector<T> d = {0, 0, 1};
+    //d = Matrix<T>::Rotation({rotation[0], rotation[1], rotation[2]}) * d;
+    //d = {d[0], d[1], d[2]};
     Vector<T> u = {0, 1, 0};
-    Vector<T> r = u.Cross(d);
-    u = r.Cross(d);
+    Vector<T> r = d.Cross(u);
+    u = d.Cross(r); 
     Matrix<T> view = {{r[0], u[0], d[0]},
                       {r[1], u[1], d[1]},
-                      {r[2], u[2], d[2]}};//Matrix<T>{r, u, d};//.Transposed();
-    view = Matrix<T>::Rotation(rotation) * Matrix<T>::Scaling(scaling) * view;
+                      {r[2], u[2], d[2]}}; 
+    view = Matrix<T>::Rotation({rotation[0], rotation[1], rotation[2]}) * view;
+    //view.Transpose();
+    //view.Transpose();
+    //view.Transpose(); 
+    //view = Matrix<T>::Rotation(rotation) * view;
+    view.Inverse();
+    view = {{view[0][0], view[0][1], view[0][2], 0},
+            {view[1][0], view[1][1], view[1][2], 0},
+            {view[2][0], view[2][1], view[2][2], 0},
+            {0, 0, 0, 1}};
+    Matrix<T> t = Matrix<T>::Translation(translation * -1); 
     //view.Transpose();
     //view.Inverse();
     //view.Transpose();
-    view.Inverse();
-    view = {{view[0][0], view[0][1], view[0][2], -translation[0]},
-            {view[1][0], view[1][1], view[1][2], -translation[1]},
-            {view[2][0], view[2][1], view[2][2], -translation[2]},
-            {0, 0, 0, 1}};
-            //view.Inverse();
+    //view.Inverse();
+    //std::ofstream out ("log.txt", std::ios::app);
+    //out << "View matrix:\n";
+    //view = view * t;
+    //for (int i = 0; i < view.rows; i++) {
+    //    for (int j = 0; j < view.columns; j++) {
+    //        out << view[i][j] << " ";
+    //    }
+    //    out << std::endl;
+    //}
+    //out.close();
+
     //view = Matrix<T>::Identity(4);
 
-    return view;
+    return view * t;
 }
 
 }
