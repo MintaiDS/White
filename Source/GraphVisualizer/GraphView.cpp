@@ -133,7 +133,7 @@ void GraphView::DisplayEdge(int edge) {
     Edge* edgePtr = graph->GetEdgeById(edge);
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
-    Math::Vector<float> color = {0.7f, 0.7f, 0.6f, 1.0f};
+    Math::Vector<float> color = {0.3f, 0.3f, 0.3f, 1.0f};
     Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
     Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
     Math::Vector<float> dir = end - begin;
@@ -148,7 +148,7 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(seg)->Rotate<float>(rotation);
-    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f}); 
+    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f + 0.01}); 
     renderer->AddMesh(seg);
 
     std::stringstream str;
