@@ -19,7 +19,7 @@ A game is built with a simple game engine
 including graphics, networking and input system.
 ### Building instructions 
 #### On Windows
-##### Build project and grab test data in one step
+##### Build project in one step
 - Build using CMake.
 ```batch
 build 
