@@ -146,6 +146,8 @@ void GraphVisualizer::Play() {
         //camera.Translate({0.0f, 0.0f, -0.5f});
         camera.Scale({1.0f, 1.0f, 1.0f});
         GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+        camera.Rotate({0.0f, 180.0f, 0.0f});
+        camera.Translate({0.0f, 0.0f, -1.0f});
 
         //camera.Scale({scaleFactor, scaleFactor, scaleFactor});
 
@@ -162,7 +164,7 @@ void GraphVisualizer::Play() {
         mesh = loader.mesh;
         cubeId = om.Create<Mesh<float>>(mesh);
         //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 0.8f}); 
+        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 1.8f}); 
         renderer.AddMesh(cubeId);
 
         //for (int i = 0; i < graph->GetVerticesCnt(); i++) {
@@ -221,43 +223,43 @@ void GraphVisualizer::Play() {
     } else if (mode == 0) {
         if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
             keys[0] = -keys[0];
-            camera.Translate({0.01f, 0.0f, 0.0f});
+            camera.Translate({0.1f, 0.0f, 0.0f});
         } 
         if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
             keys[1] = -keys[1];
-            camera.Translate({-0.01f, 0.0f, 0.0f});
+            camera.Translate({-0.1f, 0.0f, 0.0f});
         }
         if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
             keys[2] = -keys[2];
-            camera.Translate({0.0f, +0.0f, +0.01f});
+            camera.Translate({0.0f, +0.0f, +0.1f});
         }
         if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
             keys[3] = -keys[3];
-            camera.Translate({0.0f, -0.0f, -0.01f});
+            camera.Translate({0.0f, -0.0f, -0.1f});
         }
         if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
             keys[4] = -keys[4];
-            camera.Rotate({0.0f, -1.0f, 0.0f});
+            camera.Rotate({0.0f, -2.0f, 0.0f});
         } 
         if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
             keys[5] = -keys[5];
-            camera.Rotate({1.0f, 0.0f, 0.0f});
+            camera.Rotate({2.0f, 0.0f, 0.0f});
         }
         if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
             keys[6] = -keys[6];
-            camera.Rotate({0.0f, 1.0f, -0.0f});
+            camera.Rotate({0.0f, 2.0f, -0.0f});
         }
         if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
             keys[7] = -keys[7];
-            camera.Rotate({-1.0f, -0.0f, 0.0f});
+            camera.Rotate({-2.0f, -0.0f, 0.0f});
         }
         if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
             keys[9] = -keys[9];
-            camera.Rotate({0.0f, 0.0f, 1.0f});
+            camera.Rotate({0.0f, 0.0f, 2.0f});
         }
         if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
             keys[10] = -keys[10];
-            camera.Rotate({-0.0f, 0.0f, -1.0f});
+            camera.Rotate({-0.0f, 0.0f, -2.0f});
         }
  
     }

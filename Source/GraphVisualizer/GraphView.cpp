@@ -45,13 +45,13 @@ void GraphView::Display() {
     //ip.Query<ITranslatable>(newMesh)->Translate<float>({0.0f, 0.0f, 2.0f}); 
     //renderer->AddMesh(newMesh);
 
-    ////for (int i = 0; i < graph->GetVerticesCnt(); i++) {
-    ////    DisplayPost(i);
-    ////}
-    ////for (int i = 0; i < graph->GetEdgesCnt(); i++) {
-    ////    Edge* edge = graph->GetEdgeById(i);
-    ////    DisplayEdge(i);
-    ////}
+    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
+        DisplayPost(i);
+    }
+    for (int i = 0; i < graph->GetEdgesCnt(); i++) {
+        Edge* edge = graph->GetEdgeById(i);
+        DisplayEdge(i);
+    }
     //renderer->UpdateVertexData();
 }
 
@@ -75,12 +75,12 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> ringMesh = ring.ToMesh(color, 120); 
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.001f});
     renderer->AddMesh(mesh);
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
-    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.00001f}, 
+    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.0001f}, 
                                                       {0.032f, 0.032f}, str.str());
     charBlock.Scale({0.028f, 0.028f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.0f});
