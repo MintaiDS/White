@@ -105,7 +105,7 @@ void GraphVisualizer::UpdateCamera() {
     Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
     projection
         = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
-                                      0.1f, -0.1f, 0.1f, 10.0f);
+                                      0.1f, -0.1f, 0.1f, 1000.0f);
     //projection *= -1;
     for (int i = 0; i < projection.rows; i++) {
         for (int j = 0; j < projection.columns; j++) {
@@ -163,7 +163,7 @@ void GraphVisualizer::Play() {
         InterfaceProvider ip;
         MeshLoader loader;
         Mesh<float> mesh;
-        loader.Import(L"Engine/Models/Shapes/cube.polygon");
+        loader.Import(L"Engine/Models/Objects/wall.polygon");
         mesh = loader.mesh;
         cubeId = om.Create<Mesh<float>>(mesh);
         //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
