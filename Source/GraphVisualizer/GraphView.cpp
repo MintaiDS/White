@@ -63,7 +63,7 @@ void GraphView::DisplayNode(int node) {
 
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
-    Mesh<float> diskMesh = disk.ToMesh(color, 120);
+    Mesh<float> diskMesh = disk.ToMesh(color, 70);
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(mesh);
     ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
@@ -72,7 +72,7 @@ void GraphView::DisplayNode(int node) {
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
-    Mesh<float> ringMesh = ring.ToMesh(color, 120); 
+    Mesh<float> ringMesh = ring.ToMesh(color, 70); 
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.001f});

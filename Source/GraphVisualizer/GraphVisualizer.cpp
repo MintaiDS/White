@@ -3,6 +3,7 @@
 #include "InterfaceProvider.h"
 #include "MeshLoader.h"
 #include "ObjectManager.h"
+#include "Logger.h"
 #include "Renderer.h"
 #include "Rectangle.h"
 #include "Ring.h"
@@ -178,6 +179,10 @@ void GraphVisualizer::Play() {
 
     }
 
+    //White::Util::Logger& logger = White::Util::Logger::GetInstance();
+    //logger.Init("log.txt");
+    //logger.Log<std::string>("log line" + 1);
+
     InterfaceProvider ip;
     if (mode == 1) {
         if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
@@ -223,11 +228,11 @@ void GraphVisualizer::Play() {
     } else if (mode == 0) {
         if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
             keys[0] = -keys[0];
-            camera.Translate({0.1f, 0.0f, 0.0f});
+            camera.Translate({-0.1f, 0.0f, 0.0f});
         } 
         if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
             keys[1] = -keys[1];
-            camera.Translate({-0.1f, 0.0f, 0.0f});
+            camera.Translate({0.1f, 0.0f, 0.0f});
         }
         if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
             keys[2] = -keys[2];
