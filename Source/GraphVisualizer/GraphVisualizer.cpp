@@ -14,6 +14,7 @@
 #include "Grid.h"
 #include "Connection.h"
 #include "Camera.h"
+#include "BMPLoader.h"
 
 #include <AtlBase.h>
 #include <atlconv.h>
@@ -21,6 +22,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+
+using namespace White::Engine::Util;
 
 namespace White {
 namespace Engine {
@@ -119,6 +122,8 @@ void GraphVisualizer::UpdateCamera() {
 
 void GraphVisualizer::Play() {
     if (!graph) {
+        BMPLoader bitmapLoader;
+        bitmapLoader.Import(L"Engine/Textures/brick.bmp");
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
         std::vector<std::wstring> args = settings.GetArgs();
