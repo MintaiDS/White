@@ -11,9 +11,10 @@ public:
     BMPImage();
     BMPImage(const BMPImage& other);
 
-    void SetData(int size, const std::unique_ptr<char[]>& data); 
+    void SetData(int size, const std::unique_ptr<unsigned char[]>& data); 
     void SetWidth(int width);
     void SetHeight(int height);
+    void SetSize(int size);
     int GetWidth() const;
     int GetHeight() const;
     int GetSize() const;
@@ -23,8 +24,14 @@ public:
 protected:
     int width;
     int height;
-    std::unique_ptr<char[]> data;
+    int size;
+    std::unique_ptr<unsigned char[]> data;
 };
+
+template<typename T>
+T* BMPImage::GetDataPtr() const {
+    return reinterpret_cast<T*>(data.get());
+}
 
 }
 }
