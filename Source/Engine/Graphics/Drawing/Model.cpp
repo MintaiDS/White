@@ -4,14 +4,22 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-Model::Model() : mesh(mesh), texture(texture) {}
+Model::Model() {}
 
-void Model::SetMesh(unsigned mesh) {
+void Model::SetMesh(Mesh<float> mesh) {
     this->mesh = mesh;
 }
 
-void Model::SetTexture(unsigned texture) {
+void Model::SetTexture(Texture texture) {
     this->texture = texture;
+}
+
+void Model::SetFormat(ModelFormat format) {
+    this->format = format;
+}
+
+ModelFormat Model::GetFormat() const {
+    return format;
 }
 
 }

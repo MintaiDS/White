@@ -1,19 +1,26 @@
 #pragma once
 
+#include "Mesh.h"
+#include "Texture.h"
+#include "ModelFormat.h"
+
 namespace White {
 namespace Engine {
 namespace Graphics {
 
-class Model : public Object, public ITransformable {
+class Model : public Object {
 public:
     Model();
 
-    void SetMesh(unsigned mesh);
-    void SetTexture(unsigned texture);
+    void SetMesh(Mesh<float> mesh);
+    void SetTexture(Texture texture);
+    void SetFormat(ModelFormat format);
+    ModelFormat GetFormat() const;
 
 protected:
-    unsigned mesh;
-    unsigned texture;
+    Mesh<float> mesh;
+    Texture texture;
+    ModelFormat format;
 };
 
 }

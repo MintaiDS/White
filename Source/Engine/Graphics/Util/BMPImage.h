@@ -11,6 +11,7 @@ public:
     BMPImage();
     BMPImage(const BMPImage& other);
 
+    BMPImage& operator=(const BMPImage& other);
     void SetData(int size, const std::unique_ptr<unsigned char[]>& data); 
     void SetWidth(int width);
     void SetHeight(int height);

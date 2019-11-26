@@ -15,6 +15,16 @@ BMPImage::BMPImage(const BMPImage& other)
     std::copy(other.data.get(), other.data.get() + size, data.get());
 }
 
+BMPImage& BMPImage::operator=(const BMPImage& other) {
+    width = other.width;
+    height = other.height;
+    size = other.size;
+    data = std::make_unique<unsigned char[]>(size);
+    std::copy(other.data.get(), other.data.get() + size, data.get());
+
+    return *this;
+}
+
 void BMPImage::SetData(int size, const std::unique_ptr<unsigned char[]>& data) {
     this->data = std::make_unique<unsigned char[]>(size);
     std::copy(data.get(), data.get() + size, this->data.get());
