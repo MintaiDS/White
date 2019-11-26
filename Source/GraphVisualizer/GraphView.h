@@ -12,6 +12,7 @@ public:
     void Init();
     void Display();
     void DisplayNode(int node);
+    void DisplayPost(int node);
     void DisplayEdge(int edge);
     void SetRenderer( White::Engine::Graphics::Renderer* renderer);
     void SetGraph(std::shared_ptr<White::Util::Math::Graph> graph);
@@ -22,4 +23,5 @@ protected:
     std::shared_ptr<White::Util::Math::Graph> graph;
     std::shared_ptr<White::Grid> grid;
     std::vector<White::Cell> cells;
+    std::vector<int> shuffledIndices;
 };
