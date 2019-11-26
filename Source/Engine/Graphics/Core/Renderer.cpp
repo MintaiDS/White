@@ -27,37 +27,37 @@ Renderer::Renderer() {
 }
 
 void Renderer::Init() {
-    program.Create();
-    Shader shader;
-    shader.Create(GL_VERTEX_SHADER);
-    std::wstring path = L"Engine/Shaders/default.vsh";
-    shader.Source(path);
-    shader.Compile();
-    program.Attach(shader);
-    shader.Delete();
-    path = L"Engine/Shaders/default.fsh";
-    shader.Create(GL_FRAGMENT_SHADER);
-    shader.Source(path);
-    shader.Compile();
-    program.Attach(shader);
-    shader.Delete();
-    program.Link();
-    program.Use();
-    program.Delete();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW); 
-    Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
-    std::unique_ptr<GLfloat[]> raw 
-        = std::make_unique<GLfloat[]>(view.rows * view.columns);
-    GLint location = glGetUniformLocation(program.id, "view");
-    for (int i = 0; i < view.rows; i++) {
-        for (int j = 0; j < view.columns; j++) {
-            raw.get()[i * view.columns + j] = view[i][j];
-        }
-    }
-    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
+    //program.Create();
+    //Shader shader;
+    //shader.Create(GL_VERTEX_SHADER);
+    //std::wstring path = L"Engine/Shaders/default.vsh";
+    //shader.Source(path);
+    //shader.Compile();
+    //program.Attach(shader);
+    //shader.Delete();
+    //path = L"Engine/Shaders/default.fsh";
+    //shader.Create(GL_FRAGMENT_SHADER);
+    //shader.Source(path);
+    //shader.Compile();
+    //program.Attach(shader);
+    //shader.Delete();
+    //program.Link();
+    //program.Use();
+    //program.Delete();
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_FRONT);
+    //glFrontFace(GL_CCW); 
+    //Matrix<GLfloat> view = Matrix<GLfloat>::Identity(4);
+    //std::unique_ptr<GLfloat[]> raw 
+    //    = std::make_unique<GLfloat[]>(view.rows * view.columns);
+    //GLint location = glGetUniformLocation(program.id, "view");
+    //for (int i = 0; i < view.rows; i++) {
+    //    for (int j = 0; j < view.columns; j++) {
+    //        raw.get()[i * view.columns + j] = view[i][j];
+    //    }
+    //}
+    //glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
     game = new GraphVisualizer(*this);
 }
 
