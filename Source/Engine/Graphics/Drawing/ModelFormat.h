@@ -10,6 +10,8 @@ namespace Graphics {
 struct ModelFormat {
     ModelFormat();
 
+    bool operator==(const ModelFormat& other) const;
+
     int numAttributes;
     int numShaders;
     bool isIndexed;

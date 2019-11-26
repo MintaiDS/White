@@ -10,12 +10,9 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-Shader::Shader(GLenum shaderType) 
-        : id(glCreateShader(shaderType)) {}
+Shader::Shader() : id(0) {}
 
-Shader::~Shader() {
-    glDeleteShader(id);
-}
+Shader::~Shader() {}
 
 void Shader::Create(GLenum shaderType) {
     id = glCreateShader(shaderType);

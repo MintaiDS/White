@@ -4,11 +4,9 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-Program::Program() : id(glCreateProgram()) {}
+Program::Program() : id(0) {}
 
-Program::~Program() {
-    glDeleteProgram(id);
-}
+Program::~Program() {}
 
 void Program::Create() {
     id = glCreateProgram();

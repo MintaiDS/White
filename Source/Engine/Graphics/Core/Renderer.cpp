@@ -28,7 +28,8 @@ Renderer::Renderer() {
 
 void Renderer::Init() {
     program.Create();
-    Shader shader(GL_VERTEX_SHADER);
+    Shader shader;
+    shader.Create(GL_VERTEX_SHADER);
     std::wstring path = L"Engine/Shaders/default.vsh";
     shader.Source(path);
     shader.Compile();
@@ -161,6 +162,11 @@ void Renderer::UpdateData(unsigned mesh) {
 
 void Renderer::AddMesh(unsigned mesh) {
     unused.push_back(mesh);
+}
+
+void Renderer::AddModel(unsigned model) {
+    unusedModels.push_back(model); 
+
 }
 
 void Renderer::UpdateVertexData() {
