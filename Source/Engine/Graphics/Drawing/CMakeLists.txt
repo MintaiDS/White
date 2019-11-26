@@ -13,5 +13,7 @@ set(SRC ${SRC} BufferObject.cpp)
 set(SRC ${SRC} CharacterBlock.cpp)
 set(SRC ${SRC} Scene.cpp)
 set(SRC ${SRC} Camera.cpp)
+set(SRC ${SRC} Model.cpp)
+set(SRC &{SRC} Texture.cpp)
 add_library(Drawing ${SRC})
 

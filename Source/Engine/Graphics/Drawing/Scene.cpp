@@ -12,8 +12,6 @@ void Scene::AddObject(unsigned object) {
 
 void Scene::RemoveObject(unsigned object) {
     unsigned index = ip.Get(object);
-    // Delete object. Operate on objects[index] element. 
-    // No implementation now.
     ip.Remove(object);
 }
 
