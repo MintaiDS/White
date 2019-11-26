@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 2.6)
+
+set(SRC)
+set(SRC ${SRC} Context.cpp)
+set(SRC ${SRC} MeshLoader.cpp)
+set(LIBS)
+set(LIBS ${LIBS} OpenGL32.lib)
+set(LIBS ${LIBS} System)
+set(LIBS ${LIBS} OpenGL)
+add_library(Util ${SRC})
+find_library(OpenGL32.lib REQUIRED)
+target_link_libraries(Util ${LIBS})
