@@ -35,6 +35,26 @@ void ContextState::Init() {
     isInitialized = true;
 }
 
+void ContextState::UpdateCamera(Matrix<float> view, Matrix<float> projection) {
+    std::unique_ptr<GLfloat[]> raw 
+        = std::make_unique<GLfloat[]>(view.rows * view.columns);
+    for (int i = 0; i < view.rows; i++) {
+        for (int j = 0; j < view.columns; j++) {
+            raw.get()[i * view.columns + j] = view[i][j];
+        }
+    }
+    GLint location = glGetUniformLocation(program.id, "view");
+    glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+
+    for (int i = 0; i < projection.rows; i++) {
+        for (int j = 0; j < projection.columns; j++) {
+            raw.get()[i * projection.columns + j] = projection[i][j];
+        }
+    }
+    location = glGetUniformLocation(program.id, "projection");
+    glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+}
+
 void ContextState::Activate() {
     program.Use();
     renderData.Activate();

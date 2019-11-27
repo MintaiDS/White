@@ -32,9 +32,19 @@ void Renderer::Render() {
     glClearColor(0.90f, 0.90f, 0.90f, 1.0f);
     for (int i = 0; i < contextStates.size(); i++) {
         contextStates[i].Activate();
+        contextStates[i].UpdateCamera(view, projection);
         contextStates[i].Render();
     }
 }
+
+void Renderer::SetView(Matrix<float> view) {
+    this->view = view;
+}
+
+void Renderer::SetProjection(Matrix<float> projection) {
+    this->projection = projection;
+}
+
 
 void Renderer::DrawCall(int indicesCnt, int skip) {
 }

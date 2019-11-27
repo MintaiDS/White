@@ -20,6 +20,7 @@ public:
     void Render();
     void SetRenderData(RenderData renderData);
     void SetModelFormat(ModelFormat modelFormat);
+    void UpdateCamera(Matrix<float> view, Matrix<float> projection);
     RenderData& GetRenderData();
     ModelFormat GetModelFormat();
 

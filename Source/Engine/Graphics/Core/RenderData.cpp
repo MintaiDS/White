@@ -36,6 +36,10 @@ void RenderData::AddModel(unsigned model) {
     unusedModels.push_back(model);
 }
 
+void RenderData::SetModelFormat(ModelFormat modelFormat) {
+    this->modelFormat = modelFormat;
+}
+
 void RenderData::Update() {
     auto& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
@@ -148,10 +152,6 @@ void RenderData::UpdateData(unsigned model) {
     
 std::vector<unsigned>& RenderData::GetModels() {
     return models;
-}
-
-void RenderData::SetModelFormat(ModelFormat modelFormat) {
-    this->modelFormat = modelFormat;
 }
 
 }

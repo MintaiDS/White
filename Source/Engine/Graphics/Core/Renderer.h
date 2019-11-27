@@ -25,9 +25,13 @@ public:
     void AddMesh(unsigned mesh); 
     void AddModel(unsigned model);
     void UpdateVertexData();
+    void SetView(Matrix<float> view);
+    void SetProjection(Matrix<float> projection);
     Program& GetProgram();
 
 protected:
+    Matrix<float> view;
+    Matrix<float> projection; 
     Program program; 
     GraphVisualizer* game;
     std::vector<ContextState> contextStates;

@@ -64,9 +64,8 @@ void GraphVisualizer::LoadGraph(std::string name) {
 }
 
 void GraphVisualizer::UpdateCamera() {
-    Program& program = renderer.GetProgram();
-
-    //Matrix<GLfloat> view = camera.GetViewMatrix();
+    
+    Matrix<GLfloat> view = camera.GetViewMatrix();
     //std::unique_ptr<GLfloat[]> raw 
     //    = std::make_unique<GLfloat[]>(view.rows * view.columns);
     //program.Use();
@@ -81,9 +80,9 @@ void GraphVisualizer::UpdateCamera() {
     //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
 
     //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
-    //projection
-    //    = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
-    //                                  0.1f, -0.1f, 0.1f, 1000.0f);
+    Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
+                                                             0.1f, -0.1f, 
+                                                             0.1f, 1000.0f);
     //for (int i = 0; i < projection.rows; i++) {
     //    for (int j = 0; j < projection.columns; j++) {
     //        raw.get()[i * projection.columns + j] = projection[i][j];
@@ -91,6 +90,9 @@ void GraphVisualizer::UpdateCamera() {
     //}
     //location = glGetUniformLocation(program.id, "projection");
     //glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+
+    renderer.SetView(view);
+    renderer.SetProjection(projection);
 }
 
 void GraphVisualizer::Play() {
@@ -111,7 +113,7 @@ void GraphVisualizer::Play() {
         grid.reset(new Grid({0.0f, 0.0f}, 
                             {dimension, dimension}, 
                             {0.25f, 0.25f}));
-        //UpdateCamera();
+        UpdateCamera();
         //graphView.SetRenderer(&renderer);
         //graphView.SetGraph(graph);
         //graphView.SetGrid(grid);
@@ -249,7 +251,7 @@ void GraphVisualizer::Play() {
         renderer.AddModel(cubeModel);
         renderer.UpdateVertexData();
 
-        //UpdateCamera();
+        UpdateCamera();
     }
     InterfaceProvider ip;
     if (mode == 1) {
