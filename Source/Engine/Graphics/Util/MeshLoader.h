@@ -1,4 +1,7 @@
+#pragma once
+
 #include "Mesh.h"
+#include "ModelFormat.h"
 
 #include <string>
 
@@ -14,6 +17,7 @@ struct MeshLoader {
     void Export(std::wstring path, const Mesh<float>& mesh);
 
     Mesh<float> mesh;
+    ModelFormat format;
 };
 
 }

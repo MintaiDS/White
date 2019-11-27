@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "Rectangle.h"
 #include "Ring.h"
+#include "ModelLoader.h"
 #include "ITranslatable.h"
 #include "Disk.h"
 #include "Segment.h"
@@ -24,6 +25,7 @@
 #include <iostream>
 
 using namespace White::Engine::Util;
+using namespace White::Engine::Graphics;
 
 namespace White {
 namespace Engine {
@@ -64,39 +66,35 @@ void GraphVisualizer::LoadGraph(std::string name) {
 void GraphVisualizer::UpdateCamera() {
     Program& program = renderer.GetProgram();
 
-    Matrix<GLfloat> view = camera.GetViewMatrix();
-    std::unique_ptr<GLfloat[]> raw 
-        = std::make_unique<GLfloat[]>(view.rows * view.columns);
-    program.Use();
-    GLint location = glGetUniformLocation(program.id, "view");
-    for (int i = 0; i < view.rows; i++) {
-        for (int j = 0; j < view.columns; j++) {
-            raw.get()[i * view.columns + j] = view[i][j];
-        }
-    }
-    program.Use();
-    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
+    //Matrix<GLfloat> view = camera.GetViewMatrix();
+    //std::unique_ptr<GLfloat[]> raw 
+    //    = std::make_unique<GLfloat[]>(view.rows * view.columns);
+    //program.Use();
+    //GLint location = glGetUniformLocation(program.id, "view");
+    //for (int i = 0; i < view.rows; i++) {
+    //    for (int j = 0; j < view.columns; j++) {
+    //        raw.get()[i * view.columns + j] = view[i][j];
+    //    }
+    //}
+    //glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
 
-    GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+    //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
 
-    Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
-    projection
-        = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
-                                      0.1f, -0.1f, 0.1f, 1000.0f);
-    for (int i = 0; i < projection.rows; i++) {
-        for (int j = 0; j < projection.columns; j++) {
-            raw.get()[i * projection.columns + j] = projection[i][j];
-        }
-    }
-    location = glGetUniformLocation(program.id, "projection");
-    program.Use();
-    glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
+    //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
+    //projection
+    //    = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
+    //                                  0.1f, -0.1f, 0.1f, 1000.0f);
+    //for (int i = 0; i < projection.rows; i++) {
+    //    for (int j = 0; j < projection.columns; j++) {
+    //        raw.get()[i * projection.columns + j] = projection[i][j];
+    //    }
+    //}
+    //location = glGetUniformLocation(program.id, "projection");
+    //glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
 }
 
 void GraphVisualizer::Play() {
     if (!graph) {
-        BMPLoader bitmapLoader;
-        bitmapLoader.Import(L"Engine/Textures/brick.bmp");
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
         std::vector<std::wstring> args = settings.GetArgs();
@@ -113,197 +111,188 @@ void GraphVisualizer::Play() {
         grid.reset(new Grid({0.0f, 0.0f}, 
                             {dimension, dimension}, 
                             {0.25f, 0.25f}));
-        UpdateCamera();
-        graphView.SetRenderer(&renderer);
-        graphView.SetGraph(graph);
-        graphView.SetGrid(grid);
-        graphView.Init();
-        graphView.Display();
-        cameraScaling = 1.0f;
-        cameraScalingStep = 0.03f;
-        cameraTranslation = {0, 0, 0};
-        //camera.Translate({0.0f, 0.0f, -0.5f});
-        camera.Scale({1.0f, 1.0f, 1.0f});
-        GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
-        camera.Rotate({0.0f, 180.0f, 0.0f});
-        camera.Translate({0.0f, 0.0f, -1.0f});
+        //UpdateCamera();
+        //graphView.SetRenderer(&renderer);
+        //graphView.SetGraph(graph);
+        //graphView.SetGrid(grid);
+        //graphView.Init();
+        //graphView.Display();
+        //cameraScaling = 1.0f;
+        //cameraScalingStep = 0.03f;
+        //cameraTranslation = {0, 0, 0};
+        ////camera.Translate({0.0f, 0.0f, -0.5f});
+        //camera.Scale({1.0f, 1.0f, 1.0f});
+        //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+        //camera.Rotate({0.0f, 180.0f, 0.0f});
+        //camera.Translate({0.0f, 0.0f, -1.0f});
 
-        //camera.Scale({scaleFactor, scaleFactor, scaleFactor});
-
-        //camera.Translate({0.0f, 0.0f, 1.0f});
-        //camera.Translate({0.0f, 0.0f, (grid->gridSize[1] * grid->cellSize[0]) / 2.0f});
-        //camera.Scale({1.8f, 1.8f, 1.8f});
-        //glDisable(GL_CULL_FACE);
-    
         ObjectManager& om = ObjectManager::GetInstance();
-        InterfaceProvider ip;
-        MeshLoader loader;
-        Mesh<float> meshTerrain;
-        Mesh<float> meshSky;
-        Mesh<float> meshLine;
-        loader.Import(L"Engine/Models/Objects/wall_gray.polygon");
-        meshTerrain = loader.mesh;
-        loader.Import(L"Engine/Models/Objects/wall_blue.polygon");
-        meshSky = loader.mesh;
-        loader.Import(L"Engine/Models/Objects/line_gray.polygon");
-        meshLine = loader.mesh;
-        cubeId = om.Create<Mesh<float>>(meshSky);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 100.0f}); 
-        renderer.AddMesh(cubeId);
-        
-        cubeId = om.Create<Mesh<float>>(meshSky);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, -100.0f}); 
-        renderer.AddMesh(cubeId);
+        //InterfaceProvider ip;
+        //MeshLoader loader;
+        //Mesh<float> meshTerrain;
+        //Mesh<float> meshSky;
+        //Mesh<float> meshLine;
+        //loader.Import(L"Engine/Models/Objects/wall_gray.polygon");
+        //meshTerrain = loader.mesh;
+        //loader.Import(L"Engine/Models/Objects/wall_blue.polygon");
+        //meshSky = loader.mesh;
+        //loader.Import(L"Engine/Models/Objects/line_gray.polygon");
+        //meshLine = loader.mesh;
+        //cubeId = om.Create<Mesh<float>>(meshSky);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 100.0f}); 
+        //renderer.AddMesh(cubeId);
+        //
+        //cubeId = om.Create<Mesh<float>>(meshSky);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, -100.0f}); 
+        //renderer.AddMesh(cubeId);
 
-        cubeId = om.Create<Mesh<float>>(meshSky);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({-100.0f, 0.0f, 0.0f}); 
-        ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
-        renderer.AddMesh(cubeId);
+        //cubeId = om.Create<Mesh<float>>(meshSky);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({-100.0f, 0.0f, 0.0f}); 
+        //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
+        //renderer.AddMesh(cubeId);
 
-        cubeId = om.Create<Mesh<float>>(meshSky);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({100.0f, 0.0f, 0.0}); 
-        ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
-        renderer.AddMesh(cubeId);
-
-
-        cubeId = om.Create<Mesh<float>>(meshTerrain);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -100.0f, 0.0f}); 
-        ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(cubeId);
-
-        cubeId = om.Create<Mesh<float>>(meshSky);
-        //ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 100.0f, 0.0f}); 
-        ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(cubeId);
-
-        unsigned lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, 100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        renderer.AddMesh(lineId);
-
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, 100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        renderer.AddMesh(lineId);
-
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, -100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        renderer.AddMesh(lineId);
-
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, -100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        renderer.AddMesh(lineId);
-
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 100.0f, 0.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(lineId);
-
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 100.0f, 0.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(lineId);
+        //cubeId = om.Create<Mesh<float>>(meshSky);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({100.0f, 0.0f, 0.0}); 
+        //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
+        //renderer.AddMesh(cubeId);
 
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, -100.0f, 0.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(lineId);
+        //cubeId = om.Create<Mesh<float>>(meshTerrain);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -100.0f, 0.0f}); 
+        //ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(cubeId);
+
+        //cubeId = om.Create<Mesh<float>>(meshSky);
+        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
+        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 100.0f, 0.0f}); 
+        //ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(cubeId);
+
+        //unsigned lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, 100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, 100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, -100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, -100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 100.0f, 0.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 100.0f, 0.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(lineId);
 
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, -100.0f, 0.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        renderer.AddMesh(lineId);
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, -100.0f, 0.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(lineId);
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, 100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        renderer.AddMesh(lineId);
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, -100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        renderer.AddMesh(lineId);
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, -100.0f, 0.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
+        //renderer.AddMesh(lineId);
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, 100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        renderer.AddMesh(lineId);
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, 100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
+        //renderer.AddMesh(lineId);
 
-        lineId = om.Create<Mesh<float>>(meshLine);
-        ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, -100.0f}); 
-        ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        renderer.AddMesh(lineId);
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, -100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
+        //renderer.AddMesh(lineId);
 
-        //for (int i = 0; i < graph->GetVerticesCnt(); i++) {
-        //    DisplayPost(i);
-        //}
-        //for (int i = 0; i < graph->GetEdgesCnt(); i++) {
-        //    Edge* edge = graph->GetEdgeById(i);
-        //    DisplayEdge(i);
-        //}
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, 100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
+        //renderer.AddMesh(lineId);
+
+        //lineId = om.Create<Mesh<float>>(meshLine);
+        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, -100.0f}); 
+        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
+        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
+        //renderer.AddMesh(lineId);
+
+        ModelLoader modelLoader;
+        Model cube = modelLoader.Import(L"Engine/Models/Shapes/cube.model");
+        unsigned cubeModel = om.Create<Model>(cube);
+        renderer.AddModel(cubeModel);
         renderer.UpdateVertexData();
-        UpdateCamera();
+
+        //UpdateCamera();
     }
     InterfaceProvider ip;
     if (mode == 1) {
-        if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
-            keys[0] = -keys[0];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.01f, 0.0f, 0.0f});
-        } 
-        if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
-            keys[1] = -keys[1];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.01f, 0.0f, 0.0f});
-        }
-        if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
-            keys[2] = -keys[2];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, +0.01f, 0.0f});
-        }
-        if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
-            keys[3] = -keys[3];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.01f, 0.0f});
-        }
-        if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
-            keys[4] = -keys[4];
-            ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, 1.0f});
-        } 
-        if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
-            keys[5] = -keys[5];
-            ip.Query<IRotatable>(cubeId)->Rotate<float>({1.0f, 0.0f, 0.0f});
-        }
-        if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
-            keys[6] = -keys[6];
-            ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, -1.0f});
-        }
-        if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
-            keys[7] = -keys[7];
-            ip.Query<IRotatable>(cubeId)->Rotate<float>({-1.0f, -0.0f, 0.0f});
-        } 
-        if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
-            keys[9] = -keys[9];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.0f, 0.1f});
-        }
-        if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
-            keys[10] = -keys[10];
-            ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.0f, -0.0f, -0.1f});
-        }
+        //if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
+        //    keys[0] = -keys[0];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.01f, 0.0f, 0.0f});
+        //} 
+        //if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
+        //    keys[1] = -keys[1];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.01f, 0.0f, 0.0f});
+        //}
+        //if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
+        //    keys[2] = -keys[2];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, +0.01f, 0.0f});
+        //}
+        //if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
+        //    keys[3] = -keys[3];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.01f, 0.0f});
+        //}
+        //if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
+        //    keys[4] = -keys[4];
+        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, 1.0f});
+        //} 
+        //if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
+        //    keys[5] = -keys[5];
+        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({1.0f, 0.0f, 0.0f});
+        //}
+        //if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
+        //    keys[6] = -keys[6];
+        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, -1.0f});
+        //}
+        //if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
+        //    keys[7] = -keys[7];
+        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({-1.0f, -0.0f, 0.0f});
+        //} 
+        //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
+        //    keys[9] = -keys[9];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.0f, 0.1f});
+        //}
+        //if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
+        //    keys[10] = -keys[10];
+        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.0f, -0.0f, -0.1f});
+        //}
     } else if (mode == 0) {
         if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
             keys[0] = -keys[0];

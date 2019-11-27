@@ -28,8 +28,10 @@ void ContextState::Init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);  
+    renderData.SetModelFormat(modelFormat);
     renderData.Init();
     drawingCommand.UpdateCommand(modelFormat);
+    renderData.Update();
     isInitialized = true;
 }
 
@@ -80,8 +82,8 @@ void ContextState::Render() {
         args.topology = GL_TRIANGLES;
         args.indicesCnt = mesh.indices.size();
         args.indexType = GL_UNSIGNED_INT;
-        args.offset  = reinterpret_cast<const void*>(sizeof(GLuint) 
-                                                     * indicesCnt);
+        args.offset = reinterpret_cast<const void*>(sizeof(GLuint) 
+                                                    * indicesCnt);
         renderData.UpdateData(models[i]);
         drawingCommand.UpdateData(args);
         drawingCommand.Invoke();
@@ -92,6 +94,7 @@ void ContextState::Render() {
 
 void ContextState::SetRenderData(RenderData renderData) {
     this->renderData = renderData;
+    renderData.SetModelFormat(modelFormat);
 }
 
 void ContextState::SetModelFormat(ModelFormat modelFormat) {

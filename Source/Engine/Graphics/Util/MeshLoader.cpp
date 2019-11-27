@@ -18,16 +18,13 @@ MeshLoader::MeshLoader(const Mesh<GLfloat>& mesh) : mesh(mesh) {}
 Mesh<float> MeshLoader::Import(std::wstring path) {
     std::ifstream file(path);
     int verticesCnt = 0;
-    int attributesCnt = 0;
+    int attributesCnt = format.numAttributes;
     int indicesCnt = 0;
     std::vector<int> componentsCnts;
     file >> verticesCnt;
-    file >> attributesCnt;
     file >> indicesCnt;
     for (int i = 0; i < attributesCnt; i++) {
-        int componentsCnt = 0;
-        file >> componentsCnt;
-        componentsCnts.push_back(componentsCnt);
+        componentsCnts.push_back(format.numComponents[i]);
     }
     std::vector<VertexData<GLfloat>> vertices;
     for (int i = 0; i < verticesCnt; i++) {

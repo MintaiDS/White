@@ -1,6 +1,9 @@
 #include "RenderData.h"
 #include "ObjectManager.h"
 #include "InterfaceProvider.h"
+#include "Logger.h"
+
+using namespace White::Util;
 
 namespace White {
 namespace Engine {
@@ -13,16 +16,19 @@ void RenderData::Init() {
     vertexArray.Bind();
     arrayBuffer.Create();
     arrayBuffer.Bind(GL_ARRAY_BUFFER);
-    textureBuffer.Create();
-    textureBuffer.Bind(GL_TEXTURE_BUFFER);
+    //textureBuffer.Create();
+    //textureBuffer.Bind(GL_TEXTURE_BUFFER);
     elementArrayBuffer.Create();
     elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER); 
 }
 
 void RenderData::Activate() {
+    if (isInitialized) {
+        return;
+    }
     vertexArray.Bind();
     arrayBuffer.Bind(GL_ARRAY_BUFFER);
-    textureBuffer.Bind(GL_TEXTURE_BUFFER);
+    //textureBuffer.Bind(GL_TEXTURE_BUFFER);
     elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER); 
 }
 
@@ -109,16 +115,22 @@ void RenderData::Update() {
     elementArrayBuffer.SetSubData(0, prevSize, oldSrcDataPtr);
     elementArrayBuffer.SetSubData(prevSize, size, newSrcDataPtr);
                 
+    Logger& logger = Logger::GetInstance();
+    logger.Init("log-init.txt");
+
     std::vector<const void*> offsetPtrs;
     auto blockSize = 0;
     for (auto& it : modelFormat.numComponents) {
         const void* ptr = reinterpret_cast<const void*>(blockSize);
+        logger << it;
         blockSize += sizeof(float) * it; 
         offsetPtrs.push_back(ptr);
     }
+    logger << modelFormat.numAttributes;
     for (int i = 0; i < modelFormat.numAttributes; i++) {
         glVertexAttribPointer(i, modelFormat.numComponents[i], 
                               GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[i]);
+        logger << i << modelFormat.numComponents[i] << blockSize << offsetPtrs[i];
         glEnableVertexAttribArray(i);
     }
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "MeshLoader.h"
 #include "TextureLoader.h"
 #include "ModelFormat.h"
-#include "MeshLoader.h"
 #include "Model.h"
 
 namespace White {

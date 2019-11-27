@@ -29,7 +29,7 @@ void Renderer::Render() {
     InterfaceProvider ip; 
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
+    glClearColor(0.90f, 0.90f, 0.90f, 1.0f);
     for (int i = 0; i < contextStates.size(); i++) {
         contextStates[i].Activate();
         contextStates[i].Render();
@@ -60,6 +60,7 @@ void Renderer::AddModel(unsigned model) {
     RenderData renderData;
     renderData.AddModel(model);
     contextState.SetModelFormat(fmt);
+    contextState.SetRenderData(renderData);
     contextStates.push_back(contextState); 
 }
 

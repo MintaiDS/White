@@ -25,8 +25,7 @@ public:
 
 protected:
     int mode = 0;
-    bool keys[11] = {false, false, false, false, false, false, false, false, false,
-                     false, false};
+    int keys[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     float scaleFactor;
     unsigned cubeId;
     float cameraScalingStep;

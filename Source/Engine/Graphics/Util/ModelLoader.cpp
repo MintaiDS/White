@@ -1,7 +1,10 @@
 #include "ModelLoader.h"
 #include "ObjectManager.h" 
+#include "Logger.h"
 
 #include <fstream>
+
+using namespace White::Util;
 
 namespace White {
 namespace Engine {
@@ -14,9 +17,13 @@ Model ModelLoader::Import(std::wstring filename) {
     std::wstring meshPath;
     std::wstring texturePath;
     std::wifstream modelFile(filename);
+    Logger& logger = Logger::GetInstance();
     modelFile >> formatPath;
     ModelFormat format = ImportFormat(formatPath); 
+    logger.Init("format-logg.txt");
+    logger << format.numAttributes;
     model.SetFormat(format);
+    logger << model.GetFormat().numAttributes;
     modelFile >> meshPath;
     modelFile >> texturePath;
     ImportMesh(meshPath);
@@ -52,7 +59,8 @@ ModelFormat ModelLoader::ImportFormat(std::wstring filename) {
 
 void ModelLoader::ImportMesh(std::wstring meshPath) {
     ObjectManager& om = ObjectManager::GetInstance();
-    unsigned mesh =  om.Create<Mesh<float>>(meshLoader.Import(meshPath));
+    meshLoader.format = model.GetFormat();
+    unsigned mesh = om.Create<Mesh<float>>(meshLoader.Import(meshPath));
     model.SetMesh(mesh);
 }
 
