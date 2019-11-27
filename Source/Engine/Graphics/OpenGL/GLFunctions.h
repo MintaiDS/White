@@ -94,6 +94,8 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETERRORPROC,
                         glGetError);
 EXTERN_FUNCTION_ADDRESS(PFNGLDISABLEPROC,
                         glDisable);
+EXTERN_FUNCTION_ADDRESS(PFNGLGENERATEMIPMAPPROC,
+                        glGenerateMipmap);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

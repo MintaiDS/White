@@ -14,9 +14,14 @@ public:
     Texture();
     Texture(const Texture& other);
     
+    void Create();
+    void Delete();
+    void Bind();
     void SetImage(BMPImage image);
+    unsigned char* GetDataPtr();
 
 protected:
+    unsigned id;
     BMPImage image;
 };
 

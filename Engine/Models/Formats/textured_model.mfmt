@@ -3,6 +3,6 @@
 1
 1
 4 4 2
-default_textured.vsh
-default_textured.fsh
+Engine/Shaders/default_textured.vsh
+Engine/Shaders/default_textured.fsh
 

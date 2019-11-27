@@ -36,7 +36,8 @@ void RenderData::Update() {
     GLint summarySize = 0;
     GLint summaryIndicesCnt = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(unusedModels[i]);
+        auto modelObject = *ip.Query<Model>(unusedModels[i]);
+        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
         models.push_back(unusedModels[i]);
         summarySize += mesh.GetSize();
         summaryIndicesCnt += mesh.indices.size();
@@ -62,7 +63,8 @@ void RenderData::Update() {
     nullPtr = reinterpret_cast<const GLvoid*>(nullptr);
     int curIndex = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(unusedModels[i]);
+        auto modelObject = *ip.Query<Model>(unusedModels[i]);
+        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
         GLfloat* meshArrayData = mesh.GetRawData();
         int cnt = mesh.GetSize() / sizeof(GLfloat);
         for (int j = 0; j < cnt; j++) {
@@ -91,7 +93,8 @@ void RenderData::Update() {
     GLint curSize = 0;
     curIndex = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto mesh = *ip.Query<Mesh<float>>(unusedModels[i]);
+        auto modelObject = *ip.Query<Model>(unusedModels[i]);
+        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
         GLuint* meshElementArrayData = mesh.GetRawIndices();
         for (int j = 0; j < mesh.indices.size(); j++) {
             newElementArrayData[curIndex] = meshElementArrayData[j];
@@ -124,7 +127,10 @@ void RenderData::Update() {
 
 void RenderData::UpdateData(unsigned model) {
     if (modelFormat.isTextured) {
-          
+        InterfaceProvider ip;
+        auto modelObject = *ip.Query<Model>(model);
+        Texture texture = modelObject.GetTexture();
+        texture.Bind(); 
     }
 }
     

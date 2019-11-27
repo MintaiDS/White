@@ -1,4 +1,4 @@
-textured_model.mfmt
-cube.polygon
-brick.bmp
+Engine/Formats/textured_model.mfmt
+Engine/Models/Shapes/cube.polygon
+Engine/Textures/brick.bmp
 
