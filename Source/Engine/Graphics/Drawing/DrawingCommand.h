@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ModelFormat.h"
+
 namespace White {
 namespace Engine {
 namespace Graphics {
@@ -25,7 +27,7 @@ protected:
     void DrawElementsWrapper();
     void DrawArraysWrapper(); 
     
-    void (*activeCommand)();
+    void (DrawingCommand::*activeCommand)();
     Arguments args;
 };
 

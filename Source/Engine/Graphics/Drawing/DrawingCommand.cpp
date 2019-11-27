@@ -1,9 +1,5 @@
 #include "DrawingCommand.h"
-
-    glDrawElements(GL_TRIANGLES, 
-                   indicesCnt, 
-                   GL_UNSIGNED_INT, 
-                   reinterpret_cast<const GLvoid*>(skip * sizeof(GLuint))); 
+#include "GLFunctions.h"
 
 namespace White {
 namespace Engine {
@@ -12,13 +8,13 @@ namespace Graphics {
 DrawingCommand::DrawingCommand() : activeCommand(nullptr) {}
 
 void DrawingCommand::Invoke() {
-    activeCommand();
+    activeCommand;
 }
 
 void DrawingCommand::UpdateCommand(ModelFormat modelFormat) {
-    activeCommand = &DrawArraysWrapper;
+    activeCommand = &DrawingCommand::DrawArraysWrapper;
     if (modelFormat.isIndexed) {
-        activeCommand = &DrawElementsWrapper;
+        activeCommand = &DrawingCommand::DrawElementsWrapper;
     }
 }
 
@@ -27,12 +23,12 @@ void DrawingCommand::UpdateData(Arguments args) {
 }
 
 void DrawingCommand::DrawElementsWrapper() {
-    glDrawElements(args.topology, args,indicesCnt, 
+    glDrawElements(args.topology, args.indicesCnt, 
                    args.indexType, args.offset);
 }
 
 void DrawingCommand::DrawArraysWrapper() {
-    glDrawArrays(args.topology, args.fist, args.count);
+    glDrawArrays(args.topology, args.first, args.count);
 }
 
 }

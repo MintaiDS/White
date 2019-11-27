@@ -15,6 +15,7 @@ set(SRC ${SRC} Scene.cpp)
 set(SRC ${SRC} Camera.cpp)
 set(SRC ${SRC} Model.cpp)
 set(SRC ${SRC} Texture.cpp)
+set(SRC ${SRC} DrawingCommand.cpp)
 set(SRC ${SRC} ModelFormat.cpp)
 add_library(Drawing ${SRC})
 

@@ -16,6 +16,7 @@ public:
     void Activate();
     void AddModel(unsigned model);
     void Update();
+    void UpdateData(unsigned model);
     std::vector<unsigned>& GetModels();
     void SetModelFormat(ModelFormat modelFormat);
 

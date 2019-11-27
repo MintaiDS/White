@@ -121,6 +121,12 @@ void RenderData::Update() {
 
     unusedModels.clear();
 }
+
+void RenderData::UpdateData(unsigned model) {
+    if (modelFormat.isTextured) {
+          
+    }
+}
     
 std::vector<unsigned>& RenderData::GetModels() {
     return models;

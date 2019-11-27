@@ -1,4 +1,5 @@
 #include "ContextState.h"
+#include "InterfaceProvider.h"
 
 namespace White {
 namespace Engine {
@@ -46,10 +47,11 @@ void ContextState::Destroy() {
 }
 
 void ContextState::Render() {
+    InterfaceProvider ip;
     std::vector<unsigned>& models = renderData.GetModels(); 
     int indicesCnt = 0;
-    for (int i = 0; i < list.size(); i++) {
-        auto modelOject = *ip.Query<Model>(models[i]);
+    for (int i = 0; i < models.size(); i++) {
+        auto modelObject = *ip.Query<Model>(models[i]);
         auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
         Vector<GLfloat> rotation = mesh.GetRotation();
         Matrix<GLfloat> rotationMatrix 
@@ -78,9 +80,9 @@ void ContextState::Render() {
         args.topology = GL_TRIANGLES;
         args.indicesCnt = mesh.indices.size();
         args.indexType = GL_UNSIGNED_INT;
-        args.offset 
-            = reinterpret_cast<const void*>(sizeof(GLuint) * indicesCnt);
-        //DrawCall(mesh.indices.size(), indicesCnt);
+        args.offset  = reinterpret_cast<const void*>(sizeof(GLuint) 
+                                                     * indicesCnt);
+        renderData.UpdateData(models[i]);
         drawingCommand.UpdateData(args);
         drawingCommand.Invoke();
         indicesCnt += mesh.indices.size();
