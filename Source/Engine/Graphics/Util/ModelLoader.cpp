@@ -1,4 +1,5 @@
 #include "ModelLoader.h"
+#include "ObjectManager.h" 
 
 #include <fstream>
 
@@ -50,7 +51,9 @@ ModelFormat ModelLoader::ImportFormat(std::wstring filename) {
 }
 
 void ModelLoader::ImportMesh(std::wstring meshPath) {
-    model.SetMesh(meshLoader.Import(meshPath));
+    ObjectManager& om = ObjectManager::GetInstance();
+    unsigned mesh =  om.Create<Mesh<float>>(meshLoader.Import(meshPath));
+    model.SetMesh(mesh);
 }
 
 void ModelLoader::ImportTexture(std::wstring texturePath) {

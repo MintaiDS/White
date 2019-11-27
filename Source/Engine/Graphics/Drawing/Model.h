@@ -12,13 +12,15 @@ class Model : public Object {
 public:
     Model();
 
-    void SetMesh(Mesh<float> mesh);
+    unsigned GetMesh() const;
+    Texture GetTexture() const;
+    ModelFormat GetFormat() const;
+    void SetMesh(unsigned mesh);
     void SetTexture(Texture texture);
     void SetFormat(ModelFormat format);
-    ModelFormat GetFormat() const;
 
 protected:
-    Mesh<float> mesh;
+    unsigned mesh;
     Texture texture;
     ModelFormat format;
 };

@@ -6,7 +6,19 @@ namespace Graphics {
 
 Model::Model() {}
 
-void Model::SetMesh(Mesh<float> mesh) {
+unsigned Model::GetMesh() const {
+    return mesh;
+}
+
+Texture Model::GetTexture() const {
+    return texture;
+}
+
+ModelFormat Model::GetFormat() const {
+    return format;
+}
+
+void Model::SetMesh(unsigned mesh) {
     this->mesh = mesh;
 }
 
@@ -16,10 +28,6 @@ void Model::SetTexture(Texture texture) {
 
 void Model::SetFormat(ModelFormat format) {
     this->format = format;
-}
-
-ModelFormat Model::GetFormat() const {
-    return format;
 }
 
 }

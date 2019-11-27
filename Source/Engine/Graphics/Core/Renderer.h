@@ -30,7 +30,6 @@ public:
 protected:
     Program program; 
     GraphVisualizer* game;
-    std::vector<ModelFormat> formats;
     std::vector<ContextState> contextStates;
     std::vector<unsigned> models;
     std::vector<unsigned> unusedModels;
