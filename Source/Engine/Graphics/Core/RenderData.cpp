@@ -118,23 +118,16 @@ void RenderData::Update() {
     elementArrayBuffer.SetData(newSize, nullPtr, GL_DYNAMIC_DRAW); 
     elementArrayBuffer.SetSubData(0, prevSize, oldSrcDataPtr);
     elementArrayBuffer.SetSubData(prevSize, size, newSrcDataPtr);
-                
-    Logger& logger = Logger::GetInstance();
-    logger.Init("log-init.txt");
-
     std::vector<const void*> offsetPtrs;
     auto blockSize = 0;
     for (auto& it : modelFormat.numComponents) {
         const void* ptr = reinterpret_cast<const void*>(blockSize);
-        logger << it;
         blockSize += sizeof(float) * it; 
         offsetPtrs.push_back(ptr);
     }
-    logger << modelFormat.numAttributes;
     for (int i = 0; i < modelFormat.numAttributes; i++) {
         glVertexAttribPointer(i, modelFormat.numComponents[i], 
                               GL_FLOAT, GL_FALSE, blockSize, offsetPtrs[i]);
-        logger << i << modelFormat.numComponents[i] << blockSize << offsetPtrs[i];
         glEnableVertexAttribArray(i);
     }
 

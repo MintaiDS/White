@@ -26,14 +26,6 @@ void DrawingCommand::UpdateData(Arguments args) {
 }
 
 void DrawingCommand::DrawElementsWrapper() {
-    Logger& logger = Logger::GetInstance();
-    logger.Init("log-command.txt");
-    logger << 1;
-    logger << args.topology;
-    logger << args.indicesCnt;
-    logger << args.indexType;
-    logger << args.offset;
-
     glDrawElements(args.topology, args.indicesCnt, 
                    args.indexType, args.offset);
 }

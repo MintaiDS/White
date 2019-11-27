@@ -17,13 +17,9 @@ Model ModelLoader::Import(std::wstring filename) {
     std::wstring meshPath;
     std::wstring texturePath;
     std::wifstream modelFile(filename);
-    Logger& logger = Logger::GetInstance();
     modelFile >> formatPath;
     ModelFormat format = ImportFormat(formatPath); 
-    logger.Init("format-logg.txt");
-    logger << format.numAttributes;
     model.SetFormat(format);
-    logger << model.GetFormat().numAttributes;
     modelFile >> meshPath;
     modelFile >> texturePath;
     ImportMesh(meshPath);
