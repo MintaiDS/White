@@ -7,12 +7,15 @@
 #include "ObjectManager.h"
 #include "InterfaceProvider.h"
 #include "ITransformable.h"
+#include "ModelFormat.h"
+#include "Model.h"
 
 #include <algorithm>
 #include <sstream>
 #include <random>
 #include <iterator>
 
+using namespace White::Engine::Graphics;
 using namespace White::Util;
 using namespace White::Engine;
 using namespace White;
@@ -34,17 +37,6 @@ void GraphView::Init() {
 }
 
 void GraphView::Display() {
-    //ObjectManager& om = ObjectManager::GetInstance();
-    //InterfaceProvider ip;
-    //MeshLoader loader;
-    //Mesh<float> mesh;
-    //loader.Import(L"Engine/Models/Shapes/cube.polygon");
-    //mesh = loader.mesh;
-    //unsigned newMesh = om.Create<Mesh<float>>(mesh);
-    ////ip.Query<IScalable>(newMesh)->Scale<float>({0.12f, 0.12f, 1.0f});
-    //ip.Query<ITranslatable>(newMesh)->Translate<float>({0.0f, 0.0f, 2.0f}); 
-    //renderer->AddMesh(newMesh);
-
     for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayPost(i);
     }
@@ -52,10 +44,21 @@ void GraphView::Display() {
         Edge* edge = graph->GetEdgeById(i);
         DisplayEdge(i);
     }
-    //renderer->UpdateVertexData();
 }
 
 void GraphView::DisplayNode(int node) {
+    ModelFormat format;
+    format.numAttributes = 2;
+    format.numShaders = 2;
+    format.isTextured = false;
+    format.isIndexed = true;
+    format.numComponents.push_back(4);
+    format.numComponents.push_back(4);
+    format.shaders.push_back(L"Engine/Shaders/default.vsh");
+    format.shaders.push_back(L"Engine/Shaders/default.fsh");
+    Model model;
+    model.SetFormat(format);
+
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
 
@@ -63,37 +66,57 @@ void GraphView::DisplayNode(int node) {
 
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
-    Mesh<float> diskMesh = disk.ToMesh(color, 70);
+    Mesh<float> diskMesh = disk.ToMesh(color, 90);
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(mesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
-    renderer->AddMesh(mesh);
+    model.SetMesh(mesh);
+    unsigned modelId = om.Create<Model>(model);
+    renderer->AddModel(modelId);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
-    Mesh<float> ringMesh = ring.ToMesh(color, 70); 
+    Mesh<float> ringMesh = ring.ToMesh(color, 90); 
     mesh = om.Create<Mesh<float>>(ringMesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({0.2f, 0.2f, 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.001f});
-    renderer->AddMesh(mesh);
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.1f});
+    model.SetMesh(mesh);
+    modelId = om.Create<Model>(model);
+    renderer->AddModel(modelId);
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
-    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.0001f}, 
-                                                      {0.032f, 0.032f}, str.str());
-    charBlock.Scale({0.028f, 0.028f, 1.0f});
+    White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.1f}, 
+                                                      {grid->cellSize[1] / 3.0f, grid->cellSize[1] / 3.0f}, str.str());
+    charBlock.Scale({grid->cellSize[0] / 6.0f, grid->cellSize[1] / 6.0f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         mesh = om.Create<Mesh<float>>(meshes[i]);
-        renderer->AddMesh(mesh);
+        model.SetMesh(mesh);
+        modelId = om.Create<Model>(model);
+        renderer->AddModel(modelId);
     }
 }
 
 void GraphView::DisplayPost(int node) {
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
+
+    ModelFormat format;
+    format.numAttributes = 2;
+    format.numShaders = 2;
+    format.isTextured = false;
+    format.isIndexed = true;
+    format.numComponents.push_back(4);
+    format.numComponents.push_back(4);
+    format.shaders.push_back(L"Engine/Shaders/default.vsh");
+    format.shaders.push_back(L"Engine/Shaders/default.fsh");
+    Model model;
+    model.SetFormat(format);
+
+
 
     Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
 
@@ -106,6 +129,7 @@ void GraphView::DisplayPost(int node) {
 
     int type = post->GetPostType();
     MeshLoader loader;
+    loader.format = format;
     Mesh<float> mesh;
     switch (type) {
     case CITY:
@@ -121,14 +145,29 @@ void GraphView::DisplayPost(int node) {
     mesh = loader.mesh;
 
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
-    ip.Query<IScalable>(postMesh)->Scale<float>({0.12f, 0.12f, 1.0f});
+    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
     ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
+    model.SetMesh(postMesh);
+    unsigned modelId = om.Create<Model>(model);
+    renderer->AddModel(modelId); 
     renderer->AddMesh(postMesh);
 }
 
 void GraphView::DisplayEdge(int edge) {
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
+    
+    ModelFormat format;
+    format.numAttributes = 2;
+    format.numShaders = 2;
+    format.isTextured = false;
+    format.isIndexed = true;
+    format.numComponents.push_back(4);
+    format.numComponents.push_back(4);
+    format.shaders.push_back(L"Engine/Shaders/default.vsh");
+    format.shaders.push_back(L"Engine/Shaders/default.fsh");
+    Model model;
+    model.SetFormat(format);
 
     Edge* edgePtr = graph->GetEdgeById(edge);
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
@@ -148,18 +187,25 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(seg)->Rotate<float>(rotation);
-    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f + 0.01}); 
-    renderer->AddMesh(seg);
+    ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f + 0.1}); 
+
+    model.SetMesh(seg);
+    unsigned modelId = om.Create<Model>(model);
+    renderer->AddModel(modelId); 
 
     std::stringstream str;
     str << edgePtr->GetLength();
-    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.00001f}, 
-                                                      {0.032f, 0.032f}, str.str());
-    charBlock.Scale({0.028f, 0.028f, 1.0f});
+    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.01f}, 
+                                                      {grid->cellSize[1] / 3.0f, grid->cellSize[1] / 3.0f}, str.str());
+    charBlock.Scale({grid->cellSize[0] / 6.0f, grid->cellSize[1] / 6.0f, 1.0f});
     charBlock.Translate({-0.008f, 0.001f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
         unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
+        model.SetMesh(mesh);
+        modelId = om.Create<Model>(model);
+        renderer->AddModel(modelId); 
         renderer->AddMesh(mesh);
     }
 }

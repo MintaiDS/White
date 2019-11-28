@@ -88,15 +88,15 @@ void GraphVisualizer::Play() {
         LoadGraph(name); 
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = 2 * (std::sqrt(verticesCnt) + 1); 
-        grid.reset(new Grid({0.0f, 0.0f}, 
+        grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
-                            {0.25f, 0.25f}));
+                            {1.0f, 1.0f}));
         UpdateCamera();
-        //graphView.SetRenderer(&renderer);
-        //graphView.SetGraph(graph);
-        //graphView.SetGrid(grid);
-        //graphView.Init();
-        //graphView.Display();
+        graphView.SetRenderer(&renderer);
+        graphView.SetGraph(graph);
+        graphView.SetGrid(grid);
+        graphView.Init();
+        graphView.Display();
         //cameraScaling = 1.0f;
         //cameraScalingStep = 0.03f;
         //cameraTranslation = {0, 0, 0};
