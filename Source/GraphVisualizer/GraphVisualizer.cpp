@@ -125,8 +125,8 @@ void GraphVisualizer::Play() {
         ////camera.Translate({0.0f, 0.0f, -0.5f});
         //camera.Scale({1.0f, 1.0f, 1.0f});
         //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
-        //camera.Rotate({0.0f, 180.0f, 0.0f});
-        //camera.Translate({0.0f, 0.0f, -1.0f});
+        camera.Rotate({0.0f, 180.0f, 0.0f});
+        camera.Translate({0.0f, 0.0f, -1.0f});
 
         ObjectManager& om = ObjectManager::GetInstance();
         //InterfaceProvider ip;
@@ -244,6 +244,8 @@ void GraphVisualizer::Play() {
         //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
         //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
         //renderer.AddMesh(lineId);
+        dir = {0.0f, 0.0f, 1.0f};
+        prev = {0.0f, 0.0f};
 
         ModelLoader modelLoader;
         Model cube = modelLoader.Import(L"Engine/Models/Shapes/cube.model");
@@ -296,46 +298,103 @@ void GraphVisualizer::Play() {
         //    ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.0f, -0.0f, -0.1f});
         //}
     } else if (mode == 0) {
-        if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
+        POINT point;
+        GetCursorPos(&point);
+        Vector<float> cur = {static_cast<float>(point.x), 
+                             static_cast<float>(point.y)};        
+        int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
+        if (lButtonKeyState) {
+            Matrix<float> rotation 
+                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 8.0f, 
+                                           (cur[0] - prev[0]) / 8.0f, 0.0f});
+
+            dir = rotation * dir;
+            camera.Rotate({-(cur[1] - prev[1]) / 8.0f, 
+                           (cur[0] - prev[0]) / 8.0f, 0.0f});
+        }
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             keys[0] = -keys[0];
-            camera.Translate({-0.1f, 0.0f, 0.0f});
+            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                              90.0f, 0.0f});
+            dir = rotation * dir;
+            camera.Translate({-dir[0] / 10.0f, +0.0f, -dir[2] / 10.0f});
+            rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
+            dir = rotation * dir;
             UpdateCamera();
         } 
-        if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
             keys[1] = -keys[1];
-            camera.Translate({0.1f, 0.0f, 0.0f});
+            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                              -90.0f, 0.0f});
+            dir = rotation * dir;
+            camera.Translate({-dir[0] / 10.0f, +0.0f, -dir[2] / 10.0f});
+            rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
+            dir = rotation * dir;
             UpdateCamera();
         }
-        if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
             keys[2] = -keys[2];
-            camera.Translate({0.0f, +0.0f, +0.1f});
+            camera.Translate({dir[0] / 10.0f, +0.0f, dir[2] / 10.0f});
             UpdateCamera();
         }
-        if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             keys[3] = -keys[3];
-            camera.Translate({0.0f, -0.0f, -0.1f});
+            camera.Translate({-dir[0] / 10.0f, -0.0f, -dir[2] / 10.0f});
             UpdateCamera();
         }
-        if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
-            keys[4] = -keys[4];
-            camera.Rotate({0.0f, -2.0f, 0.0f});
+
+
+        if (GetAsyncKeyState(0x41) & 0x8000) {
+            keys[0] = -keys[0];
+            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                              90.0f, 0.0f});
+            dir = rotation * dir;
+            camera.Translate({-dir[0] / 10.0f, +0.0f, -dir[2] / 10.0f});
+            rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
+            dir = rotation * dir;
             UpdateCamera();
         } 
-        if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
-            keys[5] = -keys[5];
-            camera.Rotate({2.0f, 0.0f, 0.0f});
+        if (GetAsyncKeyState(0x44) & 0x8000) {
+            keys[1] = -keys[1];
+            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                              -90.0f, 0.0f});
+            dir = rotation * dir;
+            camera.Translate({-dir[0] / 10.0f, +0.0f, -dir[2] / 10.0f});
+            rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
+            dir = rotation * dir;
             UpdateCamera();
         }
-        if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
-            keys[6] = -keys[6];
-            camera.Rotate({0.0f, 2.0f, -0.0f});
+        if (GetAsyncKeyState(0x57) & 0x8000) {
+            keys[2] = -keys[2];
+            camera.Translate({dir[0] / 10.0f, +0.0f, dir[2] / 10.0f});
             UpdateCamera();
         }
-        if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
-            keys[7] = -keys[7];
-            camera.Rotate({-2.0f, -0.0f, 0.0f});
+        if (GetAsyncKeyState(0x53) & 0x8000) {
+            keys[3] = -keys[3];
+            camera.Translate({-dir[0] / 10.0f, -0.0f, -dir[2] / 10.0f});
             UpdateCamera();
         }
+ 
+        //if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
+        //    keys[4] = -keys[4];
+        //    camera.Rotate({0.0f, 2.0f, 0.0f});
+        //    UpdateCamera();
+        //} 
+        //if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
+        //    keys[5] = -keys[5];
+        //    camera.Rotate({-2.0f, 0.0f, 0.0f});
+        //    UpdateCamera();
+        //}
+        //if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
+        //    keys[6] = -keys[6];
+        //    camera.Rotate({0.0f, -2.0f, -0.0f});
+        //    UpdateCamera();
+        //}
+        //if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
+        //    keys[7] = -keys[7];
+        //    camera.Rotate({2.0f, -0.0f, 0.0f});
+        //    UpdateCamera();
+        //}
         if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
             keys[9] = -keys[9];
             camera.Rotate({0.0f, 0.0f, 2.0f});
@@ -347,6 +406,7 @@ void GraphVisualizer::Play() {
             camera.Rotate({-0.0f, 0.0f, -2.0f});
             UpdateCamera();
         } 
+        prev = cur;
     }
     if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
         keys[8] = -keys[8];

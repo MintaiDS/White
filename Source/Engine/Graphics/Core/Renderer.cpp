@@ -29,7 +29,7 @@ void Renderer::Render() {
     InterfaceProvider ip; 
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.90f, 0.90f, 0.90f, 1.0f);
+    glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
     for (int i = 0; i < contextStates.size(); i++) {
         contextStates[i].Activate();
         contextStates[i].UpdateCamera(view, projection);

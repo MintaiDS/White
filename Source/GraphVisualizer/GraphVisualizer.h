@@ -24,8 +24,10 @@ public:
     virtual void Play();
 
 protected:
+    Vector<float> prev;
+    Vector<float> dir;
     int mode = 0;
-    int keys[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    int keys[13] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     float scaleFactor;
     unsigned cubeId;
     float cameraScalingStep;
