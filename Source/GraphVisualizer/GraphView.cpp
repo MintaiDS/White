@@ -80,7 +80,7 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> ringMesh = ring.ToMesh(color, 90); 
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.1f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.01f});
     model.SetMesh(mesh);
     modelId = om.Create<Model>(model);
     renderer->AddModel(modelId);
@@ -88,7 +88,8 @@ void GraphView::DisplayNode(int node) {
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
     White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.1f}, 
-                                                      {grid->cellSize[1] / 3.0f, grid->cellSize[1] / 3.0f}, str.str());
+                                                      {grid->cellSize[1] / 3.0f, 
+                                                       grid->cellSize[1] / 3.0f}, str.str());
     charBlock.Scale({grid->cellSize[0] / 6.0f, grid->cellSize[1] / 6.0f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
@@ -172,7 +173,7 @@ void GraphView::DisplayEdge(int edge) {
     Edge* edgePtr = graph->GetEdgeById(edge);
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
-    Math::Vector<float> color = {0.3f, 0.3f, 0.3f, 1.0f};
+    Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
     Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
     Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
     Math::Vector<float> dir = end - begin;
@@ -187,7 +188,7 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(seg)->Rotate<float>(rotation);
-    ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1] * 8, 1.0f});
     ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f + 0.1}); 
 
     model.SetMesh(seg);

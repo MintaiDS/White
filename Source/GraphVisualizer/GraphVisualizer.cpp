@@ -24,6 +24,7 @@
 #include <fstream>
 #include <iostream>
 
+using namespace White::Util;
 using namespace White::Engine::Util;
 using namespace White::Engine::Graphics;
 
@@ -64,10 +65,16 @@ void GraphVisualizer::LoadGraph(std::string name) {
 }
 
 void GraphVisualizer::UpdateCamera() {
-    
+    RECT rect;
+    HWND hWnd = StartupSettings::GetInstance().GetWindowHandle(); 
+    GetWindowRect(hWnd, &rect);
+    float w = (rect.right - rect.left) / 2.0f;
+    float h = (rect.bottom - rect.top) / 2.0f;
+    float width = 0.1;
+    float height = h * width / w;
     Matrix<GLfloat> view = camera.GetViewMatrix();
-    Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
-                                                             0.1f, -0.1f, 
+    Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-width, height, 
+                                                             width, -height, 
                                                              0.1f, 100000.0f);
     renderer.SetView(view);
     renderer.SetProjection(projection);
@@ -91,7 +98,6 @@ void GraphVisualizer::Play() {
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
-        UpdateCamera();
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
@@ -104,7 +110,7 @@ void GraphVisualizer::Play() {
         //camera.Scale({1.0f, 1.0f, 1.0f});
         //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
         camera.Rotate({0.0f, 180.0f, 0.0f});
-        camera.Translate({0.0f, 0.0f, -1.0f});
+        camera.Translate({0.0f, 0.0f, -6.0f});
 
         ObjectManager& om = ObjectManager::GetInstance();
         //InterfaceProvider ip;
@@ -237,9 +243,9 @@ void GraphVisualizer::Play() {
             renderer.AddModel(cubeModel);
         }
         renderer.UpdateVertexData();
-        UpdateCamera();
     }
     InterfaceProvider ip;
+    UpdateCamera();
     if (mode == 1) {
         //if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
         //    keys[0] = -keys[0];
@@ -295,7 +301,6 @@ void GraphVisualizer::Play() {
             dir = rotation * dir;
             camera.Rotate({-(cur[1] - prev[1]) / 4.0f, 
                            (cur[0] - prev[0]) / 4.0f, 0.0f});
-            UpdateCamera();
         }
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             keys[0] = -keys[0];
@@ -305,7 +310,6 @@ void GraphVisualizer::Play() {
             camera.Translate({-dir[0] / 5.0f, +0.0f, -dir[2] / 5.0f});
             rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
             dir = rotation * dir;
-            UpdateCamera();
         } 
         if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
             keys[1] = -keys[1];
@@ -315,17 +319,14 @@ void GraphVisualizer::Play() {
             camera.Translate({-dir[0] / 5.0f, +0.0f, -dir[2] / 5.0f});
             rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
             dir = rotation * dir;
-            UpdateCamera();
         }
         if (GetAsyncKeyState(VK_UP) & 0x8000) {
             keys[2] = -keys[2];
             camera.Translate({dir[0] / 5.0f, +0.0f, dir[2] / 5.0f});
-            UpdateCamera();
         }
         if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             keys[3] = -keys[3];
             camera.Translate({-dir[0] / 5.0f, -0.0f, -dir[2] / 5.0f});
-            UpdateCamera();
         }
 
 
@@ -337,7 +338,6 @@ void GraphVisualizer::Play() {
             camera.Translate({-dir[0] / 5.0f, +0.0f, -dir[2] / 5.0f});
             rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
             dir = rotation * dir;
-            UpdateCamera();
         } 
         if (GetAsyncKeyState(0x44) & 0x8000) {
             keys[1] = -keys[1];
@@ -347,28 +347,23 @@ void GraphVisualizer::Play() {
             camera.Translate({-dir[0] / 5.0f, +0.0f, -dir[2] / 5.0f});
             rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
             dir = rotation * dir;
-            UpdateCamera();
         }
         if (GetAsyncKeyState(0x57) & 0x8000) {
             keys[2] = -keys[2];
             camera.Translate({dir[0] / 5.0f, +0.0f, dir[2] / 5.0f});
-            UpdateCamera();
         }
         if (GetAsyncKeyState(0x53) & 0x8000) {
             keys[3] = -keys[3];
             camera.Translate({-dir[0] / 5.0f, -0.0f, -dir[2] / 5.0f});
-            UpdateCamera();
         } 
         //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
         //    keys[9] = -keys[9];
         //    camera.Rotate({0.0f, 0.0f, 2.0f});
-        //    UpdateCamera();
 
         //}
         //if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
         //    keys[10] = -keys[10];
         //    camera.Rotate({-0.0f, 0.0f, -2.0f});
-        //    UpdateCamera();
         //} 
         prev = cur;
     }

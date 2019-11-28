@@ -10,6 +10,7 @@
 #include "MeshLoader.h"
 #include "Disk.h"
 #include "Ring.h"
+#include "StartupSettings.h"
 
 #include <random>
 #include <sstream>
@@ -65,6 +66,7 @@ void Context::CreateContextWindow() {
                            10, 10,  
                            760, 760, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
+    StartupSettings::GetInstance().SetWindowHandle(hWnd);
 }
 
 void Context::SetPixelFormatDescriptor() {
@@ -105,90 +107,10 @@ void Context::Create() {
 
 void Context::SetupDemo(Core& core) {
     core.renderer.Init();
-    //Program program;
-    //Shader shader(GL_VERTEX_SHADER);
-    //std::wstring path = L"Engine/Shaders/default.vsh";
-    //shader.Source(path);
-    //shader.Compile();
-    //program.Attach(shader);
-    ////shader.Delete();
-    //path = L"Engine/Shaders/default.fsh";
-    //shader.Create(GL_FRAGMENT_SHADER);
-    //shader.Source(path);
-    //shader.Compile();
-    //program.Attach(shader);
-    ////shader.Delete();
-    //program.Link();
-    //program.Use();
-    ////program.Delete();
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_FRONT);
-    //glFrontFace(GL_CCW); 
-    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Vector<GLfloat> colorBorder = {1.0f, 0.0f, 1.0f, 1.0f};
-    //Disk<GLfloat> disk(0.2);
-    //Mesh<GLfloat> mesh = disk.ToMesh(color, 720);
-    //core.renderer.AddMesh(mesh);
-    //Ring<GLfloat> ring(0.1, 0.28);
-    //mesh = ring.ToMesh(colorBorder, 720);
-    //core.renderer.AddMesh(mesh);
-
-    //mesh = ring1.ToMesh(color, 720);
-    //core.renderer.AddMesh(mesh);
-
-
-    
-    //Ring<GLfloat> ring(0.4, 0.7);
-    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
-    //VertexArrayObject vertexArray;
-    //vertexArray.Create();
-    //vertexArray.Bind();
-    //BufferObject arrayBuffer;
-    //BufferObject elementArrayBuffer;
-    //arrayBuffer.Create();
-    //elementArrayBuffer.Create();
-    //arrayBuffer.Bind(GL_ARRAY_BUFFER);
-    //elementArrayBuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
-    //arrayBuffer.SetData(mesh.GetSize(), 
-    //                    nullptr, 
-    //                    GL_STATIC_DRAW);
-    //elementArrayBuffer.SetData(sizeof(GLuint) * mesh.indices.size(), 
-    //                           nullptr, 
-    //                           GL_STATIC_DRAW);
-    //glVertexAttribPointer(0, 4, 
-    //                      GL_FLOAT, GL_FALSE, 
-    //                      sizeof(GLfloat) * 4 * 2, 
-    //                      reinterpret_cast<const GLvoid*>(0));
-    //glVertexAttribPointer(1, 4, 
-    //                      GL_FLOAT, GL_FALSE, 
-    //                      sizeof(GLfloat) * 4 * 2, 
-    //                      reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * 4));
-    //glEnableVertexAttribArray(0);
-    //glEnableVertexAttribArray(1);
-    //arrayBuffer.SetSubData(0, mesh.GetSize(), 
-    //                       reinterpret_cast<const GLvoid*>(mesh.GetRawData()));
-    //elementArrayBuffer.SetSubData(
-    //                    0, mesh.indices.size() * sizeof(GLuint),
-    //                    reinterpret_cast<const GLvoid*>(mesh.GetRawIndices()));
-    //glBindBuffer(GL_ARRAY_BUFFER, ids[1]);
-    //glBufferData(GL_ARRAY_BUFFER, 
-    //             sizeof (GLfloat) * 4 * 3, nullptr, GL_STATIC_DRAW);
-    //glGenBuffers(1, &ids[2]);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ids[2]);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-    //             sizeof surface[0] * 3, nullptr, GL_STATIC_DRAW);
-    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    //glEnableVertexAttribArray(0);
-    //glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 
-    //                sizeof(GLuint) * 3, (const GLvoid*)surface);
-    //glBufferSubData(GL_ARRAY_BUFFER, 0, 
-    //                sizeof(GLfloat) * 4 * 3, (const GLvoid*)vertices); 
 }
 
 void Context::Show() {
-    //ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+    ShowWindow(hWnd, SW_SHOW);
 }
 
 void Context::Update() {
@@ -218,14 +140,6 @@ void Context::Loop(Core& core) {
 }
 
 void Context::Render() {
-    //GLfloat rgba[] = {0.0, 0.0, 0.0, 1.0f};
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-    //Ring<GLfloat> ring(0.4, 0.7);
-    //Vector<GLfloat> color = {1.0f, 1.0f, 0.0f, 1.0f};
-    //Mesh<GLfloat> mesh = ring.ToMesh(color, 360);
-    //glDrawElements(GL_TRIANGLES, 360 * 2 * 6, 
-    //               GL_UNSIGNED_INT, (const GLvoid*)nullptr);
 }
 
 LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
@@ -233,14 +147,15 @@ LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
     HDC hdc;
     HGLRC hglrc; 
 
-    //return 0;
     switch (uMsg) {
     case WM_PAINT:
         break;
     case WM_CREATE:
-        //MessageBox(NULL, NULL, NULL, MB_OK);
         break;
     case WM_SIZE:
+        RECT rect;
+        GetWindowRect(hWnd, &rect);
+        glViewport(0, 0, rect.right - rect.left, rect.bottom - rect.top);
         Update();
         break;
     case WM_CLOSE:
