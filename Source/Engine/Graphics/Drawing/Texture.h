@@ -19,8 +19,10 @@ public:
     void Bind();
     void SetImage(BMPImage image);
     unsigned char* GetDataPtr();
+    bool IsBinded() const;
 
 protected:
+    bool isBinded;
     unsigned id;
     BMPImage image;
 };

@@ -82,7 +82,7 @@ void GraphVisualizer::UpdateCamera() {
     //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
     Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
                                                              0.1f, -0.1f, 
-                                                             0.1f, 1000.0f);
+                                                             0.1f, 100000.0f);
     //for (int i = 0; i < projection.rows; i++) {
     //    for (int j = 0; j < projection.columns; j++) {
     //        raw.get()[i * projection.columns + j] = projection[i][j];

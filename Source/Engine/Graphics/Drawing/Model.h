@@ -13,7 +13,7 @@ public:
     Model();
 
     unsigned GetMesh() const;
-    Texture GetTexture() const;
+    Texture& GetTexture();
     ModelFormat GetFormat() const;
     void SetMesh(unsigned mesh);
     void SetTexture(Texture texture);

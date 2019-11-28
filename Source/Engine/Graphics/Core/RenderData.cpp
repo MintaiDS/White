@@ -143,7 +143,7 @@ void RenderData::UpdateData(unsigned model) {
     if (modelFormat.isTextured) {
         InterfaceProvider ip;
         auto modelObject = *ip.Query<Model>(model);
-        Texture texture = modelObject.GetTexture();
+        Texture& texture = modelObject.GetTexture();
         texture.Bind(); 
     }
 }

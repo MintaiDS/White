@@ -10,7 +10,7 @@ unsigned Model::GetMesh() const {
     return mesh;
 }
 
-Texture Model::GetTexture() const {
+Texture& Model::GetTexture() {
     return texture;
 }
 
