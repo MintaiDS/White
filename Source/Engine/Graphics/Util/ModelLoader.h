@@ -18,6 +18,7 @@ public:
     ModelFormat ImportFormat(std::wstring filename);
     void ImportMesh(std::wstring meshPath = L"");
     void ImportTexture(std::wstring texturePath = L"");
+    void ImportTransform(std::wstring transformPath = L"");
     void SetDirectory(std::wstring dir);
     Model GetModel();
 

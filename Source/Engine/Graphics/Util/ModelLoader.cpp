@@ -1,6 +1,7 @@
 #include "ModelLoader.h"
 #include "ObjectManager.h" 
 #include "Logger.h"
+#include "InterfaceProvider.h"
 
 #include <fstream>
 
@@ -16,14 +17,17 @@ Model ModelLoader::Import(std::wstring filename) {
     std::wstring formatPath;
     std::wstring meshPath;
     std::wstring texturePath;
+    std::wstring transformPath;
     std::wifstream modelFile(filename);
     modelFile >> formatPath;
     ModelFormat format = ImportFormat(formatPath); 
     model.SetFormat(format);
     modelFile >> meshPath;
     modelFile >> texturePath;
+    modelFile >> transformPath;
     ImportMesh(meshPath);
     ImportTexture(texturePath);
+    ImportTransform(transformPath);
 
     return model;
 }
@@ -64,6 +68,21 @@ void ModelLoader::ImportTexture(std::wstring texturePath) {
     if (model.GetFormat().isTextured) {
         model.SetTexture(textureLoader.Import(texturePath));
     }
+}
+
+void ModelLoader::ImportTransform(std::wstring transformPath) {
+    std::wifstream in(transformPath);
+    Vector<float> scaling(3);
+    Vector<float> rotation(3);
+    Vector<float> translation(3);
+    in >> scaling[0] >> scaling[1] >> scaling[2];
+    in >> rotation[0] >> rotation[1] >> rotation[2];
+    in >> translation[0] >> translation[1] >> translation[2];
+    in.close();
+    InterfaceProvider ip;
+    ip.Query<ITransformable>(model.GetMesh())->Transform<float>(scaling, 
+                                                                rotation, 
+                                                                translation);
 }
 
 void ModelLoader::Export(std::wstring filename) {}

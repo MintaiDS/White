@@ -97,7 +97,7 @@ void ContextState::Render() {
             }
         }
         GLint location = glGetUniformLocation(program.id, "model");
-        glProgramUniformMatrix4fv(program.id, location, 1, GL_TRUE, raw.get());
+        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
         DrawingCommand::Arguments args;
         args.topology = GL_TRIANGLES;
         args.indicesCnt = mesh.indices.size();
