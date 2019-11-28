@@ -373,28 +373,7 @@ void GraphVisualizer::Play() {
             keys[3] = -keys[3];
             camera.Translate({-dir[0] / 10.0f, -0.0f, -dir[2] / 10.0f});
             UpdateCamera();
-        }
- 
-        //if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
-        //    keys[4] = -keys[4];
-        //    camera.Rotate({0.0f, 2.0f, 0.0f});
-        //    UpdateCamera();
-        //} 
-        //if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
-        //    keys[5] = -keys[5];
-        //    camera.Rotate({-2.0f, 0.0f, 0.0f});
-        //    UpdateCamera();
-        //}
-        //if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
-        //    keys[6] = -keys[6];
-        //    camera.Rotate({0.0f, -2.0f, -0.0f});
-        //    UpdateCamera();
-        //}
-        //if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
-        //    keys[7] = -keys[7];
-        //    camera.Rotate({2.0f, -0.0f, 0.0f});
-        //    UpdateCamera();
-        //}
+        } 
         if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
             keys[9] = -keys[9];
             camera.Rotate({0.0f, 0.0f, 2.0f});
