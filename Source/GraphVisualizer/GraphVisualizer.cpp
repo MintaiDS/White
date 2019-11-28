@@ -247,12 +247,18 @@ void GraphVisualizer::Play() {
         dir = {0.0f, 0.0f, 1.0f};
         prev = {0.0f, 0.0f};
 
-        ModelLoader modelLoader;
-        Model cube = modelLoader.Import(L"Engine/Models/Shapes/cube.model");
-        unsigned cubeModel = om.Create<Model>(cube);
-        renderer.AddModel(cubeModel);
+        std::wifstream in(L"Engine/Config/startup.config");
+        int n;
+        in >> n;
+        for (int i = 0; i < n; i++) {
+            std::wstring modelPath;
+            in >> modelPath;
+            ModelLoader modelLoader;
+            Model cube = modelLoader.Import(modelPath);
+            unsigned cubeModel = om.Create<Model>(cube);
+            renderer.AddModel(cubeModel);
+        }
         renderer.UpdateVertexData();
-
         UpdateCamera();
     }
     InterfaceProvider ip;
