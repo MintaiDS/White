@@ -41,6 +41,11 @@ void RenderData::SetModelFormat(ModelFormat modelFormat) {
 }
 
 void RenderData::Update() {
+    int numComponents = 0;
+    for (auto& it : modelFormat.numComponents) {
+        numComponents += it;
+    }
+
     auto& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
     GLint summarySize = 0;
@@ -62,7 +67,7 @@ void RenderData::Update() {
     GLint newSize = prevSize + summarySize;
     GLint prevCnt = prevSize / sizeof(GLfloat); 
     GLint newCnt = prevCnt + (newSize - prevSize) / sizeof(GLfloat);
-    GLint prevArrayCnt = prevCnt / 8;
+    GLint prevArrayCnt = prevCnt / numComponents;
     std::unique_ptr<GLfloat[]> newArrayData
         = std::make_unique<GLfloat[]>(summaryCnt);
     std::unique_ptr<GLfloat[]> oldArrayData
@@ -112,7 +117,7 @@ void RenderData::Update() {
             curIndex++;
         }
         curSize += mesh.indices.size() * sizeof(GLuint);
-        curVerticesCnt += mesh.GetSize() / sizeof(GLfloat) / 8;
+        curVerticesCnt += mesh.GetSize() / sizeof(GLfloat) / numComponents;
     }
     elementArrayBuffer.GetSubData(0, prevSize, oldDestDataPtr);
     elementArrayBuffer.SetData(newSize, nullPtr, GL_DYNAMIC_DRAW); 

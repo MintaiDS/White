@@ -317,6 +317,7 @@ void GraphVisualizer::Play() {
             dir = rotation * dir;
             camera.Rotate({-(cur[1] - prev[1]) / 8.0f, 
                            (cur[0] - prev[0]) / 8.0f, 0.0f});
+            UpdateCamera();
         }
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             keys[0] = -keys[0];
@@ -380,23 +381,23 @@ void GraphVisualizer::Play() {
             camera.Translate({-dir[0] / 10.0f, -0.0f, -dir[2] / 10.0f});
             UpdateCamera();
         } 
-        if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
-            keys[9] = -keys[9];
-            camera.Rotate({0.0f, 0.0f, 2.0f});
-            UpdateCamera();
+        //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
+        //    keys[9] = -keys[9];
+        //    camera.Rotate({0.0f, 0.0f, 2.0f});
+        //    UpdateCamera();
 
-        }
-        if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
-            keys[10] = -keys[10];
-            camera.Rotate({-0.0f, 0.0f, -2.0f});
-            UpdateCamera();
-        } 
+        //}
+        //if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
+        //    keys[10] = -keys[10];
+        //    camera.Rotate({-0.0f, 0.0f, -2.0f});
+        //    UpdateCamera();
+        //} 
         prev = cur;
     }
-    if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
-        keys[8] = -keys[8];
-        mode = (mode + 1) % 2;
-    }
+    //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
+    //    keys[8] = -keys[8];
+    //    mode = (mode + 1) % 2;
+    //}
 }
 
 }
