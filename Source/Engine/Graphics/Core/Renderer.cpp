@@ -7,6 +7,7 @@
 #include "GraphVisualizer.h"
 #include "ObjectManager.h"
 #include "InterfaceProvider.h"
+#include "Logger.h"
 
 #include <fstream>
 #include <iostream>
@@ -25,8 +26,6 @@ void Renderer::Init() {
 }
 
 void Renderer::Render() {
-    ObjectManager& om = ObjectManager::GetInstance();
-    InterfaceProvider ip; 
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.75f, 0.75f, 0.75f, 1.0f);

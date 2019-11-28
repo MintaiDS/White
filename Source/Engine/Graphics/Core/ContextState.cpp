@@ -73,16 +73,16 @@ void ContextState::Render() {
     std::vector<unsigned>& models = renderData.GetModels(); 
     int indicesCnt = 0;
     for (int i = 0; i < models.size(); i++) {
-        auto modelObject = *ip.Query<Model>(models[i]);
-        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
-        Vector<GLfloat> rotation = mesh.GetRotation();
+        auto modelObject = ip.Query<Model>(models[i]);
+        auto mesh = ip.Query<Mesh<float>>(modelObject->GetMesh());
+        Vector<GLfloat> rotation = mesh->GetRotation();
         Matrix<GLfloat> rotationMatrix 
             = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
                                          rotation[2], 1.0f});  
-        Vector<GLfloat> translation = mesh.GetTranslation();
+        Vector<GLfloat> translation = mesh->GetTranslation();
         Matrix<GLfloat> translationMatrix
             = Matrix<GLfloat>::Translation(translation);
-        Vector<GLfloat> scaling = mesh.GetScaling();
+        Vector<GLfloat> scaling = mesh->GetScaling();
         Matrix<GLfloat> scalingMatrix 
             = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
                                         scaling[2], 1.0f});
@@ -100,14 +100,14 @@ void ContextState::Render() {
         glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
         DrawingCommand::Arguments args;
         args.topology = GL_TRIANGLES;
-        args.indicesCnt = mesh.indices.size();
+        args.indicesCnt = mesh->indices.size();
         args.indexType = GL_UNSIGNED_INT;
         args.offset = reinterpret_cast<const void*>(sizeof(GLuint) 
                                                     * indicesCnt);
         renderData.UpdateData(models[i]);
         drawingCommand.UpdateData(args);
         drawingCommand.Invoke();
-        indicesCnt += mesh.indices.size();
+        indicesCnt += mesh->indices.size();
     }
 
 }

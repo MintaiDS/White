@@ -23,9 +23,6 @@ void RenderData::Init() {
 }
 
 void RenderData::Activate() {
-    if (isInitialized) {
-        return;
-    }
     vertexArray.Bind();
     arrayBuffer.Bind(GL_ARRAY_BUFFER);
     //textureBuffer.Bind(GL_TEXTURE_BUFFER);
@@ -51,11 +48,11 @@ void RenderData::Update() {
     GLint summarySize = 0;
     GLint summaryIndicesCnt = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto modelObject = *ip.Query<Model>(unusedModels[i]);
-        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
+        auto modelObject = ip.Query<Model>(unusedModels[i]);
+        auto mesh = ip.Query<Mesh<float>>(modelObject->GetMesh());
         models.push_back(unusedModels[i]);
-        summarySize += mesh.GetSize();
-        summaryIndicesCnt += mesh.indices.size();
+        summarySize += mesh->GetSize();
+        summaryIndicesCnt += mesh->indices.size();
     }
     int summaryCnt = summarySize / sizeof(GLfloat);
     
@@ -78,10 +75,10 @@ void RenderData::Update() {
     nullPtr = reinterpret_cast<const GLvoid*>(nullptr);
     int curIndex = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto modelObject = *ip.Query<Model>(unusedModels[i]);
-        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
-        GLfloat* meshArrayData = mesh.GetRawData();
-        int cnt = mesh.GetSize() / sizeof(GLfloat);
+        auto modelObject = ip.Query<Model>(unusedModels[i]);
+        auto mesh = ip.Query<Mesh<float>>(modelObject->GetMesh());
+        GLfloat* meshArrayData = mesh->GetRawData();
+        int cnt = mesh->GetSize() / sizeof(GLfloat);
         for (int j = 0; j < cnt; j++) {
             newArrayData[curIndex] = meshArrayData[j]; 
             curIndex++;
@@ -108,16 +105,16 @@ void RenderData::Update() {
     GLint curSize = 0;
     curIndex = 0;
     for (int i = 0; i < unusedModels.size(); i++) {
-        auto modelObject = *ip.Query<Model>(unusedModels[i]);
-        auto mesh = *ip.Query<Mesh<float>>(modelObject.GetMesh());
-        GLuint* meshElementArrayData = mesh.GetRawIndices();
-        for (int j = 0; j < mesh.indices.size(); j++) {
+        auto modelObject = ip.Query<Model>(unusedModels[i]);
+        auto mesh = ip.Query<Mesh<float>>(modelObject->GetMesh());
+        GLuint* meshElementArrayData = mesh->GetRawIndices();
+        for (int j = 0; j < mesh->indices.size(); j++) {
             newElementArrayData[curIndex] = meshElementArrayData[j];
             newElementArrayData[curIndex] += prevArrayCnt + curVerticesCnt;
             curIndex++;
         }
-        curSize += mesh.indices.size() * sizeof(GLuint);
-        curVerticesCnt += mesh.GetSize() / sizeof(GLfloat) / numComponents;
+        curSize += mesh->indices.size() * sizeof(GLuint);
+        curVerticesCnt += mesh->GetSize() / sizeof(GLfloat) / numComponents;
     }
     elementArrayBuffer.GetSubData(0, prevSize, oldDestDataPtr);
     elementArrayBuffer.SetData(newSize, nullPtr, GL_DYNAMIC_DRAW); 
@@ -142,8 +139,8 @@ void RenderData::Update() {
 void RenderData::UpdateData(unsigned model) {
     if (modelFormat.isTextured) {
         InterfaceProvider ip;
-        auto modelObject = *ip.Query<Model>(model);
-        Texture& texture = modelObject.GetTexture();
+        auto modelObject = ip.Query<Model>(model);
+        Texture& texture = modelObject->GetTexture();
         texture.Bind(); 
     }
 }

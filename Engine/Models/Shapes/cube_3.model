@@ -1,5 +1,5 @@
 Engine/Models/Formats/textured_model.mfmt
-Engine/Models/Shapes/cube.polygon
+Engine/Models/Objects/cube.polygon
 Engine/Textures/brick.bmp
 Engine/Models/Shapes/cube_3.transform
 

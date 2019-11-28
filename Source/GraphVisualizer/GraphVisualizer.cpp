@@ -66,31 +66,9 @@ void GraphVisualizer::LoadGraph(std::string name) {
 void GraphVisualizer::UpdateCamera() {
     
     Matrix<GLfloat> view = camera.GetViewMatrix();
-    //std::unique_ptr<GLfloat[]> raw 
-    //    = std::make_unique<GLfloat[]>(view.rows * view.columns);
-    //program.Use();
-    //GLint location = glGetUniformLocation(program.id, "view");
-    //for (int i = 0; i < view.rows; i++) {
-    //    for (int j = 0; j < view.columns; j++) {
-    //        raw.get()[i * view.columns + j] = view[i][j];
-    //    }
-    //}
-    //glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
-
-    //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
-
-    //Matrix<GLfloat> projection = Matrix<GLfloat>::Identity(4);
     Matrix<GLfloat> projection = Matrix<GLfloat>::Projection(-0.1f, 0.1f, 
                                                              0.1f, -0.1f, 
                                                              0.1f, 100000.0f);
-    //for (int i = 0; i < projection.rows; i++) {
-    //    for (int j = 0; j < projection.columns; j++) {
-    //        raw.get()[i * projection.columns + j] = projection[i][j];
-    //    }
-    //}
-    //location = glGetUniformLocation(program.id, "projection");
-    //glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
-
     renderer.SetView(view);
     renderer.SetProjection(projection);
 }
