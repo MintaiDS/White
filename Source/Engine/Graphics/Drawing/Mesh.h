@@ -29,6 +29,8 @@ public:
     std::size_t GetSize() const;
     std::size_t GetCount() const;
     unsigned GetID() const;
+    bool IsTransformed() const;
+    void ToggleTransform();
 
     Matrix<T> GetRotationMatrix() const;
     Matrix<T> GetScalingMatrix() const;
@@ -57,6 +59,7 @@ protected:
     Vector<float> rotation;
     Vector<float> scaling;
     Vector<float> translation;
+    bool isTransformed;
 };
 
 template<typename T, typename U = unsigned>
@@ -102,6 +105,16 @@ template<typename T, typename U = unsigned>
 Mesh<T, U>::~Mesh() {
     delete[] rawData;
     delete[] rawIndices;
+}
+
+template<typename T, typename U = unsigned> 
+bool Mesh<T, U>::IsTransformed() const {
+    return isTransformed;
+}
+
+template<typename T, typename U = unsigned> 
+void Mesh<T, U>::ToggleTransform() {
+    isTransformed = !isTransformed;    
 }
 
 //template<typename T, typename U = unsigned>
@@ -167,16 +180,19 @@ Vector<T> Mesh<T, U>::GetTranslation() const {
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 
+    isTransformed = true;
 }
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Rotate(const Vector<float>& rotation) {
     this->rotation += rotation;
+    isTransformed = true;
 }
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Translate(const Vector<float>& translation) {
     this->translation += translation;
+    isTransformed = true;
 }
 
 template<typename T, typename U = unsigned>
@@ -186,6 +202,7 @@ void Mesh<T, U>::Transform(const Vector<float>& scaling,
     Scale(scaling);
     Rotate(rotation);
     Translate(translation);
+    isTransformed = true;
 }
 
 template<typename T, typename U = unsigned>

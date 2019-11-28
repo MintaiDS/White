@@ -4,6 +4,8 @@
 #include "Texture.h"
 #include "ModelFormat.h"
 
+#include <memory>
+
 namespace White {
 namespace Engine {
 namespace Graphics {
