@@ -1,17 +1,11 @@
 #pragma once
 
-#include "IScalable.h"
-#include "IRotatable.h"
-#include "ITranslatable.h"
-
-using namespace White::Util::Math;
+#include "ITransformable.h"
 
 namespace White {
 namespace Engine {
 
-class ITransformable : public IScalable,
-                       public IRotatable, 
-                       public ITranslatable {
+class IHierarchicallyTransformable : public ITransformable {
 public:
     virtual ~ITransformable();
 

@@ -58,19 +58,25 @@ struct Matrix {
     Vector<T> Column(const std::size_t column) const;
     Vector<T>& Row(const std::size_t row);
 
+    void UpdateDataPtr();
+    T* GetDataPtr();
+
+    bool isOutOfDate;
     std::size_t rows;
     std::size_t columns;
     std::unique_ptr<Vector<T>[]> values;
+    std::unique_ptr<T[]> data;
 };
 
 template<typename T>
-Matrix<T>::Matrix() : rows(0), columns(0) {} 
+Matrix<T>::Matrix() : rows(0), columns(0), isOutOfDate(true) {} 
 
 template<typename T>
 Matrix<T>::Matrix(std::size_t dimension) 
         : rows(dimension)
         , columns(dimension)
-        , values(std::make_unique<Vector<T>[]>(rows)) {
+        , values(std::make_unique<Vector<T>[]>(rows)) 
+        , isOutOfDate(true) {
     for (std::size_t i = 0; i < rows; i++) {
         values[i] = Vector<T>(dimension);
     }
@@ -80,7 +86,8 @@ template<typename T>
 Matrix<T>::Matrix(std::size_t rows, std::size_t columns) 
         : rows(rows)
         , columns(columns)
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
+        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) 
+        , isOutOfDate(true) {
     for (auto& row : values) {
         row = std::make_unique<Vector>(columns);
     }
@@ -90,7 +97,8 @@ template<typename T>
 Matrix<T>::Matrix(std::size_t rows, std::size_t columns, T** values) 
         : rows(rows)
         , columns(columns)
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
+        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) 
+        , isOutOfDate(true) {
     for (std::size_t i = 0; i < rows; i++) {
         this->values[i] = std::make_unique<Vector>(columns, values[i]);
     }
@@ -100,7 +108,8 @@ template<typename T>
 Matrix<T>::Matrix(std::vector<std::vector<T>> values)
         : rows(values.size())
         , columns(values[0].size())
-        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) {
+        , values(std::make_unique<std::unique_ptr<Vector<T>>[]>(rows)) 
+        , isOutOfDate(true) {
     for (std::size_t i = 0; i < rows; i++) {
         this->values[i] = std::make_unique<Vector>(values[i]);
     }
@@ -110,7 +119,8 @@ template<typename T>
 Matrix<T>::Matrix(const Matrix<T>& other) 
         : rows(other.rows)
         , columns(other.columns)
-        , values(std::make_unique<Vector<T>[]>(rows)) {
+        , values(std::make_unique<Vector<T>[]>(rows)) 
+        , isOutOfDate(true) {
     for (std::size_t i = 0; i < rows; i++) {
         this->values[i] = other.values[i];
     }
@@ -119,8 +129,9 @@ Matrix<T>::Matrix(const Matrix<T>& other)
 template<typename T>
 Matrix<T>::Matrix(std::initializer_list<Vector<T>> args) 
         : rows(args.size())
-        , columns(args.begin()->size)
-        , values(std::make_unique<Vector<T>[]>(rows))  {
+        , columns(args.begin()->GetSize())
+        , values(std::make_unique<Vector<T>[]>(rows))  
+        , isOutOfDate(true) {
     std::initializer_list<Vector<T>>::iterator it; 
     std::size_t i = 0;
     for (it = args.begin(); it != args.end(); ++it) {
@@ -141,8 +152,8 @@ Matrix<T> Matrix<T>::Identity(std::size_t dimension) {
 
 template<typename T>
 Matrix<T> Matrix<T>::Diagonal(const Vector<T>& diagonal)  {
-    Matrix<T> ret(diagonal.size);
-    for (std::size_t i = 0; i < diagonal.size; i++) {
+    Matrix<T> ret(diagonal.GetSize());
+    for (std::size_t i = 0; i < diagonal.GetSize(); i++) {
         ret[i][i] = diagonal[i];
     }
 
@@ -151,7 +162,7 @@ Matrix<T> Matrix<T>::Diagonal(const Vector<T>& diagonal)  {
 
 template<typename T>
 Matrix<T> Matrix<T>::Rotation(const Vector<T>& rotation) {
-    Matrix<T> ret = Identity(rotation.size);  
+    Matrix<T> ret = Identity(rotation.GetSize());  
     Matrix<T> rotations[3] = {ret, ret, ret};
     rotations[0][1][1] = std::cos(ToRadians(rotation[0]));
     rotations[0][1][2] = -std::sin(ToRadians(rotation[0]));
@@ -172,9 +183,9 @@ Matrix<T> Matrix<T>::Rotation(const Vector<T>& rotation) {
 
 template<typename T>
 Matrix<T> Matrix<T>::Translation(const Vector<T>& translation) {
-    Matrix<T> ret = Identity(translation.size + 1);
-    for (std::size_t i = 0; i < translation.size; i++) {
-        ret[i][translation.size] = translation[i];
+    Matrix<T> ret = Identity(translation.GetSize() + 1);
+    for (std::size_t i = 0; i < translation.GetSize(); i++) {
+        ret[i][translation.GetSize()] = translation[i];
     } 
 
     return ret;
@@ -343,6 +354,7 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
     rows = other.rows;
     columns = other.columns;
     values = std::make_unique<Vector<T>[]>(rows);
+    isOutOfDate = true;
     for (std::size_t i = 0; i < rows; i++) {
         this->values[i] = other.values[i];
     }
@@ -357,6 +369,8 @@ Vector<T> Matrix<T>::operator[](std::size_t index) const {
 
 template<typename T>
 Vector<T>& Matrix<T>::operator[](std::size_t index) {
+    isOutOfDate = true;
+
     return values[index];
 }
 
@@ -364,7 +378,7 @@ template<typename T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& other) {
     for (std::size_t i = 0; i < rows; i++) {
         for (std::size_t j = 0; j < columns; j++) {
-            values[i][j] += other[i][j];
+            (*this)[i][j] += other[i][j];
         }
     }
 
@@ -375,7 +389,7 @@ template<typename T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
     for (std::size_t i = 0; i < rows; i++) {
         for (std::size_t j = 0; j < columns; j++) {
-            values[i][j] -= other[i][j];
+            (*this)[i][j] -= other[i][j];
         }
     }
 }
@@ -385,9 +399,9 @@ Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
     Matrix<T> tmp(*this);
     for (std::size_t i = 0; i < rows; i++) {
         for (std::size_t j = 0; j < columns; j++) {
-            values[i][j] = 0;
+            (*this)[i][j] = 0;
             for (std::size_t k = 0; k < columns; k++) {
-                values[i][j] += tmp[i][k] * other[k][j];
+                (*this)[i][j] += tmp[i][k] * other[k][j];
             }
         }
     }
@@ -415,7 +429,7 @@ template<typename T>
 Matrix<T>& Matrix<T>::operator*=(const T value) {
     for (std::size_t i = 0; i < rows; i++) {
         for (std::size_t j = 0; j < columns; j++) {
-            values[i][j] *= value;
+            (*this)[i][j] *= value;
         }
     }
 
@@ -450,7 +464,7 @@ template<typename T>
 Vector<T> Matrix<T>::operator*(const Vector<T>& vec) const {
     Vector<T> ret(vec);
     for (int i = 0; i < rows; i++) {
-        Vector<T> row = this->values[i];
+        Vector<T> row = (*this)[i];
         ret[i] = row.Dot(vec);
     }
 
@@ -480,14 +494,14 @@ Matrix<T> Matrix<T>::operator*(const T value) const {
 
 template<typename T>
 Vector<T> Matrix<T>::Row(const std::size_t row) const {
-    return values[row];
+    return *this[row];
 }
 
 template<typename T>
 Vector<T> Matrix<T>::Column(const std::size_t column) const {
     std::vector<T> column;
     for (std::size_t i = 0; i < row; i++) {
-        column.push_back(values[i][column]);
+        column.push_back((*this)[i][column]);
     }
     Vector<T> ret(column);
 
@@ -496,7 +510,30 @@ Vector<T> Matrix<T>::Column(const std::size_t column) const {
 
 template<typename T>
 Vector<T>& Matrix<T>::Row(const std::size_t row) {
-    return values[row];
+    return *this[row];
+}
+
+template<typename T>
+void Matrix<T>::UpdateDataPtr() {
+    data.reset(new T[rows * columns]);
+    for (int i = 0; i < rows; i++) {
+        //std::copy(values[i].GetDataPtr(), 
+        //          values[i].GetDataPtr() + columns, 
+        //          data.get() + (columns * i));
+        for (int j = 0; j < columns; j++) {
+            data.get()[columns * i + j] = values[i][j];
+        }
+    }
+    isOutOfDate = false;
+}
+
+template<typename T>
+T* Matrix<T>::GetDataPtr() {
+    if (isOutOfDate) {
+        UpdateDataPtr();
+    }
+
+    return data.get();
 }
 
 }

@@ -37,6 +37,10 @@ struct Vector {
     Vector Cross(const Vector<T>& other) const;
     T Mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
 
+    std::size_t GetSize() const;
+    T* GetDataPtr() const;
+
+protected:
     std::size_t size;
     std::unique_ptr<T[]> values;
 };
@@ -225,6 +229,17 @@ template<typename T>
 T Vector<T>::Mixed(const Vector<T>& otherFirst, 
                    const Vector<T>& otherSecond) const {
     return *this.dot(otherFrist.cross(otherSecond));
+}
+
+
+template<typename T>
+std::size_t Vector<T>::GetSize() const {
+    return size;
+}
+
+template<typename T>
+T* Vector<T>::GetDataPtr() const {
+    return values.get();
 }
 
 }

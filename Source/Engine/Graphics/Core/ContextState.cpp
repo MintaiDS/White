@@ -75,29 +75,30 @@ void ContextState::Render() {
     for (int i = 0; i < models.size(); i++) {
         auto modelObject = ip.Query<Model>(models[i]);
         auto mesh = ip.Query<Mesh<float>>(modelObject->GetMesh());
-        Vector<GLfloat> rotation = mesh->GetRotation();
-        Matrix<GLfloat> rotationMatrix 
-            = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
-                                         rotation[2], 1.0f});  
-        Vector<GLfloat> translation = mesh->GetTranslation();
-        Matrix<GLfloat> translationMatrix
-            = Matrix<GLfloat>::Translation(translation);
-        Vector<GLfloat> scaling = mesh->GetScaling();
-        Matrix<GLfloat> scalingMatrix 
-            = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
-                                        scaling[2], 1.0f});
-        Matrix<GLfloat> model = translationMatrix 
-                                * rotationMatrix 
-                                * scalingMatrix;
-        std::unique_ptr<GLfloat[]> raw 
-            = std::make_unique<GLfloat[]>(model.rows * model.columns);
-        for (int i = 0; i < model.rows; i++) {
-            for (int j = 0; j < model.columns; j++) {
-                raw.get()[i * model.columns + j] = model[i][j];
-            }
-        }
+        //Vector<GLfloat> rotation = mesh->GetRotation();
+        //Matrix<GLfloat> rotationMatrix 
+        //    = Matrix<GLfloat>::Rotation({rotation[0], rotation[1], 
+        //                                 rotation[2], 1.0f});  
+        //Vector<GLfloat> translation = mesh->GetTranslation();
+        //Matrix<GLfloat> translationMatrix
+        //    = Matrix<GLfloat>::Translation(translation);
+        //Vector<GLfloat> scaling = mesh->GetScaling();
+        //Matrix<GLfloat> scalingMatrix 
+        //    = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
+        //                                scaling[2], 1.0f});
+        //Matrix<GLfloat> model = translationMatrix 
+        //                        * rotationMatrix 
+        //                        * scalingMatrix;
+        //std::unique_ptr<GLfloat[]> raw 
+        //    = std::make_unique<GLfloat[]>(model.rows * model.columns);
+        //for (int i = 0; i < model.rows; i++) {
+        //    for (int j = 0; j < model.columns; j++) {
+        //        raw.get()[i * model.columns + j] = model[i][j];
+        //    }
+        //}
+        Matrix<float>& model = mesh->GetTransformationMatrix();
         GLint location = glGetUniformLocation(program.id, "model");
-        glUniformMatrix4fv(location, 1, GL_TRUE, raw.get());
+        glUniformMatrix4fv(location, 1, GL_TRUE, model.GetDataPtr());
         DrawingCommand::Arguments args;
         args.topology = GL_TRIANGLES;
         args.indicesCnt = mesh->indices.size();

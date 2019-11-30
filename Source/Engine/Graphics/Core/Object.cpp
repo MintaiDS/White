@@ -5,4 +5,8 @@ namespace White {
 
 Object::~Object() {}
 
+void Object::AddChild(unsigned child) {
+    childs.push_back(child);
+}
+
 }
