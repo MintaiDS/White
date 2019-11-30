@@ -62,7 +62,7 @@ void Context::RegisterWindowClass() {
 
 void Context::CreateContextWindow() {
     hWnd = CreateWindowExW(0, L"Context", L"White Engine",
-                           WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+                           WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE,
                            10, 10,  
                            760, 760, 
                            NULL, NULL, GetModuleHandleW(NULL), NULL);
@@ -151,6 +151,8 @@ LRESULT CALLBACK Context::WindowProcCallback(HWND hWnd, UINT uMsg,
     case WM_PAINT:
         break;
     case WM_CREATE:
+        ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+        UpdateWindow(hWnd);
         break;
     case WM_SIZE:
         RECT rect;

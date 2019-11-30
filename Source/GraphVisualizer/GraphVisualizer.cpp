@@ -295,19 +295,19 @@ void GraphVisualizer::Play() {
         int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
         if (lButtonKeyState) {
             Matrix<float> rotation 
-                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 10.0f, 
-                                           (cur[0] - prev[0]) / 10.0f, 0.0f});
+                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 5.5f, 
+                                           (cur[0] - prev[0]) / 2.7f, 0.0f});
 
             dir = rotation * dir;
-            camera.Rotate({-(cur[1] - prev[1]) / 10.0f, 
-                           (cur[0] - prev[0]) / 10.0f, 0.0f});
+            camera.Rotate({-(cur[1] - prev[1]) / 5.5f, 
+                           (cur[0] - prev[0]) / 2.7f, 0.0f});
         }
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             keys[0] = -keys[0];
             Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
                                                               90.0f, 0.0f});
             dir = rotation * dir;
-            camera.Translate({-dir[0] / 8.0f, +0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
             rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
             dir = rotation * dir;
         } 
@@ -316,17 +316,17 @@ void GraphVisualizer::Play() {
             Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
                                                               -90.0f, 0.0f});
             dir = rotation * dir;
-            camera.Translate({-dir[0] / 8.0f, +0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
             rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
             dir = rotation * dir;
         }
         if (GetAsyncKeyState(VK_UP) & 0x8000) {
             keys[2] = -keys[2];
-            camera.Translate({dir[0] / 8.0f, +0.0f, dir[2] / 8.0f});
+            camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
         }
         if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             keys[3] = -keys[3];
-            camera.Translate({-dir[0] / 8.0f, -0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
         }
 
 
@@ -335,7 +335,7 @@ void GraphVisualizer::Play() {
             Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
                                                               90.0f, 0.0f});
             dir = rotation * dir;
-            camera.Translate({-dir[0] / 8.0f, +0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
             rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
             dir = rotation * dir;
         } 
@@ -344,17 +344,17 @@ void GraphVisualizer::Play() {
             Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
                                                               -90.0f, 0.0f});
             dir = rotation * dir;
-            camera.Translate({-dir[0] / 8.0f, +0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
             rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
             dir = rotation * dir;
         }
         if (GetAsyncKeyState(0x57) & 0x8000) {
             keys[2] = -keys[2];
-            camera.Translate({dir[0] / 8.0f, +0.0f, dir[2] / 8.0f});
+            camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
         }
         if (GetAsyncKeyState(0x53) & 0x8000) {
             keys[3] = -keys[3];
-            camera.Translate({-dir[0] / 8.0f, -0.0f, -dir[2] / 8.0f});
+            camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
         } 
         //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
         //    keys[9] = -keys[9];
