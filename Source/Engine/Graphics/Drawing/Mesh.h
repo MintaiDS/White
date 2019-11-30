@@ -57,7 +57,7 @@ public:
 
 protected:
     void UpdateTransformationMatrix();
-    void UpdateTransformationMatrix(Matrix<float>& parental);
+    void UpdateTransformationMatrix(Matrix<float> parental);
 
     struct {
         Matrix<float> parental;
@@ -83,8 +83,8 @@ Mesh<T, U>::Mesh()
         , translation({0, 0, 0})
         , scaling({1, 1, 1}) {
     UpdateTransformationMatrix();
-    //transformation.parental = Matrix<float>::Identity(4);
-    //UpdateTransformationMatrix(transformation.parental);
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
@@ -97,8 +97,8 @@ Mesh<T, U>::Mesh(const Mesh<T, U>& other)
         , translation(other.translation)
         , scaling(other.scaling) {
     UpdateTransformationMatrix();
-    //transformation.parental = other.transformation.parental;
-    //UpdateTransformationMatrix(transformation.parental);
+    transformation.parental = other.transformation.parental;
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
@@ -110,8 +110,8 @@ Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices)
         , translation({0, 0, 0})
         , scaling({1, 1, 1}) {
     UpdateTransformationMatrix();
-    //transformation.parental = Matrix<float>::Identity(4);
-    //UpdateTransformationMatrix(transformation.parental);
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
@@ -125,8 +125,8 @@ Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices)
         this->vertices.push_back(vertices[i]);
     }
     UpdateTransformationMatrix();
-    //transformation.parental = Matrix<float>::Identity(4);
-    //UpdateTransformationMatrix(transformation.parental);
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
@@ -215,24 +215,24 @@ template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 
     isTransformed = true;
-    UpdateTransformationMatrix();
-    //UpdateTransformationMatrix(transformation.parental);
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Rotate(const Vector<float>& rotation) {
     this->rotation += rotation;
     isTransformed = true;
-    UpdateTransformationMatrix();
-    //UpdateTransformationMatrix(transformation.parental);
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::Translate(const Vector<float>& translation) {
     this->translation += translation;
     isTransformed = true;
-    UpdateTransformationMatrix();
-    //UpdateTransformationMatrix(transformation.parental);
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
@@ -243,14 +243,14 @@ void Mesh<T, U>::Transform(const Vector<float>& scaling,
     Rotate(rotation);
     Translate(translation);
     isTransformed = true;
-    UpdateTransformationMatrix();
-    //UpdateTransformationMatrix(transformation.parental);
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
 Matrix<float>& Mesh<T, U>::GetTransformationMatrix() {
     //UpdateTransformationMatrix();
-    return transformationMatrix;
+    return transformation.that;//transformationMatrix;
 }
 
 template<typename T, typename U = unsigned>
@@ -275,7 +275,7 @@ void Mesh<T, U>::UpdateTransformationMatrix() {
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::UpdateTransformationMatrix(Matrix<float>& parental) {
+void Mesh<T, U>::UpdateTransformationMatrix(Matrix<float> parental) {
     //Matrix<float> scalingMatrix = Matrix<float>::Scaling(scaling);
     //Matrix<float> rotationMatrix = Matrix<float>::Rotation(rotation); 
     //Matrix<float> translationMatrix = Matrix<float>::Translation(translation);
