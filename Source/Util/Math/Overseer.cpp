@@ -57,7 +57,9 @@ namespace White {
           assert(0 && "MAP1 parse");
         //l << 23;
         GetMyTrains();
-
+        SortMarkets();
+        FindMyCity();
+        graph->InitWorldPaths();
       }
 
       void Overseer::Turn()
@@ -104,6 +106,9 @@ namespace White {
             t->task.CheckPathIdx(t->GetLineIdx());
             if (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition()))
             {
+              Post* p = t->task.GetDestination();
+              if (p->GetPostType() == PostType::MARKET)
+                markets.insert({ p->GetMaxProduct(), (Market*)p });
               t->task.DropTask();
             }
           }
@@ -112,16 +117,24 @@ namespace White {
 
       void Overseer::AssignTasks()
       {
+        //Logger& l = Logger::GetInstance();
+        //l << 0;
         for (auto& t : trains)
         {
           if (t->GetTask() == Train::Task::NO_TASK)
           {
+            //l << 1;
             if (!markets.empty())
             {
+              //l << 2;
               Market* market = markets.begin()->second;
+              //l << 3;
               markets.erase(markets.begin());
+             // l << 4;
               auto path = graph->GetPath(my_city->GetPointIdx(), market->GetPointIdx());
-              t->task.SetTask(Train::Task::GATHER_FOOD, path, market);
+              //l << 5;
+              t->task.SetTask(Train::Task::GATHER_FOOD, path, market, my_city->GetPointIdx());
+              //l << 6;
             }
           }
         }
@@ -129,14 +142,18 @@ namespace White {
 
       void Overseer::MakeMoves()
       {
+        //Logger& l = Logger::GetInstance();
+        //l.Init("run.log");
         for (auto& t : trains)
         {
           auto task = t->GetTask();
           if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
           {
-            auto step = t->task.ContinueMovement(t->GetLineIdx(), t->GetPosition());
+            //l << 10;
+            auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
             if (step != NULL)
             {
+              //l << 20;
               std::string data = conn.MoveMessage(step->first, step->second, t->GetIdx());
               ActionMessage msg = conn.FormActionMessage(Action::MOVE, data);
               ResponseMessage resp;
@@ -169,6 +186,17 @@ namespace White {
       {
         json json_parsed = json::parse(data);
         return json_parsed["idx"];
+      }
+      void Overseer::FindMyCity()
+      {
+        for (auto& c : graph->GetCities())
+        {
+          if (c.second->GetPlayerIdx() == player_idx)
+          {
+            my_city = c.second;
+            return;
+          }
+        }
       }
     }
   }

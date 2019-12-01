@@ -34,6 +34,10 @@ namespace Graphics {
 
 GraphVisualizer::GraphVisualizer(Renderer& renderer) 
         : Game(renderer) {
+
+    //Logger& l = Logger::GetInstance();
+    //l.Init("run.log");
+
     prevTime = std::chrono::duration_cast<std::chrono::milliseconds>
            (std::chrono::system_clock::now().time_since_epoch());
 }
@@ -233,18 +237,15 @@ void GraphVisualizer::Play() {
     prev = cur;
 
     //Logger& l = Logger::GetInstance();
-    //l.Init("run.log");
     std::chrono::milliseconds curTime
         = std::chrono::duration_cast<std::chrono::milliseconds>
           (std::chrono::system_clock::now().time_since_epoch());
     std::chrono::milliseconds time = curTime - prevTime;
-    if (time > std::chrono::milliseconds{5000}) {
-        for (int i = 0; i < 10; i++) {
-            //overseer->Turn();
-        }
+    //if (time > std::chrono::milliseconds{500}) {
+        overseer->Turn();
         graphView.UpdateTrains();
         prevTime = curTime;
-    }
+    //}
     //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
     //    keys[8] = -keys[8];
     //    mode = (mode + 1) % 2;

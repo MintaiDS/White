@@ -43,9 +43,9 @@ void GraphView::Init() {
 }
 
 void GraphView::Display() {
-    Logger& l = Logger::GetInstance();
-    l << 10;
-    l << graph->GetVerticesCnt();
+    //Logger& l = Logger::GetInstance();
+    //l << 10;
+    //l << graph->GetVerticesCnt();
     for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayPost(i);
     }
@@ -55,7 +55,7 @@ void GraphView::Display() {
         //Edge* edge = graph->GetEdgeById(i);
         DisplayEdge(p.second);
     }
-    l << 11;
+    //l << 11;
     //White::Util::Logger& logger = White::Util::Logger::GetInstance();
     //logger.Init("train-log.txt");
     //logger << graph->GetTrainsCnt();
@@ -63,7 +63,7 @@ void GraphView::Display() {
     for (auto& p : graph->GetTrains()) {
         DisplayTrain(p.second);
     }
-    l << 12;
+    //l << 12;
     ModelFormat format;
     format.numAttributes = 0;
     format.numShaders = 0;

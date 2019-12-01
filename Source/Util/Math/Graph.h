@@ -14,8 +14,14 @@ namespace White {
     namespace Math {
 
       struct Pnt {
-        int x;
-        int y;
+        double x;
+        double y;
+        Pnt& operator += (Pnt& r)
+        {
+          this->x += r.x;
+          this->y += r.y;
+          return *this;
+        }
       };
 
 
@@ -36,7 +42,9 @@ namespace White {
         void AppendEdge(Edge* e) { edges.push_back(e); }
 
         std::vector<Edge*>& GetEdgeList() { return edges; }
-
+        Pnt GetCoord() { return coord; }
+        void SetCoord(double x, double y) { coord = { x, y }; }
+        void ShiftCoord(Pnt& p) { coord += p; }
 
       private:
         size_t id;
@@ -80,7 +88,9 @@ namespace White {
 
         std::map<int, Train*>& GetTrains() { return trains; }
         std::map<int, Market*>& GetMarkets() { return markets; }
+        std::map<int, City*>& GetCities() { return cities; }
         std::map<int, Edge*>& GetEdges() { return edges; }
+        int GetEdgeCnt() { return edges.size(); }
 
       private:
         int idx;
