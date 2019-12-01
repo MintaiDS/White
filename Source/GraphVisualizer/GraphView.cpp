@@ -8,7 +8,9 @@
 #include "InterfaceProvider.h"
 #include "ITransformable.h"
 #include "ModelFormat.h"
+#include "Train.h"
 #include "Model.h"
+#include "Logger.h"
 
 #include <algorithm>
 #include <sstream>
@@ -47,6 +49,12 @@ void GraphView::Display() {
     for (int i = 0; i < graph->GetEdgesCnt(); i++) {
         Edge* edge = graph->GetEdgeById(i);
         DisplayEdge(i);
+    }
+    //White::Util::Logger& logger = White::Util::Logger::GetInstance();
+    //logger.Init("train-log.txt");
+    //logger << graph->GetTrainsCnt();
+    for (int i = 0; i < graph->GetTrainsCnt(); i++) {
+        DisplayTrain(i);
     }
     ModelFormat format;
     format.numAttributes = 0;
@@ -238,6 +246,66 @@ void GraphView::DisplayEdge(int edge) {
         renderer->AddMesh(mesh);
     }
 }
+
+void GraphView::DisplayTrain(int train) {
+    Train* trainObj = graph->GetTrainById(train);
+    Edge* edgePtr = graph->GetEdgeByIdx(trainObj->GetLineIdx());
+    ObjectManager& om = ObjectManager::GetInstance();
+    InterfaceProvider ip;
+    
+    ModelFormat format;
+    format.numAttributes = 2;
+    format.numShaders = 2;
+    format.isTextured = false;
+    format.isIndexed = true;
+    format.numComponents.push_back(4);
+    format.numComponents.push_back(4);
+    format.shaders.push_back(L"Engine/Shaders/default.vsh");
+    format.shaders.push_back(L"Engine/Shaders/default.fsh");
+    Model model;
+    model.SetFormat(format);
+
+    int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
+    int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
+    Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
+    Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+    Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+    Math::Vector<float> dir = end - begin;
+    Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
+    Math::Vector<float> initial = {dir.Length(), 0};
+    float dot = initial.Dot(dir);
+    Math::Vector<float> diff = initial - dir;
+    float phi = Math::ToDegrees(atan2(initial[0] * dir[1] - dir[0] * initial[1],
+                                      initial[0] * dir[0] + initial[1] * dir[1]));
+    Math::Vector<float> rotation = {0.0f, 0.0f, phi};
+    Math::Segment<float> segment(begin, end);
+    float len = dir.Length();
+    float step = len / edgePtr->GetLength();
+    dir *= (1.0f / len);
+    dir *= step;
+    Math::Vector<float> position = begin + dir;
+
+    MeshLoader loader;
+    loader.format = format;
+    Mesh<float> mesh;
+    loader.Import(L"Engine/Models/Map/train.polygon");
+    mesh = loader.mesh;
+
+    unsigned trainMesh = om.Create<Mesh<float>>(mesh); 
+    model.SetMesh(trainMesh);
+    unsigned modelId = om.Create<Model>(model);
+    renderer->AddModel(modelId); 
+    ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
+    renderer->AddMesh(trainMesh);
+
+/////////////////////////
+
+    ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
+    //ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1] * 8, 1.0f});
+    ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
+}
+
+
 
 void GraphView::SetRenderer(White::Engine::Graphics::Renderer* renderer) {
     this->renderer = renderer;

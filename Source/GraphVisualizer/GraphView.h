@@ -14,6 +14,7 @@ public:
     void DisplayNode(int node);
     void DisplayPost(int node);
     void DisplayEdge(int edge);
+    void DisplayTrain(int train);
     void SetRenderer( White::Engine::Graphics::Renderer* renderer);
     void SetGraph(std::shared_ptr<White::Util::Math::Graph> graph);
     void SetGrid(std::shared_ptr<White::Grid> grid); 

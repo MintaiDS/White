@@ -69,6 +69,10 @@ Vertex* Graph::GetVById(size_t id) {
     return nullptr; 
 }
 
+Train* Graph::GetTrainById(size_t id) {
+    return trains[id];
+}
+
 Edge* Graph::GetEdgeById(size_t id) {
     for (auto it : edges) {
         if (it->GetId() == id) {
