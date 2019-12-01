@@ -16,10 +16,11 @@
 An educational project of the simple game client. 
 A game is built with a simple game engine
 including graphics, networking and input system.
-<details>
-<summary>Development status</summary>
+<details><summary>CLICK ME</summary>
+<p>
 Train displaying and update implemented.
 ![progress](Docs/progress.jpg)
+</p>
 </details>
 ### Building instructions 
 #### On Windows
