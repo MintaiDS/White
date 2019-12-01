@@ -21,7 +21,11 @@ using namespace White::Engine;
 using namespace White;
 
 GraphView::GraphView() 
-        : renderer(nullptr) {}
+        : renderer(nullptr) {
+    ObjectManager& om = ObjectManager::GetInstance();
+    mainMesh = om.Create<Mesh<float>>();
+    mainModel = om.Create<Model>();
+}
 
 void GraphView::Init() {
     int cnt = grid->gridSize[1] * grid->gridSize[1];
@@ -44,6 +48,23 @@ void GraphView::Display() {
         Edge* edge = graph->GetEdgeById(i);
         DisplayEdge(i);
     }
+    ModelFormat format;
+    format.numAttributes = 0;
+    format.numShaders = 0;
+    format.isTextured = false;
+    format.isIndexed = false;
+    //format.numComponents.push_back(4);
+    //format.numComponents.push_back(4);
+    //format.shaders.push_back(L"Engine/Shaders/default.vsh");
+    //format.shaders.push_back(L"Engine/Shaders/default.fsh");
+    InterfaceProvider ip;
+    auto model = ip.Query<Model>(mainModel);
+    model->SetFormat(format);
+    model->SetMesh(mainMesh);
+    auto mesh = ip.Query<Mesh<float>>(mainMesh);
+    mesh->Rotate({90.0f, 0.0f, 0.0f});
+    mesh->Translate({0.0f, 0.4f, 0.0f});
+    //renderer->AddModel(mainModel);
 }
 
 void GraphView::DisplayNode(int node) {
@@ -74,6 +95,7 @@ void GraphView::DisplayNode(int node) {
     model.SetMesh(mesh);
     unsigned modelId = om.Create<Model>(model);
     renderer->AddModel(modelId);
+    ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
 
     color = {0.0f, 0.0f, 0.5f, 1.0f};
     Math::Ring<float> ring(0.1, 0.28);
@@ -84,6 +106,7 @@ void GraphView::DisplayNode(int node) {
     model.SetMesh(mesh);
     modelId = om.Create<Model>(model);
     renderer->AddModel(modelId);
+    ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
     
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
@@ -98,6 +121,7 @@ void GraphView::DisplayNode(int node) {
         model.SetMesh(mesh);
         modelId = om.Create<Model>(model);
         renderer->AddModel(modelId);
+        ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
     }
 }
 
@@ -151,6 +175,7 @@ void GraphView::DisplayPost(int node) {
     model.SetMesh(postMesh);
     unsigned modelId = om.Create<Model>(model);
     renderer->AddModel(modelId); 
+    ip.Query<Mesh<float>>(mainMesh)->AddChild(postMesh);
     renderer->AddMesh(postMesh);
 }
 
@@ -193,6 +218,7 @@ void GraphView::DisplayEdge(int edge) {
 
     model.SetMesh(seg);
     unsigned modelId = om.Create<Model>(model);
+    ip.Query<Mesh<float>>(mainMesh)->AddChild(seg);
     renderer->AddModel(modelId); 
 
     std::stringstream str;
@@ -207,6 +233,7 @@ void GraphView::DisplayEdge(int edge) {
         model.SetMesh(mesh);
         modelId = om.Create<Model>(model);
         renderer->AddModel(modelId); 
+        ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
         renderer->AddMesh(mesh);
     }
 }

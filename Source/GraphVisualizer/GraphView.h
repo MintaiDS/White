@@ -19,6 +19,8 @@ public:
     void SetGrid(std::shared_ptr<White::Grid> grid); 
 
 protected:
+    unsigned mainMesh; 
+    unsigned mainModel;
     White::Engine::Graphics::Renderer* renderer;
     std::shared_ptr<White::Util::Math::Graph> graph;
     std::shared_ptr<White::Grid> grid;
