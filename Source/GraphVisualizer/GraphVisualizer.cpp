@@ -239,7 +239,9 @@ void GraphVisualizer::Play() {
           (std::chrono::system_clock::now().time_since_epoch());
     std::chrono::milliseconds time = curTime - prevTime;
     if (time > std::chrono::milliseconds{5000}) {
-        overseer->Turn();
+        for (int i = 0; i < 10; i++) {
+            //overseer->Turn();
+        }
         graphView.UpdateTrains();
         prevTime = curTime;
     }
