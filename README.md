@@ -41,4 +41,4 @@ cmake --build Build
 - WASD - moving in four directions.
 - Space - move up.
 - Control - move down.
-- Hold left button and moving mouse - rotate camera.
+- Hold left button and mouse move - rotate camera.
