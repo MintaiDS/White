@@ -71,7 +71,7 @@ void GraphView::Display() {
     model->SetMesh(mainMesh);
     auto mesh = ip.Query<Mesh<float>>(mainMesh);
     mesh->Rotate({90.0f, 0.0f, 0.0f});
-    mesh->Translate({0.0f, 0.4f, 0.0f});
+    mesh->Translate({0.0f, 1.0f, 0.0f});
     //renderer->AddModel(mainModel);
 }
 
