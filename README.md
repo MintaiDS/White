@@ -33,7 +33,12 @@ cd ..
 cmake --build Build
 ```
 ### Running application
- - Pass username as a command line argument to the run script.
+- Pass username as a command line argument to the run script.
 ```batch
  run <username>
 ```
+### Keyboard controls
+- WASD - moving in four directions.
+- Space - move up.
+- Control - move down.
+- Hold left button and moving mouse - rotate camera.
