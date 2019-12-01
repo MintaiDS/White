@@ -94,7 +94,7 @@ void GraphVisualizer::Play() {
         // LoadGraph(path); 
         LoadGraph(name); 
         int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 2 * (std::sqrt(verticesCnt) + 1); 
+        int dimension = 10 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
@@ -356,15 +356,15 @@ void GraphVisualizer::Play() {
             keys[3] = -keys[3];
             camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
         } 
-        //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
-        //    keys[9] = -keys[9];
-        //    camera.Rotate({0.0f, 0.0f, 2.0f});
+        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+            keys[9] = -keys[9];
+            camera.Translate({0.0f, 0.5f, 0.0f});
+        }
 
-        //}
-        //if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
-        //    keys[10] = -keys[10];
-        //    camera.Rotate({-0.0f, 0.0f, -2.0f});
-        //} 
+        if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+            keys[10] = -keys[10];
+            camera.Translate({-0.0f, -0.5f, -0.0f});
+        } 
         prev = cur;
     }
     //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
