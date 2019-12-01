@@ -7,6 +7,8 @@
 #include "Model.h"
 #include "ContextState.h"
 
+#include <chrono>
+
 namespace White {
 namespace Engine {
 namespace Graphics {
@@ -30,6 +32,7 @@ public:
     Program& GetProgram();
 
 protected:
+    std::chrono::milliseconds lastTime;
     Matrix<float> view;
     Matrix<float> projection; 
     Program program; 

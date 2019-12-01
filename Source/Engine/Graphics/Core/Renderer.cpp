@@ -19,6 +19,8 @@ namespace Engine {
 namespace Graphics {
 
 Renderer::Renderer() {
+    lastTime = std::chrono::duration_cast<std::chrono::milliseconds>
+               (std::chrono::system_clock::now().time_since_epoch());
 }
 
 void Renderer::Init() {
@@ -26,13 +28,20 @@ void Renderer::Init() {
 }
 
 void Renderer::Render() {
-    game->Play();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
-    for (int i = 0; i < contextStates.size(); i++) {
-        contextStates[i].Activate();
-        contextStates[i].UpdateCamera(view, projection);
-        contextStates[i].Render();
+    std::chrono::milliseconds cur 
+        = std::chrono::duration_cast<std::chrono::milliseconds>
+          (std::chrono::system_clock::now().time_since_epoch());
+    std::chrono::milliseconds time = cur - lastTime;
+    if (time > std::chrono::milliseconds{24}) {
+        game->Play();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
+        for (int i = 0; i < contextStates.size(); i++) {
+            contextStates[i].Activate();
+            contextStates[i].UpdateCamera(view, projection);
+            contextStates[i].Render();
+        }
+        lastTime = cur;
     }
 }
 

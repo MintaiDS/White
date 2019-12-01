@@ -295,12 +295,12 @@ void GraphVisualizer::Play() {
         int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
         if (lButtonKeyState) {
             Matrix<float> rotation 
-                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 5.5f, 
-                                           (cur[0] - prev[0]) / 2.7f, 0.0f});
+                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 3.7f, 
+                                           (cur[0] - prev[0]) / 3.7f, 0.0f});
 
             dir = rotation * dir;
-            camera.Rotate({-(cur[1] - prev[1]) / 5.5f, 
-                           (cur[0] - prev[0]) / 2.7f, 0.0f});
+            camera.Rotate({-(cur[1] - prev[1]) / 3.7f, 
+                           (cur[0] - prev[0]) / 3.7f, 0.0f});
         }
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             keys[0] = -keys[0];
