@@ -3,9 +3,8 @@
 ![Code Inspector](https://www.code-inspector.com/project/1816/status/svg?sanitize=true)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?sanitize=true)](https://raw.githubusercontent.com/glisquery/White/master/LICENSE)
-
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/glisquery/White/graphs/commit-activity)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/glisquery/White.svg)](https://GitHub.com/glisquery/White/pulls/)
+[comment]:[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/glisquery/White/graphs/commit-activity)
+[comment]:[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/glisquery/White.svg)](https://GitHub.com/glisquery/White/pulls/)
 [![GitHub forks](https://img.shields.io/github/forks/glisquery/White.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/glisquery/White/network/)
 # Wargaming Forge 2019 Project
 ## Game Client
