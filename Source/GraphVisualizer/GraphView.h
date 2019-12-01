@@ -15,6 +15,7 @@ public:
     void DisplayPost(int node);
     void DisplayEdge(int edge);
     void DisplayTrain(int train);
+    void UpdateTrains();
     void SetRenderer( White::Engine::Graphics::Renderer* renderer);
     void SetGraph(std::shared_ptr<White::Util::Math::Graph> graph);
     void SetGrid(std::shared_ptr<White::Grid> grid); 
@@ -25,6 +26,7 @@ protected:
     White::Engine::Graphics::Renderer* renderer;
     std::shared_ptr<White::Util::Math::Graph> graph;
     std::shared_ptr<White::Grid> grid;
+    std::vector<unsigned> trains;
     std::vector<White::Cell> cells;
     std::vector<int> shuffledIndices;
 };

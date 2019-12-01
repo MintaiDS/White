@@ -283,7 +283,7 @@ void GraphView::DisplayTrain(int train) {
     float step = len / edgePtr->GetLength();
     dir *= (1.0f / len);
     dir *= step;
-    Math::Vector<float> position = begin + dir;
+    Math::Vector<float> position = begin + dir * trainObj->GetPosition();
 
     MeshLoader loader;
     loader.format = format;
@@ -292,6 +292,7 @@ void GraphView::DisplayTrain(int train) {
     mesh = loader.mesh;
 
     unsigned trainMesh = om.Create<Mesh<float>>(mesh); 
+    trains.push_back(trainMesh);
     model.SetMesh(trainMesh);
     unsigned modelId = om.Create<Model>(model);
     renderer->AddModel(modelId); 
@@ -305,7 +306,27 @@ void GraphView::DisplayTrain(int train) {
     ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
 }
 
-
+void GraphView::UpdateTrains() {
+    InterfaceProvider ip;
+    for (int i = 0; i < graph->GetTrainsCnt(); i++) {
+        Train* trainObj = graph->GetTrainById(i);
+        auto mesh = ip.Query<Mesh<float>>(trains[i]);
+        Math::Vector<float> translation = mesh->GetTranslation();
+        mesh->Translate(translation * -1);
+        Edge* edgePtr = graph->GetEdgeByIdx(trainObj->GetLineIdx());
+        int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
+        int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
+        Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+        Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+        Math::Vector<float> dir = end - begin; 
+        float len = dir.Length();
+        float step = len / edgePtr->GetLength();
+        dir *= (1.0f / len);
+        dir *= step;
+        Math::Vector<float> position = begin + dir * trainObj->GetPosition();
+        mesh->Translate({position[0], position[1], 0.7f + 0.1});
+    }
+}
 
 void GraphView::SetRenderer(White::Engine::Graphics::Renderer* renderer) {
     this->renderer = renderer;
