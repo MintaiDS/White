@@ -2,7 +2,7 @@
 #include "Graph.h"
 #include "Algo.h"
 #include <fstream>
-//#include "Logger.h"
+#include "Logger.h"
 
 namespace White {
   namespace Util {
@@ -104,13 +104,19 @@ namespace White {
         if (world_map[i_idx].size() == 0)
           FillWorldPath(i_idx);
         std::vector<std::pair<Edge*, bool>> res;
+        //Logger& l = Logger::GetInstance();
+        //l << 100;
+        //l << i_idx;
         while (j_idx != i_idx)
         {
           std::pair<Edge*, bool> edge = world_map[i_idx][j_idx];
+          //l << j_idx;
           res.push_back(edge);
           j = vertices[j_idx]->GetIdx();
-          j_idx = edge.first->GetOtherV(j);
+          j = edge.first->GetOtherV(j);
+          j_idx = GetIdByIdx(j);
         }
+        //l << 101;
         res.shrink_to_fit();
         size_t sz = res.size();
         for (int i = 0; i < sz / 2; ++i)
@@ -283,8 +289,10 @@ namespace White {
           Train* t = g->GetTrainByIdx(idx);
           t->SetLineIdx(line_idx);
           t->SetPosition(position);
+          //t->SetPosition(5);
         }
       }
     }
   }
 }
+

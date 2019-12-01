@@ -32,6 +32,7 @@ namespace White {
         void GetMyTrains();
         void SortMarkets();
         std::string GetPlayerIdxFromJson(char* data);
+        void FindMyCity();
       };
     }
   }

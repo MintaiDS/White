@@ -33,7 +33,12 @@ namespace Engine {
 namespace Graphics {
 
 GraphVisualizer::GraphVisualizer(Renderer& renderer) 
-        : Game(renderer) {}
+        : Game(renderer) {
+    //Logger& l = Logger::GetInstance();
+    //l.Init("run.log");
+    prevTime = std::chrono::duration_cast<std::chrono::milliseconds>
+           (std::chrono::system_clock::now().time_since_epoch());
+}
 
 void GraphVisualizer::LoadGraph(std::string name) {
     // graph.reset(ParseGraphFromJSON(path));
@@ -49,7 +54,9 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
+
       ParseGraphFromJSON(graph, resp.data);
+
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -57,7 +64,9 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
+
       ParseInfrastructureFromJSON(graph, resp.data);
+
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -106,144 +115,27 @@ void GraphVisualizer::Play() {
         //logger.Log(4);
         //logger.Log(graph->GetVerticesCnt());
         int verticesCnt = graph->GetVerticesCnt();
+
         //logger.Log(5);
+
         int dimension = 10 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
+
         //logger.Log(6);
+
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
         graphView.Init();
         //logger.Log(7);
         graphView.Display();
-        //logger.Log(8);
-        //cameraScaling = 1.0f;
-        //cameraScalingStep = 0.03f;
-        //cameraTranslation = {0, 0, 0};
-        ////camera.Translate({0.0f, 0.0f, -0.5f});
-        //camera.Scale({1.0f, 1.0f, 1.0f});
-        //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
+
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 1.0f, -6.0f});
 
         ObjectManager& om = ObjectManager::GetInstance();
-        //InterfaceProvider ip;
-        //MeshLoader loader;
-        //Mesh<float> meshTerrain;
-        //Mesh<float> meshSky;
-        //Mesh<float> meshLine;
-        //loader.Import(L"Engine/Models/Objects/wall_gray.polygon");
-        //meshTerrain = loader.mesh;
-        //loader.Import(L"Engine/Models/Objects/wall_blue.polygon");
-        //meshSky = loader.mesh;
-        //loader.Import(L"Engine/Models/Objects/line_gray.polygon");
-        //meshLine = loader.mesh;
-        //cubeId = om.Create<Mesh<float>>(meshSky);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, 100.0f}); 
-        //renderer.AddMesh(cubeId);
-        //
-        //cubeId = om.Create<Mesh<float>>(meshSky);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 0.0f, -100.0f}); 
-        //renderer.AddMesh(cubeId);
-
-        //cubeId = om.Create<Mesh<float>>(meshSky);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({-100.0f, 0.0f, 0.0f}); 
-        //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
-        //renderer.AddMesh(cubeId);
-
-        //cubeId = om.Create<Mesh<float>>(meshSky);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({100.0f, 0.0f, 0.0}); 
-        //ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 90.0f, 0.0f}); 
-        //renderer.AddMesh(cubeId);
-
-
-        //cubeId = om.Create<Mesh<float>>(meshTerrain);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -100.0f, 0.0f}); 
-        //ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(cubeId);
-
-        //cubeId = om.Create<Mesh<float>>(meshSky);
-        ////ip.Query<IScalable>(cubeId)->Scale<float>({0.12f, 0.12f, 1.0f});
-        //ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, 100.0f, 0.0f}); 
-        //ip.Query<IRotatable>(cubeId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(cubeId);
-
-        //unsigned lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, 100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, 100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 0.0f, -100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 0.0f, -100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, 100.0f, 0.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, 100.0f, 0.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(lineId);
-
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({100.0f, -100.0f, 0.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(lineId);
-
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({-100.0f, -100.0f, 0.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({90.0f, 0.0f, 0.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, 100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, 100.0f, -100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, 100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        //renderer.AddMesh(lineId);
-
-        //lineId = om.Create<Mesh<float>>(meshLine);
-        //ip.Query<ITranslatable>(lineId)->Translate<float>({0.0f, -100.0f, -100.0f}); 
-        //ip.Query<IScalable>(lineId)->Scale<float>({1.0, 100.0f, 1.0f}); 
-        //ip.Query<IRotatable>(lineId)->Rotate<float>({0.0f, 0.0f, 90.0f}); 
-        //renderer.AddMesh(lineId);
         dir = {0.0f, 0.0f, 1.0f};
         prev = {0.0f, 0.0f};
 
@@ -262,135 +154,96 @@ void GraphVisualizer::Play() {
     }
     InterfaceProvider ip;
     UpdateCamera();
-    if (mode == 1) {
-        //if ((GetAsyncKeyState(VK_LEFT) < 0) != keys[0]) {
-        //    keys[0] = -keys[0];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.01f, 0.0f, 0.0f});
-        //} 
-        //if ((GetAsyncKeyState(VK_RIGHT) < 0) != keys[1]) {
-        //    keys[1] = -keys[1];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.01f, 0.0f, 0.0f});
-        //}
-        //if ((GetAsyncKeyState(VK_UP) < 0) != keys[2]) {
-        //    keys[2] = -keys[2];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, +0.01f, 0.0f});
-        //}
-        //if ((GetAsyncKeyState(VK_DOWN) < 0) != keys[3]) {
-        //    keys[3] = -keys[3];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.01f, 0.0f});
-        //}
-        //if ((GetAsyncKeyState(0x41) < 0) != keys[4]) {
-        //    keys[4] = -keys[4];
-        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, 1.0f});
-        //} 
-        //if ((GetAsyncKeyState(0x57) < 0) != keys[5]) {
-        //    keys[5] = -keys[5];
-        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({1.0f, 0.0f, 0.0f});
-        //}
-        //if ((GetAsyncKeyState(0x44) < 0) != keys[6]) {
-        //    keys[6] = -keys[6];
-        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({0.0f, 0.0f, -1.0f});
-        //}
-        //if ((GetAsyncKeyState(0x53) < 0) != keys[7]) {
-        //    keys[7] = -keys[7];
-        //    ip.Query<IRotatable>(cubeId)->Rotate<float>({-1.0f, -0.0f, 0.0f});
-        //} 
-        //if ((GetAsyncKeyState(0x46) < 0) != keys[9]) {
-        //    keys[9] = -keys[9];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({0.0f, -0.0f, 0.1f});
-        //}
-        //if ((GetAsyncKeyState(0x42) < 0) != keys[10]) {
-        //    keys[10] = -keys[10];
-        //    ip.Query<ITranslatable>(cubeId)->Translate<float>({-0.0f, -0.0f, -0.1f});
-        //}
-    } else if (mode == 0) {
-        POINT point;
-        GetCursorPos(&point);
-        Vector<float> cur = {static_cast<float>(point.x), 
-                             static_cast<float>(point.y)};        
-        int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
-        if (lButtonKeyState) {
-            Matrix<float> rotation 
-                = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 3.7f, 
-                                           (cur[0] - prev[0]) / 3.7f, 0.0f});
 
-            dir = rotation * dir;
-            camera.Rotate({-(cur[1] - prev[1]) / 3.7f, 
-                           (cur[0] - prev[0]) / 3.7f, 0.0f});
-        }
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-            keys[0] = -keys[0];
-            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                              90.0f, 0.0f});
-            dir = rotation * dir;
-            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-            rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
-            dir = rotation * dir;
-        } 
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-            keys[1] = -keys[1];
-            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                              -90.0f, 0.0f});
-            dir = rotation * dir;
-            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-            rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
-            dir = rotation * dir;
-        }
-        if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            keys[2] = -keys[2];
-            camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
-        }
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            keys[3] = -keys[3];
-            camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
-        }
+    POINT point;
+    GetCursorPos(&point);
+    Vector<float> cur = {static_cast<float>(point.x), 
+                         static_cast<float>(point.y)};        
+    int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
+    if (lButtonKeyState) {
+        Matrix<float> rotation 
+            = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 3.7f, 
+                                       (cur[0] - prev[0]) / 3.7f, 0.0f});
 
-
-        if (GetAsyncKeyState(0x41) & 0x8000) {
-            keys[0] = -keys[0];
-            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                              90.0f, 0.0f});
-            dir = rotation * dir;
-            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-            rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
-            dir = rotation * dir;
-        } 
-        if (GetAsyncKeyState(0x44) & 0x8000) {
-            keys[1] = -keys[1];
-            Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                              -90.0f, 0.0f});
-            dir = rotation * dir;
-            camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-            rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
-            dir = rotation * dir;
-        }
-        if (GetAsyncKeyState(0x57) & 0x8000) {
-            keys[2] = -keys[2];
-            camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
-        }
-        if (GetAsyncKeyState(0x53) & 0x8000) {
-            keys[3] = -keys[3];
-            camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
-        } 
-        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-            keys[9] = -keys[9];
-            camera.Translate({0.0f, 0.5f, 0.0f});
-        }
-
-        if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-            keys[10] = -keys[10];
-            camera.Translate({-0.0f, -0.5f, -0.0f});
-        } 
-        prev = cur;
+        dir = rotation * dir;
+        camera.Rotate({-(cur[1] - prev[1]) / 3.7f, 
+                       (cur[0] - prev[0]) / 3.7f, 0.0f});
     }
-    Logger& l = Logger::GetInstance();
-    l.Init("run.log");
-    for (int i = 0; i < 100; ++i)
-    {
-      l << std::string("start turn ") + std::to_string(i+1);
-      overseer->Turn();
-      graphView.UpdateTrains();
+    if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+        keys[0] = -keys[0];
+        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                          90.0f, 0.0f});
+        dir = rotation * dir;
+        camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
+        rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
+        dir = rotation * dir;
+    } 
+    if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+        keys[1] = -keys[1];
+        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                          -90.0f, 0.0f});
+        dir = rotation * dir;
+        camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
+        rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
+        dir = rotation * dir;
     }
+    if (GetAsyncKeyState(VK_UP) & 0x8000) {
+        keys[2] = -keys[2];
+        camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
+    }
+    if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+        keys[3] = -keys[3];
+        camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
+    }
+
+
+    if (GetAsyncKeyState(0x41) & 0x8000) {
+        keys[0] = -keys[0];
+        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                          90.0f, 0.0f});
+        dir = rotation * dir;
+        camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
+        rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
+        dir = rotation * dir;
+    } 
+    if (GetAsyncKeyState(0x44) & 0x8000) {
+        keys[1] = -keys[1];
+        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
+                                                          -90.0f, 0.0f});
+        dir = rotation * dir;
+        camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
+        rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
+        dir = rotation * dir;
+    }
+    if (GetAsyncKeyState(0x57) & 0x8000) {
+        keys[2] = -keys[2];
+        camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
+    }
+    if (GetAsyncKeyState(0x53) & 0x8000) {
+        keys[3] = -keys[3];
+        camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
+    } 
+    if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+        keys[9] = -keys[9];
+        camera.Translate({0.0f, 0.5f, 0.0f});
+    }
+
+    if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
+        keys[10] = -keys[10];
+        camera.Translate({-0.0f, -0.5f, -0.0f});
+    } 
+    prev = cur;
+
+    //Logger& l = Logger::GetInstance();
+    std::chrono::milliseconds curTime
+        = std::chrono::duration_cast<std::chrono::milliseconds>
+          (std::chrono::system_clock::now().time_since_epoch());
+    std::chrono::milliseconds time = curTime - prevTime;
+    //if (time > std::chrono::milliseconds{500}) {
+        overseer->Turn();
+        graphView.UpdateTrains();
+        prevTime = curTime;
+    //}
     //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
     //    keys[8] = -keys[8];
     //    mode = (mode + 1) % 2;

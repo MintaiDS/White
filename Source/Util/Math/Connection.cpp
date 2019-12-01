@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iomanip>
 
+
 namespace White {
   namespace Util {
     namespace Math {
@@ -50,7 +51,7 @@ namespace White {
         WSAStartup(ver, (LPWSADATA)&wsaData);
 #endif
 
-        //Создаем сокет
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
         if (clientSocket == SOCKET_ERROR)
@@ -152,6 +153,7 @@ namespace White {
           retVal = recv(clientSocket, data_buf, data_left, 0);
           if (retVal == SOCKET_ERROR)
           {
+
             printf("Unable to recv\n");
 #ifndef __unix__
             WSACleanup();

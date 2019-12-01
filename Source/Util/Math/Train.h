@@ -5,6 +5,7 @@
 #include "Edge.h"
 #include "Post.h"
 
+
 namespace White {
   namespace Util {
     namespace Math {
@@ -25,17 +26,19 @@ namespace White {
             COME_HOME = 5
           };
 
-          void SetTask(TaskType t, std::vector<std::pair<Edge*, bool>>& path, Post* p);
-          std::pair<int, int>* ContinueMovement(int line_idx, int position);
+          void SetTask(TaskType t, std::vector<std::pair<Edge*, bool>>& path, Post* p, int start_idx);
+          std::pair<int, int>* ContinueMovement(Edge* edge, int position);
 
           TaskType GetTask() { return task; }
           bool TaskEnded(int line_idx, int position);
           void DropTask() { task = NO_TASK; }
           void CheckPathIdx(int line_idx);
+          Post* GetDestination() { return destination; }
         private:
           int path_idx;
           TaskType task = NO_TASK;
           Post* destination;
+          int start_idx;
           std::vector<std::pair<Edge*, bool>> path;
           bool go_back = false;
         };
