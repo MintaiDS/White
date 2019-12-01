@@ -249,6 +249,7 @@ void GraphView::DisplayEdge(int edge) {
 
 void GraphView::DisplayTrain(int train) {
     Train* trainObj = graph->GetTrainById(train);
+    //trainObj->SetPosition(6);
     Edge* edgePtr = graph->GetEdgeByIdx(trainObj->GetLineIdx());
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
