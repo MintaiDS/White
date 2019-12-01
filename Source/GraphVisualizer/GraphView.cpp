@@ -63,7 +63,7 @@ void GraphView::Display() {
     model->SetMesh(mainMesh);
     auto mesh = ip.Query<Mesh<float>>(mainMesh);
     mesh->Rotate({90.0f, 0.0f, 0.0f});
-    mesh->Translate({0.0f, 0.4f, 0.0f});
+    mesh->Translate({0.0f, 0.4f, 20.0f});
     //renderer->AddModel(mainModel);
 }
 
@@ -172,6 +172,7 @@ void GraphView::DisplayPost(int node) {
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
     ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
     ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
+    ip.Query<IRotatable>(postMesh)->Rotate<float>({-90.0f, 0.0f, 0.0f});
     model.SetMesh(postMesh);
     unsigned modelId = om.Create<Model>(model);
     renderer->AddModel(modelId); 
