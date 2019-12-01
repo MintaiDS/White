@@ -16,11 +16,6 @@
 An educational project of the simple game client. 
 A game is built with a simple game engine
 including graphics, networking and input system.
-<details><summary>CLICK ME</summary>
-<p>
-Train displaying and update implemented.
-</p>
-</details>
 ### Building instructions 
 #### On Windows
 ##### Build project in one step
@@ -47,3 +42,7 @@ cmake --build Build
 - Space - move up.
 - Control - move down.
 - Hold left button and mouse move - rotate camera.
+### Development status.
+Train displaying and update implemented.
+![progress](Docs/progress.jpg)
+
