@@ -16,9 +16,11 @@
 An educational project of the simple game client. 
 A game is built with a simple game engine
 including graphics, networking and input system.
->! Development progress.
->! Implement train displaying and update.
->! ![progress](Docs/progress.jpg)
+<details>
+<summary>Development status</summary>
+Train displaying and update implemented.
+![progress](Docs/progress.jpg)
+</details>
 ### Building instructions 
 #### On Windows
 ##### Build project in one step
