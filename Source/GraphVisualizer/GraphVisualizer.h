@@ -34,7 +34,9 @@ protected:
     float cameraScaling;
     Vector<float> cameraTranslation;
     Camera<float> camera;
+
     std::shared_ptr<Overseer> overseer;
+
     std::shared_ptr<Graph> graph;
     std::shared_ptr<Grid> grid;
     GraphView graphView;

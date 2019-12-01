@@ -1,4 +1,5 @@
 #include "Train.h"
+
 #include <cassert>
 namespace White {
   namespace Util {

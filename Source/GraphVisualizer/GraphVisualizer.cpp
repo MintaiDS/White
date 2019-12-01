@@ -49,7 +49,9 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
+
       ParseGraphFromJSON(graph, resp.data);
+
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -57,7 +59,9 @@ void GraphVisualizer::LoadGraph(std::string name) {
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY)
     {
+
       ParseInfrastructureFromJSON(graph, resp.data);
+
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -106,19 +110,25 @@ void GraphVisualizer::Play() {
         //logger.Log(4);
         //logger.Log(graph->GetVerticesCnt());
         int verticesCnt = graph->GetVerticesCnt();
+
         //logger.Log(5);
+
         int dimension = 10 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
+
         //logger.Log(6);
+
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
         graphView.Init();
         //logger.Log(7);
         graphView.Display();
+
         //logger.Log(8);
+
         //cameraScaling = 1.0f;
         //cameraScalingStep = 0.03f;
         //cameraTranslation = {0, 0, 0};
@@ -382,6 +392,7 @@ void GraphVisualizer::Play() {
             camera.Translate({-0.0f, -0.5f, -0.0f});
         } 
         prev = cur;
+
     }
     Logger& l = Logger::GetInstance();
     l.Init("run.log");
@@ -390,6 +401,7 @@ void GraphVisualizer::Play() {
       l << std::string("start turn ") + std::to_string(i+1);
       overseer->Turn();
       graphView.UpdateTrains();
+
     }
     //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
     //    keys[8] = -keys[8];
