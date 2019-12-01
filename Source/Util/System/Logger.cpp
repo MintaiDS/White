@@ -14,6 +14,7 @@ Logger& Logger::GetInstance() {
 }
 
 void Logger::Init(std::string filename) {
+    remove(filename.c_str());
     this->filename = filename;
 }
 

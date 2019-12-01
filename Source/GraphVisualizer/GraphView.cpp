@@ -43,19 +43,27 @@ void GraphView::Init() {
 }
 
 void GraphView::Display() {
+    Logger& l = Logger::GetInstance();
+    l << 10;
+    l << graph->GetVerticesCnt();
     for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayPost(i);
     }
-    for (int i = 0; i < graph->GetEdgesCnt(); i++) {
-        Edge* edge = graph->GetEdgeById(i);
-        DisplayEdge(i);
+    
+    //for (int i = 0; i < graph->GetEdgesCnt(); i++) {
+    for (auto& p : graph->GetEdges()) {
+        //Edge* edge = graph->GetEdgeById(i);
+        DisplayEdge(p.second);
     }
+    l << 11;
     //White::Util::Logger& logger = White::Util::Logger::GetInstance();
     //logger.Init("train-log.txt");
     //logger << graph->GetTrainsCnt();
-    for (int i = 0; i < graph->GetTrainsCnt(); i++) {
-        DisplayTrain(i);
+    //for (int i = 0; i < graph->GetTrainsCnt(); i++) {
+    for (auto& p : graph->GetTrains()) {
+        DisplayTrain(p.second);
     }
+    l << 12;
     ModelFormat format;
     format.numAttributes = 0;
     format.numShaders = 0;
@@ -76,6 +84,10 @@ void GraphView::Display() {
 }
 
 void GraphView::DisplayNode(int node) {
+
+  //Logger& l = Logger::GetInstance();
+  //l << 1000;
+
     ModelFormat format;
     format.numAttributes = 2;
     format.numShaders = 2;
@@ -132,10 +144,13 @@ void GraphView::DisplayNode(int node) {
         modelId = om.Create<Model>(model);
         renderer->AddModel(modelId);
         ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
+
     }
 }
 
 void GraphView::DisplayPost(int node) {
+  //Logger& l = Logger::GetInstance();
+  //l << 100;
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
 
@@ -152,17 +167,18 @@ void GraphView::DisplayPost(int node) {
     model.SetFormat(format);
 
 
-
+    //l << 101;
     Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
-
+    //l << node;
     Post* post = graph->GetVById(node)->GetPost();
-
+    //l << 102;
     if (!post) {
         DisplayNode(node);
         return;
     }
-
+    //l << (int)post;
     int type = post->GetPostType();
+    //l << type;
     MeshLoader loader;
     loader.format = format;
     Mesh<float> mesh;
@@ -176,9 +192,11 @@ void GraphView::DisplayPost(int node) {
     case STORAGE: 
         loader.Import(L"Engine/Models/Map/storage.polygon");
         break;
+
     }
     mesh = loader.mesh;
 
+    //l << 103;
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
     ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 2, grid->cellSize[1] * 2, 1.0f});
     ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
@@ -188,9 +206,11 @@ void GraphView::DisplayPost(int node) {
     renderer->AddModel(modelId); 
     ip.Query<Mesh<float>>(mainMesh)->AddChild(postMesh);
     renderer->AddMesh(postMesh);
+    //l << 104;
 }
 
-void GraphView::DisplayEdge(int edge) {
+
+void GraphView::DisplayEdge(Edge* edgePtr) {
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
     
@@ -206,7 +226,7 @@ void GraphView::DisplayEdge(int edge) {
     Model model;
     model.SetFormat(format);
 
-    Edge* edgePtr = graph->GetEdgeById(edge);
+    //Edge* edgePtr = graph->GetEdgeById(edge);
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
     Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
@@ -249,8 +269,10 @@ void GraphView::DisplayEdge(int edge) {
     }
 }
 
-void GraphView::DisplayTrain(int train) {
-    Train* trainObj = graph->GetTrainById(train);
+
+void GraphView::DisplayTrain(Train* trainObj) {
+    //Train* trainObj = graph->GetTrainById(train);
+
     //trainObj->SetPosition(6);
     Edge* edgePtr = graph->GetEdgeByIdx(trainObj->GetLineIdx());
     ObjectManager& om = ObjectManager::GetInstance();
@@ -311,8 +333,11 @@ void GraphView::DisplayTrain(int train) {
 
 void GraphView::UpdateTrains() {
     InterfaceProvider ip;
-    for (int i = 0; i < graph->GetTrainsCnt(); i++) {
-        Train* trainObj = graph->GetTrainById(i);
+
+    int i = 0;
+    for (auto& p : graph->GetTrains()) {
+        Train* trainObj = p.second;
+
         auto mesh = ip.Query<Mesh<float>>(trains[i]);
         Math::Vector<float> translation = mesh->GetTranslation();
         mesh->Translate(translation * -1);
@@ -328,6 +353,8 @@ void GraphView::UpdateTrains() {
         dir *= step;
         Math::Vector<float> position = begin + dir * trainObj->GetPosition();
         mesh->Translate({position[0], position[1], 0.7f + 0.1});
+        i++;
+
     }
 }
 

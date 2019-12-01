@@ -45,4 +45,3 @@ cmake --build Build
 ### Development status.
 Train displaying and simple movement imlemented.
 ![progress](Docs/progress.gif)
-

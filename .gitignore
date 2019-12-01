@@ -45,3 +45,6 @@ test.bat
 *.exe
 *.out
 *.app
+
+# Log files
+*.log
