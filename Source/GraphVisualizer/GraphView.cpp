@@ -98,7 +98,8 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> diskMesh = disk.ToMesh(color, 90);
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(mesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 2, 
+                                             grid->cellSize[1] * 2, 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
     model.SetMesh(mesh);
     unsigned modelId = om.Create<Model>(model);
@@ -109,7 +110,8 @@ void GraphView::DisplayNode(int node) {
     Math::Ring<float> ring(0.1, 0.28);
     Mesh<float> ringMesh = ring.ToMesh(color, 90); 
     mesh = om.Create<Mesh<float>>(ringMesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 2, 
+                                             grid->cellSize[1] * 2, 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.01f});
     model.SetMesh(mesh);
     modelId = om.Create<Model>(model);
@@ -222,7 +224,7 @@ void GraphView::DisplayEdge(int edge) {
     Mesh<float> segmentMesh = segment.ToMesh(color, 4);
     unsigned seg = om.Create<Mesh<float>>(segmentMesh);
     ip.Query<IRotatable>(seg)->Rotate<float>(rotation);
-    ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1] * 8, 1.0f});
+    ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1] * 35, 1.0f});
     ip.Query<ITranslatable>(seg)->Translate<float>({mid[0], mid[1], 0.7f + 0.1}); 
 
     model.SetMesh(seg);

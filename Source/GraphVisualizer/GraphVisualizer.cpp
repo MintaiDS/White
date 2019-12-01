@@ -110,7 +110,7 @@ void GraphVisualizer::Play() {
         //camera.Scale({1.0f, 1.0f, 1.0f});
         //GLfloat scaleFactor = (grid->gridSize[1] * grid->cellSize[0]) / 2.0f;
         camera.Rotate({0.0f, 180.0f, 0.0f});
-        camera.Translate({0.0f, 0.0f, -6.0f});
+        camera.Translate({0.0f, 1.0f, -6.0f});
 
         ObjectManager& om = ObjectManager::GetInstance();
         //InterfaceProvider ip;
