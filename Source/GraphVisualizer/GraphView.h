@@ -4,6 +4,9 @@
 #include "Vector.h"
 #include "Grid.h"
 #include "Renderer.h"
+#include "Train.h"
+
+using namespace White::Util::Math;
 
 class GraphView {
 public:
