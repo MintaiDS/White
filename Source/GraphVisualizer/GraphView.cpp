@@ -180,7 +180,7 @@ void GraphView::DisplayPost(int node) {
     mesh = loader.mesh;
 
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
-    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0], grid->cellSize[1], 1.0f});
+    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 2, grid->cellSize[1] * 2, 1.0f});
     ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
     ip.Query<IRotatable>(postMesh)->Rotate<float>({-90.0f, 0.0f, 0.0f});
     model.SetMesh(postMesh);
@@ -305,7 +305,7 @@ void GraphView::DisplayTrain(int train) {
 /////////////////////////
 
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
-    //ip.Query<IScalable>(seg)->Scale<float>({grid->cellSize[0], grid->cellSize[1] * 8, 1.0f});
+    ip.Query<IScalable>(trainMesh)->Scale<float>({2.0f, 1.2f, 1.0f});
     ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
 }
 
