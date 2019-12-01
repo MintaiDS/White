@@ -326,7 +326,7 @@ void GraphView::DisplayTrain(Train* trainObj) {
 
 void GraphView::UpdateTrains() {
     InterfaceProvider ip;
-    int i;
+    int i = 0;
     for (auto& p : graph->GetTrains()) {
         Train* trainObj = p.second;
         auto mesh = ip.Query<Mesh<float>>(trains[i]);

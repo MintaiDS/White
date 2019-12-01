@@ -383,15 +383,13 @@ void GraphVisualizer::Play() {
         } 
         prev = cur;
     }
-    //Logger& l = Logger::GetInstance();
-    //l.Init("run.log");
+    Logger& l = Logger::GetInstance();
+    l.Init("run.log");
     for (int i = 0; i < 100; ++i)
     {
-      //l << std::string("start turn") + std::to_string(i+1);
+      l << std::string("start turn ") + std::to_string(i+1);
       overseer->Turn();
-      //l << "made turn";
-      graphView.Display();
-      //l << "end draw";
+      graphView.UpdateTrains();
     }
     //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
     //    keys[8] = -keys[8];
