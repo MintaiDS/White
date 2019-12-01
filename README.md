@@ -19,7 +19,6 @@ including graphics, networking and input system.
 <details><summary>CLICK ME</summary>
 <p>
 Train displaying and update implemented.
-![progress](Docs/progress.jpg)
 </p>
 </details>
 ### Building instructions 
