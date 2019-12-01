@@ -43,6 +43,6 @@ cmake --build Build
 - Control - move down.
 - Hold left button and mouse move - rotate camera.
 ### Development status.
-Train displaying and update implemented.
-![progress](Docs/progress.jpg)
+Train displaying and simple movement imlemented.
+![progress](Docs/progress.gif)
 
