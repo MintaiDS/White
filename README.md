@@ -8,6 +8,7 @@
 [comment]: [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/glisquery/White/graphs/commit-activity)
 
 [comment]: [![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/glisquery/White.svg)](https://GitHub.com/glisquery/White/pulls/)
+
 # Wargaming Forge 2019 Project
 ## Game Client
 ### White Team
