@@ -48,6 +48,8 @@ EXTERN_FUNCTION_ADDRESS(PFNGLVERTEXATTRIBPOINTERPROC,
                         glVertexAttribPointer);
 EXTERN_FUNCTION_ADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC, 
                         glEnableVertexAttribArray);
+EXTERN_FUNCTION_ADDRESS(PFNGLDISABLEVERTEXATTRIBARRAYPROC, 
+                        glDisableVertexAttribArray);
 EXTERN_FUNCTION_ADDRESS(PFNGLBUFFERSUBDATAPROC, 
                         glBufferSubData);
 EXTERN_FUNCTION_ADDRESS(PFNGLDELETEBUFFERSPROC, 
@@ -90,6 +92,10 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETPROGRAMINFOLOGPROC,
                         glGetProgramInfoLog);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETERRORPROC,
                         glGetError);
+EXTERN_FUNCTION_ADDRESS(PFNGLDISABLEPROC,
+                        glDisable);
+EXTERN_FUNCTION_ADDRESS(PFNGLGENERATEMIPMAPPROC,
+                        glGenerateMipmap);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();

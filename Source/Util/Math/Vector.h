@@ -37,6 +37,10 @@ struct Vector {
     Vector Cross(const Vector<T>& other) const;
     T Mixed(const Vector<T>& otherFirst, const Vector<T>& otherSecond) const;
 
+    std::size_t GetSize() const;
+    T* GetDataPtr() const;
+
+protected:
     std::size_t size;
     std::unique_ptr<T[]> values;
 };
@@ -48,7 +52,7 @@ template<typename T>
 Vector<T>::Vector(std::size_t size) 
         : size(size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = 0;
     }
 }
@@ -57,7 +61,7 @@ template<typename T>
 Vector<T>::Vector(std::size_t size, T* values) 
         : size(size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         this->values[i] = values[i];
     }
 }
@@ -66,7 +70,7 @@ template<typename T>
 Vector<T>::Vector(std::vector<T> values) 
         : size(values.size())
         , values(std::make_unique<T[]>(size)) { 
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         this->values[i] = values[i];
     }
 }
@@ -75,7 +79,7 @@ template<typename T>
 Vector<T>::Vector(const Vector<T>& other)
         : size(other.size)
         , values(std::make_unique<T[]>(size)) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = other[i];
     }
 }
@@ -85,7 +89,7 @@ Vector<T>::Vector(std::initializer_list<T> args)
         : size(args.size())
         , values(std::make_unique<T[]>(size)) {
     std::initializer_list<T>::iterator it; 
-    int i = 0;
+    std::size_t i = 0;
     for (it = args.begin(); it != args.end(); ++it) {
         values[i] = *it;
         ++i;
@@ -96,7 +100,7 @@ template<typename T>
 Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
     size = other.size;
     values = std::make_unique<T[]>(size);
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] = other[i];
     }
 
@@ -115,7 +119,7 @@ T& Vector<T>::operator[](std::size_t index) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator+=(const Vector<T>& other) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] += other[i];
     }
 
@@ -124,7 +128,7 @@ Vector<T>& Vector<T>::operator+=(const Vector<T>& other) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator-=(const Vector<T>& other) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] -= other[i];
     }
 
@@ -133,7 +137,7 @@ Vector<T>& Vector<T>::operator-=(const Vector<T>& other) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator+=(const T value) {
-    for (int i = 0; i < size; ++i) {
+    for (std::size_t i = 0; i < size; ++i) {
         values[i] += value;
     }
 
@@ -147,7 +151,7 @@ Vector<T>& Vector<T>::operator-=(const T value) {
 
 template<typename T>
 Vector<T>& Vector<T>::operator*=(const T value) {
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         values[i] *= value;
     }
 
@@ -194,7 +198,7 @@ Vector<T> Vector<T>::operator*(const T value) const {
 template<typename T>
 T Vector<T>::Length() const {
     T ret = 0;
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         ret += values.get()[i] * values.get()[i];
     }
 
@@ -204,7 +208,7 @@ T Vector<T>::Length() const {
 template<typename T>
 T Vector<T>::Dot(const Vector<T>& other) const {
     T ret = 0;
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         ret += values.get()[i] * other[i];
     }
 
@@ -214,9 +218,9 @@ T Vector<T>::Dot(const Vector<T>& other) const {
 template<typename T>
 Vector<T> Vector<T>::Cross(const Vector<T>& other) const {
     Vector<T> ret(size);
-    ret[0] = *this[1] * other[2] - *this[2] * other[1];
-    ret[1] = *this[0] * other[2] - *this[2] * other[0];
-    ret[2] = *this[0] * other[1] - *this[1] * other[0];
+    ret[0] = values[1] * other[2] - values[2] * other[1];
+    ret[1] = values[0] * other[2] - values[2] * other[0];
+    ret[2] = values[0] * other[1] - values[1] * other[0];
 
     return ret;
 }
@@ -225,6 +229,17 @@ template<typename T>
 T Vector<T>::Mixed(const Vector<T>& otherFirst, 
                    const Vector<T>& otherSecond) const {
     return *this.dot(otherFrist.cross(otherSecond));
+}
+
+
+template<typename T>
+std::size_t Vector<T>::GetSize() const {
+    return size;
+}
+
+template<typename T>
+T* Vector<T>::GetDataPtr() const {
+    return values.get();
 }
 
 }

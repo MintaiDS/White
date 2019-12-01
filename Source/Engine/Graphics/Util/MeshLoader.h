@@ -1,4 +1,9 @@
+#pragma once
+
 #include "Mesh.h"
+#include "ModelFormat.h"
+
+#include <string>
 
 namespace White {
 namespace Engine {
@@ -8,10 +13,11 @@ struct MeshLoader {
     MeshLoader();
     MeshLoader(const Mesh<GLfloat>& mesh);
 
-    void Import(std::wstring path);
-    void Export(std::wstring path, const Mesh<GLfloat>& mesh);
+    Mesh<float> Import(std::wstring path);
+    void Export(std::wstring path, const Mesh<float>& mesh);
 
-    Mesh<GLfloat> mesh;
+    Mesh<float> mesh;
+    ModelFormat format;
 };
 
 }

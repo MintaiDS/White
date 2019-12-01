@@ -3,7 +3,9 @@
 ![Code Inspector](https://www.code-inspector.com/project/1816/status/svg?sanitize=true)
 [![BCH compliance](https://bettercodehub.com/edge/badge/glisquery/White?branch=master)](https://bettercodehub.com/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?sanitize=true)](https://raw.githubusercontent.com/glisquery/White/master/LICENSE)
-
+[![GitHub forks](https://img.shields.io/github/forks/glisquery/White.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/glisquery/White/network/)
+<!--- [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/glisquery/White/graphs/commit-activity) --->
+<!--- [comment]: [![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/glisquery/White.svg)](https://GitHub.com/glisquery/White/pulls/) --->
 # Wargaming Forge 2019 Project
 ## Game Client
 ### White Team
@@ -16,9 +18,8 @@ A game is built with a simple game engine
 including graphics, networking and input system.
 ### Building instructions 
 #### On Windows
-##### Build project and grab test data in one step
-- Build using CMake tool and download test data required for 
-the first task, also test script will be created in the root directory.
+##### Build project in one step
+- Build using CMake.
 ```batch
 build 
 ```
@@ -32,12 +33,16 @@ cd ..
 cmake --build Build
 ```
 ### Running application
- - Pass a path to the json file as a command line argument to run script.
+- Pass username as a command line argument to the run script.
 ```batch
- run <path>
+ run <username>
 ```
-- Display all graphs from test data set.
-```batch
-test
-```
+### Keyboard controls
+- WASD - moving in four directions.
+- Space - move up.
+- Control - move down.
+- Hold left button and mouse move - rotate camera.
+### Development status.
+Train displaying and update implemented.
+![progress](Docs/progress.jpg)
 

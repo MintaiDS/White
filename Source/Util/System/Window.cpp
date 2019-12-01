@@ -23,6 +23,7 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT uMsg,
 
 LRESULT CALLBACK Window::WindowProcCallback(HWND hWnd, UINT uMsg, 
                                             WPARAM wParam, LPARAM lParam) {
+    MessageBox(NULL, NULL, NULL, MB_OK);
     return DefWindowProcW(hWnd, uMsg, wParam, lParam); 
 }
 

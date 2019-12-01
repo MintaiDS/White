@@ -56,19 +56,19 @@ VertexAttribute<T>::~VertexAttribute() {
 
 template<typename T>
 std::size_t VertexAttribute<T>::GetSize() const {
-    return sizeof(T) * data.size;
+    return sizeof(T) * data.GetSize();
 }
 
 template<typename T>
 std::size_t VertexAttribute<T>::GetCount() const {
-    return data.size;
+    return data.GetSize();
 }
 
 template<typename T>
 const T* VertexAttribute<T>::GetRawData() {
     if (!rawData) {
-        rawData = new T[data.size];
-        for (int i = 0; i < data.size; i++) {
+        rawData = new T[data.GetSize()];
+        for (int i = 0; i < data.GetSize(); i++) {
             rawData[i] = data[i];
         }
     }
