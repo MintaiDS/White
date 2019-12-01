@@ -34,8 +34,10 @@ namespace Graphics {
 
 GraphVisualizer::GraphVisualizer(Renderer& renderer) 
         : Game(renderer) {
+
     //Logger& l = Logger::GetInstance();
     //l.Init("run.log");
+
     prevTime = std::chrono::duration_cast<std::chrono::milliseconds>
            (std::chrono::system_clock::now().time_since_epoch());
 }
