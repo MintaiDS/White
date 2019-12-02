@@ -92,11 +92,8 @@ void GraphVisualizer::UpdateCamera() {
 }
 
 void GraphVisualizer::Play() {
-  //Logger& logger = Logger::GetInstance();
-  //logger.Init("run.log");
-  //logger.Log(1);
-  if (!overseer) {
-    //logger.Log(2);
+    if (!overseer) {
+        //logger.Log(2);
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
         std::vector<std::wstring> args = settings.GetArgs();
@@ -133,14 +130,11 @@ void GraphVisualizer::Play() {
         graphView.Init();
         //logger.Log(7);
         graphView.Display();
-
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 1.0f, -6.0f});
-
         ObjectManager& om = ObjectManager::GetInstance();
         dir = {0.0f, 0.0f, 1.0f};
         prev = {0.0f, 0.0f};
-
         std::wifstream in(L"Engine/Config/startup.config");
         int n;
         in >> n;
@@ -156,7 +150,6 @@ void GraphVisualizer::Play() {
     }
     InterfaceProvider ip;
     UpdateCamera();
-
     POINT point;
     GetCursorPos(&point);
     Vector<float> cur = {static_cast<float>(point.x), 
@@ -166,7 +159,6 @@ void GraphVisualizer::Play() {
         Matrix<float> rotation 
             = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 3.7f, 
                                        (cur[0] - prev[0]) / 3.7f, 0.0f});
-
         dir = rotation * dir;
         camera.Rotate({-(cur[1] - prev[1]) / 3.7f, 
                        (cur[0] - prev[0]) / 3.7f, 0.0f});
@@ -197,8 +189,6 @@ void GraphVisualizer::Play() {
         keys[3] = -keys[3];
         camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
     }
-
-
     if (GetAsyncKeyState(0x41) & 0x8000) {
         keys[0] = -keys[0];
         Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
@@ -229,27 +219,13 @@ void GraphVisualizer::Play() {
         keys[9] = -keys[9];
         camera.Translate({0.0f, 0.5f, 0.0f});
     }
-
     if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
         keys[10] = -keys[10];
         camera.Translate({-0.0f, -0.5f, -0.0f});
     } 
     prev = cur;
-
-    //Logger& l = Logger::GetInstance();
-    std::chrono::milliseconds curTime
-        = std::chrono::duration_cast<std::chrono::milliseconds>
-          (std::chrono::system_clock::now().time_since_epoch());
-    std::chrono::milliseconds time = curTime - prevTime;
-    //if (time > std::chrono::milliseconds{500}) {
-        overseer->Turn();
-        graphView.UpdateTrains();
-        prevTime = curTime;
-    //}
-    //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
-    //    keys[8] = -keys[8];
-    //    mode = (mode + 1) % 2;
-    //}
+    overseer->Turn();
+    graphView.UpdateTrains();
 }
 
 }
