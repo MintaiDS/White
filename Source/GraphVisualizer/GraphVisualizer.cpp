@@ -42,6 +42,22 @@ GraphVisualizer::GraphVisualizer(Renderer& renderer)
            (std::chrono::system_clock::now().time_since_epoch());
 }
 
+DWORD GraphVisualizer::Listener() {
+    while (true) {
+        std::chrono::milliseconds curTime 
+            = std::chrono::duration_cast<std::chrono::milliseconds>
+              (std::chrono::system_clock::now().time_since_epoch());
+        std::chrono::milliseconds time = curTime - prevTime;
+        if (time > std::chrono::milliseconds(15)) {
+            prevTime = curTime;
+            overseer->Turn();
+            graphView.UpdateTrains();
+        }
+    }
+
+    return 0;
+}
+
 void GraphVisualizer::LoadGraph(std::string name) {
     // graph.reset(ParseGraphFromJSON(path));
     graph = std::make_shared<Graph>();
@@ -147,6 +163,7 @@ void GraphVisualizer::Play() {
             renderer.AddModel(cubeModel);
         }
         renderer.UpdateVertexData();
+        overseerThread.Start(this, &GraphVisualizer::Listener);
     }
     InterfaceProvider ip;
     UpdateCamera();
@@ -224,8 +241,8 @@ void GraphVisualizer::Play() {
         camera.Translate({-0.0f, -0.5f, -0.0f});
     } 
     prev = cur;
-    overseer->Turn();
-    graphView.UpdateTrains();
+    //overseer->Turn();
+    //graphView.UpdateTrains();
 }
 
 }
