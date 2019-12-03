@@ -309,13 +309,11 @@ void GraphView::DisplayTrain(Train* trainObj) {
     dir *= (1.0f / len);
     dir *= step;
     Math::Vector<float> position = begin + dir * trainObj->GetPosition();
-
     MeshLoader loader;
     loader.format = format;
     Mesh<float> mesh;
     loader.Import(L"Engine/Models/Map/train.polygon");
     mesh = loader.mesh;
-
     unsigned trainMesh = om.Create<Mesh<float>>(mesh); 
     trains.push_back(trainMesh);
     model.SetMesh(trainMesh);
@@ -323,9 +321,6 @@ void GraphView::DisplayTrain(Train* trainObj) {
     renderer->AddModel(modelId); 
     ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
     renderer->AddMesh(trainMesh);
-
-/////////////////////////
-
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
     ip.Query<IScalable>(trainMesh)->Scale<float>({2.0f, 1.2f, 1.0f});
     ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
