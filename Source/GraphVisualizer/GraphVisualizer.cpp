@@ -48,7 +48,7 @@ DWORD GraphVisualizer::Listener() {
             = std::chrono::duration_cast<std::chrono::milliseconds>
               (std::chrono::system_clock::now().time_since_epoch());
         std::chrono::milliseconds time = curTime - prevTime;
-        if (time > std::chrono::milliseconds(15)) {
+        if (time > std::chrono::milliseconds(1550)) {
             prevTime = curTime;
             overseer->Turn();
             graphView.UpdateTrains();
@@ -133,7 +133,7 @@ void GraphVisualizer::Play() {
 
         //logger.Log(5);
 
-        int dimension = 10 * (std::sqrt(verticesCnt) + 1); 
+        int dimension = 50 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
