@@ -13,7 +13,6 @@ out vec2 texCoord;
 
 void main() { 
     gl_Position = projection * view * model * vPosition; 
-    //gl_Position = vPosition;
     vertexColor = vColor;
     texCoord = tCoord;
 }
