@@ -2,7 +2,7 @@
 
 namespace Threading {
 
-Mutext::Mutex() : hMutex(0) {}
+Mutex::Mutex() : hMutex(0) {}
 
 void Mutex::Create() {
     hMutex = CreateMutexW(nullptr, false, nullptr);
