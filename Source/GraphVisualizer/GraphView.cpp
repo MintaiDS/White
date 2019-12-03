@@ -110,8 +110,8 @@ void GraphView::DisplayNode(int node) {
     Mesh<float> diskMesh = disk.ToMesh(color, 90);
     unsigned mesh = om.Create<Mesh<float>>(diskMesh);
     auto ptr = ip.Query<ITransformable>(mesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 2, 
-                                             grid->cellSize[1] * 2, 1.0f});
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 18, 
+                                             grid->cellSize[1] * 18, 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f});
     model.SetMesh(mesh);
     unsigned modelId = om.Create<Model>(model);
@@ -122,8 +122,8 @@ void GraphView::DisplayNode(int node) {
     Math::Ring<float> ring(0.1, 0.28);
     Mesh<float> ringMesh = ring.ToMesh(color, 90); 
     mesh = om.Create<Mesh<float>>(ringMesh);
-    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 2, 
-                                             grid->cellSize[1] * 2, 1.0f});
+    ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 18, 
+                                             grid->cellSize[1] * 18, 1.0f});
     ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], pos[1], 0.7f + 0.01f});
     model.SetMesh(mesh);
     modelId = om.Create<Model>(model);
@@ -198,7 +198,7 @@ void GraphView::DisplayPost(int node) {
 
     //l << 103;
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
-    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 2, grid->cellSize[1] * 2, 1.0f});
+    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 7, grid->cellSize[1] * 7, 3.0f});
     ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
     ip.Query<IRotatable>(postMesh)->Rotate<float>({-90.0f, 0.0f, 0.0f});
     model.SetMesh(postMesh);
@@ -323,7 +323,7 @@ void GraphView::DisplayTrain(Train* trainObj) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
     renderer->AddMesh(trainMesh);
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
-    ip.Query<IScalable>(trainMesh)->Scale<float>({2.0f, 1.2f, 1.0f});
+    ip.Query<IScalable>(trainMesh)->Scale<float>({6.0f, 4.0f, 1.0f});
     ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
 }
 

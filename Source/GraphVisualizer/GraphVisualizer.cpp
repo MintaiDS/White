@@ -133,7 +133,7 @@ void GraphVisualizer::Play() {
 
         //logger.Log(5);
 
-        int dimension = 50 * (std::sqrt(verticesCnt) + 1); 
+        int dimension = 70 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
