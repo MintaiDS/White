@@ -40,8 +40,7 @@ void Thread<T>::Start(T* obj, DWORD (T::*ExecuteFunction)()) {
 }
 
 template<typename T>
-DWORD Thread<T>::ExecuteThread() {
-     
+DWORD Thread<T>::ExecuteThread() {     
     return 0;
 }
 

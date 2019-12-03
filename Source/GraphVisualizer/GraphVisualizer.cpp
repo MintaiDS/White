@@ -49,9 +49,8 @@ DWORD GraphVisualizer::Listener() {
               (std::chrono::system_clock::now().time_since_epoch());
         std::chrono::milliseconds time = curTime - prevTime;
         overseer->Turn();
-        if (time > std::chrono::milliseconds(100)) {
+        if (time > std::chrono::milliseconds(1)) {
             prevTime = curTime;
-
             graphView.UpdateTrains();
         }
     }

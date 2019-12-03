@@ -133,9 +133,9 @@ void GraphView::DisplayNode(int node) {
     std::stringstream str;
     str << graph->GetVById(node)->GetIdx();
     White::Engine::Graphics::CharacterBlock charBlock({pos[0], pos[1], 0.7f - 0.1f}, 
-                                                      {grid->cellSize[1] / 3.0f, 
-                                                       grid->cellSize[1] / 3.0f}, str.str());
-    charBlock.Scale({grid->cellSize[0] / 6.0f, grid->cellSize[1] / 6.0f, 1.0f});
+                                                      {grid->cellSize[1] * 3.4f, 
+                                                       grid->cellSize[1] * 3.4f}, str.str());
+    charBlock.Scale({grid->cellSize[0] * 3.4f, grid->cellSize[1] * 3.4f, 1.0f});
     charBlock.Translate({-0.008f, 0.0f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
@@ -255,8 +255,9 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
     std::stringstream str;
     str << edgePtr->GetLength();
     White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.01f}, 
-                                                      {grid->cellSize[1] / 3.0f, grid->cellSize[1] / 3.0f}, str.str());
-    charBlock.Scale({grid->cellSize[0] / 6.0f, grid->cellSize[1] / 6.0f, 1.0f});
+                                                      {grid->cellSize[1] * 3.4f, 
+                                                      grid->cellSize[1] * 3.4f}, str.str());
+    charBlock.Scale({grid->cellSize[0] * 3.4f, grid->cellSize[1] * 3.4f, 1.0f});
     charBlock.Translate({-0.008f, 0.001f, 0.0f});
     std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
     for (int i = 0; i < meshes.size(); i++) {
