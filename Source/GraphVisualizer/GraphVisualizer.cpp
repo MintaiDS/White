@@ -32,14 +32,9 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-GraphVisualizer::GraphVisualizer(Renderer& renderer) 
-        : Game(renderer) {
-
-    //Logger& l = Logger::GetInstance();
-    //l.Init("run.log");
-
+GraphVisualizer::GraphVisualizer(Renderer& renderer) : Game(renderer) {
     prevTime = std::chrono::duration_cast<std::chrono::milliseconds>
-           (std::chrono::system_clock::now().time_since_epoch());
+               (std::chrono::system_clock::now().time_since_epoch());
 }
 
 DWORD GraphVisualizer::Listener() {
@@ -59,7 +54,6 @@ DWORD GraphVisualizer::Listener() {
 }
 
 void GraphVisualizer::LoadGraph(std::string name) {
-    // graph.reset(ParseGraphFromJSON(path));
     graph = std::make_shared<Graph>();
     Connection& conn = Connection::GetInstance(SERVER_ADDR, SERVER_PORT);
     std::string data = "{\"name\":\"" + name + "\"}";
@@ -70,25 +64,18 @@ void GraphVisualizer::LoadGraph(std::string name) {
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
     conn.Request(msg, resp);
-    if (resp.result == Result::OKEY)
-    {
-
-      ParseGraphFromJSON(graph, resp.data);
-
+    if (resp.result == Result::OKEY) {
+        ParseGraphFromJSON(graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
     conn.Request(msg, resp);
-    if (resp.result == Result::OKEY)
-    {
-
-      ParseInfrastructureFromJSON(graph, resp.data);
-
+    if (resp.result == Result::OKEY) {
+        ParseInfrastructureFromJSON(graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
-    //graph.reset(&gr);
 }
 
 void GraphVisualizer::UpdateCamera() {
@@ -123,28 +110,16 @@ void GraphVisualizer::Play() {
         overseer = std::make_shared<Overseer>();
         //logger << 2.1;
         overseer->Init(name);
-        //logger << 2.2;
         graph = overseer->GetGraph();
-        //logger.Log(3);
-        //LoadGraph(name); 
-        //logger.Log(4);
-        //logger.Log(graph->GetVerticesCnt());
         int verticesCnt = graph->GetVerticesCnt();
-
-        //logger.Log(5);
-
         int dimension = 70 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
-
-        //logger.Log(6);
-
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
         graphView.Init();
-        //logger.Log(7);
         graphView.Display();
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 1.0f, -6.0f});
@@ -241,8 +216,6 @@ void GraphVisualizer::Play() {
         camera.Translate({-0.0f, -0.5f, -0.0f});
     } 
     prev = cur;
-    //overseer->Turn();
-    //graphView.UpdateTrains();
 }
 
 }
