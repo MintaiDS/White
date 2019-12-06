@@ -32,18 +32,29 @@ namespace White {
 namespace Engine {
 namespace Graphics {
 
-GraphVisualizer::GraphVisualizer(Renderer& renderer) 
-        : Game(renderer) {
-
-    //Logger& l = Logger::GetInstance();
-    //l.Init("run.log");
-
+GraphVisualizer::GraphVisualizer(Renderer& renderer) : Game(renderer) {
     prevTime = std::chrono::duration_cast<std::chrono::milliseconds>
-           (std::chrono::system_clock::now().time_since_epoch());
+               (std::chrono::system_clock::now().time_since_epoch());
+    rotation = {0.0f, 0.0f, 0.0f};
+}
+
+DWORD GraphVisualizer::Listener() {
+    while (true) {
+        std::chrono::milliseconds curTime 
+            = std::chrono::duration_cast<std::chrono::milliseconds>
+              (std::chrono::system_clock::now().time_since_epoch());
+        std::chrono::milliseconds time = curTime - prevTime;
+        overseer->Turn();
+        if (time > std::chrono::milliseconds(1)) {
+            prevTime = curTime;
+            graphView.UpdateTrains();
+        }
+    }
+
+    return 0;
 }
 
 void GraphVisualizer::LoadGraph(std::string name) {
-    // graph.reset(ParseGraphFromJSON(path));
     graph = std::make_shared<Graph>();
     Connection& conn = Connection::GetInstance(SERVER_ADDR, SERVER_PORT);
     std::string data = "{\"name\":\"" + name + "\"}";
@@ -54,25 +65,18 @@ void GraphVisualizer::LoadGraph(std::string name) {
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
     conn.Request(msg, resp);
-    if (resp.result == Result::OKEY)
-    {
-
-      ParseGraphFromJSON(graph, resp.data);
-
+    if (resp.result == Result::OKEY) {
+        ParseGraphFromJSON(graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
     conn.Request(msg, resp);
-    if (resp.result == Result::OKEY)
-    {
-
-      ParseInfrastructureFromJSON(graph, resp.data);
-
+    if (resp.result == Result::OKEY) {
+        ParseInfrastructureFromJSON(graph, resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
-    //graph.reset(&gr);
 }
 
 void GraphVisualizer::UpdateCamera() {
@@ -92,11 +96,8 @@ void GraphVisualizer::UpdateCamera() {
 }
 
 void GraphVisualizer::Play() {
-  //Logger& logger = Logger::GetInstance();
-  //logger.Init("run.log");
-  //logger.Log(1);
-  if (!overseer) {
-    //logger.Log(2);
+    if (!overseer) {
+        //logger.Log(2);
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
         std::vector<std::wstring> args = settings.GetArgs();
@@ -110,37 +111,22 @@ void GraphVisualizer::Play() {
         overseer = std::make_shared<Overseer>();
         //logger << 2.1;
         overseer->Init(name);
-        //logger << 2.2;
         graph = overseer->GetGraph();
-        //logger.Log(3);
-        //LoadGraph(name); 
-        //logger.Log(4);
-        //logger.Log(graph->GetVerticesCnt());
         int verticesCnt = graph->GetVerticesCnt();
-
-        //logger.Log(5);
-
-        int dimension = 10 * (std::sqrt(verticesCnt) + 1); 
+        int dimension = 70 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));
-
-        //logger.Log(6);
-
         graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
         graphView.Init();
-        //logger.Log(7);
         graphView.Display();
-
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 1.0f, -6.0f});
-
         ObjectManager& om = ObjectManager::GetInstance();
         dir = {0.0f, 0.0f, 1.0f};
         prev = {0.0f, 0.0f};
-
         std::wifstream in(L"Engine/Config/startup.config");
         int n;
         in >> n;
@@ -153,103 +139,111 @@ void GraphVisualizer::Play() {
             renderer.AddModel(cubeModel);
         }
         renderer.UpdateVertexData();
+        overseerThread.Start(this, &GraphVisualizer::Listener);
     }
     InterfaceProvider ip;
     UpdateCamera();
-
     POINT point;
     GetCursorPos(&point);
     Vector<float> cur = {static_cast<float>(point.x), 
                          static_cast<float>(point.y)};        
     int lButtonKeyState = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
     if (lButtonKeyState) {
-        Matrix<float> rotation 
-            = Matrix<float>::Rotation({-(cur[1] - prev[1]) / 3.7f, 
-                                       (cur[0] - prev[0]) / 3.7f, 0.0f});
-
-        dir = rotation * dir;
+        rotation += {-(cur[1] - prev[1]) / 3.7f, 
+                     (cur[0] - prev[0]) / 3.7f, 0.0f};
+        for (int i = 0; i < 3; i++) {
+            if (rotation[i] > 360.0f) {
+                rotation[i] = rotation[i] - 360.0f;
+            }
+        }
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationMat *  dir;
         camera.Rotate({-(cur[1] - prev[1]) / 3.7f, 
                        (cur[0] - prev[0]) / 3.7f, 0.0f});
     }
     if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
         keys[0] = -keys[0];
-        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                          90.0f, 0.0f});
-        dir = rotation * dir;
+        Matrix<float> rotationRight = Matrix<float>::Rotation({0.0f, 
+                                                               90.0f, 0.0f});
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationRight * rotationMat *  dir; 
         camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-        rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
-        dir = rotation * dir;
     } 
     if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
         keys[1] = -keys[1];
-        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                          -90.0f, 0.0f});
-        dir = rotation * dir;
+        Matrix<float> rotationRight = Matrix<float>::Rotation({0.0f, 
+                                                               -90.0f, 0.0f});
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationRight * rotationMat *  dir; 
         camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-        rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
-        dir = rotation * dir;
     }
     if (GetAsyncKeyState(VK_UP) & 0x8000) {
         keys[2] = -keys[2];
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationMat *  dir;  
         camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
     }
     if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
         keys[3] = -keys[3];
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationMat *  dir;  
         camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
     }
-
-
     if (GetAsyncKeyState(0x41) & 0x8000) {
         keys[0] = -keys[0];
-        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                          90.0f, 0.0f});
-        dir = rotation * dir;
+        Matrix<float> rotationRight = Matrix<float>::Rotation({0.0f, 
+                                                               90.0f, 0.0f});
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationRight * rotationMat *  dir; 
         camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-        rotation = Matrix<float>::Rotation({0.0f, -90.0f, 0.0f});  
-        dir = rotation * dir;
     } 
     if (GetAsyncKeyState(0x44) & 0x8000) {
         keys[1] = -keys[1];
-        Matrix<float> rotation = Matrix<float>::Rotation({0.0f, 
-                                                          -90.0f, 0.0f});
-        dir = rotation * dir;
+        Matrix<float> rotationRight = Matrix<float>::Rotation({0.0f, 
+                                                               -90.0f, 0.0f});
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationRight * rotationMat *  dir; 
         camera.Translate({-dir[0] / 3.0f, +0.0f, -dir[2] / 3.0f});
-        rotation = Matrix<float>::Rotation({0.0f, 90.0f, 0.0f});  
-        dir = rotation * dir;
     }
     if (GetAsyncKeyState(0x57) & 0x8000) {
         keys[2] = -keys[2];
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationMat *  dir;  
         camera.Translate({dir[0] / 3.0f, +0.0f, dir[2] / 3.0f});
     }
     if (GetAsyncKeyState(0x53) & 0x8000) {
         keys[3] = -keys[3];
+        Matrix<float> rotationMat 
+            = Matrix<float>::Rotation(rotation);
+        dir = {0.0f, 0.0f, 1.0f};
+        dir = rotationMat *  dir;  
         camera.Translate({-dir[0] / 3.0f, -0.0f, -dir[2] / 3.0f});
     } 
     if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
         keys[9] = -keys[9];
         camera.Translate({0.0f, 0.5f, 0.0f});
     }
-
     if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
         keys[10] = -keys[10];
-        camera.Translate({-0.0f, -0.5f, -0.0f});
+        camera.Translate({0.0f, -0.5f, 0.0f});
     } 
     prev = cur;
-
-    //Logger& l = Logger::GetInstance();
-    std::chrono::milliseconds curTime
-        = std::chrono::duration_cast<std::chrono::milliseconds>
-          (std::chrono::system_clock::now().time_since_epoch());
-    std::chrono::milliseconds time = curTime - prevTime;
-    //if (time > std::chrono::milliseconds{500}) {
-        overseer->Turn();
-        graphView.UpdateTrains();
-        prevTime = curTime;
-    //}
-    //if ((GetAsyncKeyState(0x4D) < 0) != keys[8]) {
-    //    keys[8] = -keys[8];
-    //    mode = (mode + 1) % 2;
-    //}
 }
 
 }

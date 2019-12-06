@@ -5,19 +5,23 @@
 #include "Vector.h"
 #include "GraphView.h"
 #include "Camera.h"
+#include "Thread.h"
 
 #include <string>
 #include <chrono>
 
 using namespace White::Util::Math;
+using namespace Threading;
 
 namespace White {
 namespace Engine {
 namespace Graphics {
 
-class GraphVisualizer : Game {
+class GraphVisualizer : public Game {
 public:
     GraphVisualizer(Renderer& renderer);
+
+    DWORD Listener();
 
     void LoadGraph(std::string path);
     void UpdateCamera();
@@ -25,8 +29,10 @@ public:
     virtual void Play();
 
 protected:
+    Thread<GraphVisualizer> overseerThread;
     Vector<float> prev;
     Vector<float> dir;
+    Vector<float> rotation;
     int mode = 0;
     int keys[13] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     float scaleFactor;
@@ -35,9 +41,7 @@ protected:
     float cameraScaling;
     Vector<float> cameraTranslation;
     Camera<float> camera;
-
     std::shared_ptr<Overseer> overseer;
-
     std::chrono::milliseconds prevTime;
     std::shared_ptr<Graph> graph;
     std::shared_ptr<Grid> grid;

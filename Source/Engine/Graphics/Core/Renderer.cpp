@@ -32,7 +32,7 @@ void Renderer::Render() {
         = std::chrono::duration_cast<std::chrono::milliseconds>
           (std::chrono::system_clock::now().time_since_epoch());
     std::chrono::milliseconds time = cur - lastTime;
-    if (time > std::chrono::milliseconds{24}) {
+    //if (time > std::chrono::milliseconds{24}) {
         game->Play();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
@@ -42,7 +42,7 @@ void Renderer::Render() {
             contextStates[i].Render();
         }
         lastTime = cur;
-    }
+    //}
 }
 
 void Renderer::SetView(Matrix<float> view) {
