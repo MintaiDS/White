@@ -41,8 +41,6 @@ FUNCTION_ADDRESS(glGetProgramiv);
 FUNCTION_ADDRESS(glGetBufferSubData);
 FUNCTION_ADDRESS(glGetBufferParameteriv);
 FUNCTION_ADDRESS(glGetUniformLocation);
-FUNCTION_ADDRESS(glUniformMatrix4fv);
-FUNCTION_ADDRESS(glProgramUniformMatrix4fv);
 FUNCTION_ADDRESS(glGetShaderInfoLog);
 FUNCTION_ADDRESS(glGetShaderSource);
 FUNCTION_ADDRESS(glGetProgramBinary);

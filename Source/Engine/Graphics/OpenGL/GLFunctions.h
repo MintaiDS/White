@@ -76,8 +76,6 @@ EXTERN_FUNCTION_ADDRESS(PFNGLGETBUFFERPARAMETERIVPROC,
                         glGetBufferParameteriv);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETUNIFORMLOCATIONPROC, 
                         glGetUniformLocation);
-EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX4FVPROC, 
-                        glProgramUniformMatrix4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERIVPROC,
                         glGetShaderiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLGETSHADERINFOLOGPROC,
@@ -115,51 +113,51 @@ EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM1UIPROC,
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM2UIPROC,
                         glUniform2ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM3UIPROC,
-						glUniform3ui);
+                        glUniform3ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM4UIPROC,
-						glUniform4ui);
+                        glUniform4ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM1FVPROC,
-						glUniform1fv);
+                        glUniform1fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM2FVPROC,
-						glUniform2fv);
+                        glUniform2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM3FVPROC,
-						glUniform3fv);
+                        glUniform3fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM4FVPROC,
-						glUniform4fv);
+                        glUniform4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM1IVPROC,
-						glUniform1iv);
+                        glUniform1iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM2IVPROC,
-						glUniform2iv);
+                        glUniform2iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM3IVPROC,
-						glUniform3iv);
+                        glUniform3iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM4IVPROC,
-						glUniform4iv);
+                        glUniform4iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM1UIVPROC,
-						glUniform1uiv);
+                        glUniform1uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM2UIVPROC,
-						glUniform2uiv);
+                        glUniform2uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM3UIVPROC,
-						glUniform3uiv);
+                        glUniform3uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORM4UIVPROC,
-						glUniform4uiv);
+                        glUniform4uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX2FVPROC,
-						glUniformMatrix2fv);
+                        glUniformMatrix2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX3FVPROC,
-						glUniformMatrix3fv);
+                        glUniformMatrix3fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX4FVPROC,
-						glUniformMatrix4fv);
+                        glUniformMatrix4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX2X3FVPROC,
-						glUniformMatrix2x3fv); 
+                        glUniformMatrix2x3fv); 
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX3X2FVPROC,
-						glUniformMatrix3x2fv);
+                        glUniformMatrix3x2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX2X4FVPROC,
-						glUniformMatrix2x4fv);
+                        glUniformMatrix2x4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX4X2FVPROC,
-						glUniformMatrix4x2fv);
+                        glUniformMatrix4x2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX3X4FVPROC,
-						glUniformMatrix3x4fv);
+                        glUniformMatrix3x4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLUNIFORMMATRIX4X3FVPROC,
-						glUniformMatrix4x3fv);
+                        glUniformMatrix4x3fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM1FPROC,
                         glProgramUniform1f);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM2FPROC,
@@ -181,51 +179,51 @@ EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM1UIPROC,
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM2UIPROC,
                         glProgramUniform2ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM3UIPROC,
-						glProgramUniform3ui);
+                        glProgramUniform3ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM4UIPROC,
-						glProgramUniform4ui);
+                        glProgramUniform4ui);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM1FVPROC,
-						glProgramUniform1fv);
+                        glProgramUniform1fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM2FVPROC,
-						glProgramUniform2fv);
+                        glProgramUniform2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM3FVPROC,
-						glProgramUniform3fv);
+                        glProgramUniform3fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM4FVPROC,
-						glProgramUniform4fv);
+                        glProgramUniform4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM1IVPROC,
-						glProgramUniform1iv);
+                        glProgramUniform1iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM2IVPROC,
-						glProgramUniform2iv);
+                        glProgramUniform2iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM3IVPROC,
-						glProgramUniform3iv);
+                        glProgramUniform3iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM4IVPROC,
-						glProgramUniform4iv);
+                        glProgramUniform4iv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM1UIVPROC,
-						glProgramUniform1uiv);
+                        glProgramUniform1uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM2UIVPROC,
-						glProgramUniform2uiv);
+                        glProgramUniform2uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM3UIVPROC,
-						glProgramUniform3uiv);
+                        glProgramUniform3uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORM4UIVPROC,
-						glProgramUniform4uiv);
+                        glProgramUniform4uiv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX2FVPROC,
-						glProgramUniformMatrix2fv);
+                        glProgramUniformMatrix2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX3FVPROC,
-						glProgramUniformMatrix3fv);
+                        glProgramUniformMatrix3fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX4FVPROC,
-						glProgramUniformMatrix4fv);
+                        glProgramUniformMatrix4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC,
-						glProgramUniformMatrix2x3fv); 
+                        glProgramUniformMatrix2x3fv); 
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC,
-						glProgramUniformMatrix3x2fv);
+                        glProgramUniformMatrix3x2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC,
-						glProgramUniformMatrix2x4fv);
+                        glProgramUniformMatrix2x4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC,
-						glProgramUniformMatrix4x2fv);
+                        glProgramUniformMatrix4x2fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC,
-						glProgramUniformMatrix3x4fv);
+                        glProgramUniformMatrix3x4fv);
 EXTERN_FUNCTION_ADDRESS(PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC,
-						glProgramUniformMatrix4x3fv);
+                        glProgramUniformMatrix4x3fv);
 
 void* GetFunctionAddress(char* name, HMODULE hModule);
 void LoadFunctions();
