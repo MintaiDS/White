@@ -45,8 +45,8 @@ void Renderer::Render() {
                (std::chrono::system_clock::now().time_since_epoch());
     unsigned sleepTime = 0;
     int diff = lastTime.count() - cur.count();
-    if (diff < 16) {
-        sleepTime = 16 - diff;
+    if (diff < 12) {
+        sleepTime = 12 - diff;
     }
     Sleep(sleepTime);
 }
