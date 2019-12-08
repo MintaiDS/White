@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 using namespace White::Util::Math;
 
@@ -32,17 +33,22 @@ void Renderer::Render() {
         = std::chrono::duration_cast<std::chrono::milliseconds>
           (std::chrono::system_clock::now().time_since_epoch());
     std::chrono::milliseconds time = cur - lastTime;
-    //if (time > std::chrono::milliseconds{24}) {
-        game->Play();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
-        for (int i = 0; i < contextStates.size(); i++) {
-            contextStates[i].Activate();
-            contextStates[i].UpdateCamera(view, projection);
-            contextStates[i].Render();
-        }
-        lastTime = cur;
-    //}
+    game->Play();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
+    for (int i = 0; i < contextStates.size(); i++) {
+        contextStates[i].Activate();
+        contextStates[i].UpdateCamera(view, projection);
+        contextStates[i].Render();
+    }
+    lastTime = std::chrono::duration_cast<std::chrono::milliseconds>
+               (std::chrono::system_clock::now().time_since_epoch());
+    unsigned sleepTime = 0;
+    int diff = lastTime.count() - cur.count();
+    if (diff < 16) {
+        sleepTime = 16 - diff;
+    }
+    Sleep(sleepTime);
 }
 
 void Renderer::SetView(Matrix<float> view) {

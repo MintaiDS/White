@@ -33,7 +33,7 @@ void Program::Delete() {
 }
 
 int Program::GetVariableLocation(std::string name) {
-    return glGetUniformLocation(id, name);
+    return glGetUniformLocation(id, name.c_str());
 }
 
 void Program::SetVariable(std::string name, float v0) {
