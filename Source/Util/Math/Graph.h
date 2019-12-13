@@ -80,6 +80,9 @@ namespace White {
         void FillWorldPaths();
         void FillWorldPath(int i);
         std::vector<std::pair<Edge*, bool>> GetPath(int i, int j);
+        std::vector<std::pair<Edge*, bool>> GetPathReverse(int i, int j);
+        int GetPathLen(int i, int j);
+
         City* GetCityByIdx(int idx) { return cities[idx]; }
         Market* GetMarketByIdx(int idx) { return markets[idx]; }
         Storage* GetStorageByIdx(int idx) { return storages[idx]; }
@@ -88,6 +91,7 @@ namespace White {
 
         std::map<int, Train*>& GetTrains() { return trains; }
         std::map<int, Market*>& GetMarkets() { return markets; }
+        std::map<int, Storage*>& GetStorages() { return storages; }
         std::map<int, City*>& GetCities() { return cities; }
         std::map<int, Edge*>& GetEdges() { return edges; }
         int GetEdgeCnt() { return edges.size(); }
@@ -104,6 +108,7 @@ namespace White {
         std::map<int, Storage*> storages;
         std::map<int, Train*> trains;
         std::vector<std::vector<std::pair<Edge*, bool>>> world_map;
+        std::vector<std::vector<int>> distance;
       };
 
       std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename);

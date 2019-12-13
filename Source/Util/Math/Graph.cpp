@@ -3,6 +3,7 @@
 #include "Algo.h"
 #include <fstream>
 #include "Logger.h"
+#include <cassert>
 
 namespace White {
 namespace Util {
@@ -80,7 +81,9 @@ void Graph::SetSize(int x, int y)
 
 void Graph::InitWorldPaths()
 {
-  world_map.resize(vertices.size());
+  size_t sz = vertices.size();
+  world_map.resize(sz);
+  distance.resize(sz, std::vector<int>(sz, -1));
 }
 
 void Graph::FillWorldPaths()
@@ -97,20 +100,20 @@ void Graph::FillWorldPath(int i)
   world_map[i] = Dijkstra(*this, i, NULL, NULL);
 }
 
-std::vector<std::pair<Edge*, bool>> Graph::GetPath(int i, int j)
+std::vector<std::pair<Edge*, bool>> Graph::GetPath(int i_idx, int j_idx)
 {
-  int i_idx = GetIdByIdx(i);
-  int j_idx = GetIdByIdx(j);
-  if (world_map[i_idx].size() == 0)
-    FillWorldPath(i_idx);
+  int i_id = GetIdByIdx(i_idx);
+  int j_id = GetIdByIdx(j_idx);
+  if (world_map[i_id].size() == 0)
+    FillWorldPath(i_id);
   std::vector<std::pair<Edge*, bool>> res;
-  while (j_idx != i_idx)
+  while (j_id != i_id)
   {
-    std::pair<Edge*, bool> edge = world_map[i_idx][j_idx];
+    std::pair<Edge*, bool> edge = world_map[i_id][j_id];
     res.push_back(edge);
-    j = vertices[j_idx]->GetIdx();
-    j = edge.first->GetOtherV(j);
-    j_idx = GetIdByIdx(j);
+    j_idx = vertices[j_id]->GetIdx();
+    j_idx = edge.first->GetOtherV(j_idx);
+    j_id = GetIdByIdx(j_idx);
   }
   res.shrink_to_fit();
   size_t sz = res.size();
@@ -118,6 +121,50 @@ std::vector<std::pair<Edge*, bool>> Graph::GetPath(int i, int j)
   {
     std::swap(res[i], res[sz - 1 - i]);
   }
+  return res;
+}
+
+std::vector<std::pair<Edge*, bool>> Graph::GetPathReverse(int i_idx, int j_idx)
+{
+  int i_id = GetIdByIdx(i_idx);
+  int j_id = GetIdByIdx(j_idx);
+  assert(world_map[j_id].size() != 0);
+  std::vector<std::pair<Edge*, bool>> res;
+  while (i_id != j_id)
+  {
+    std::pair<Edge*, bool> edge = world_map[j_id][i_id];
+    res.push_back(edge);
+    i_idx = vertices[i_id]->GetIdx();
+    i_idx = edge.first->GetOtherV(i_idx);
+    i_id = GetIdByIdx(i_idx);
+  }
+  res.shrink_to_fit();
+  size_t sz = res.size();
+  for (int i = 0; i < sz; ++i)
+  {
+    res[i].second = !res[i].second;
+  }
+  return res;
+}
+
+int Graph::GetPathLen(int i_idx, int j_idx)
+{
+  int i_id = GetIdByIdx(i_idx);
+  int j_id = GetIdByIdx(j_idx);
+  if (distance[i_id][j_id] != -1)
+    return distance[i_id][j_id];
+  if (world_map[i_id].size() == 0)
+    FillWorldPath(i_id);
+  int res = 0;
+  while (j_id != i_id)
+  {
+    std::pair<Edge*, bool> edge = world_map[i_id][j_id];
+    res += edge.first->GetLength();
+    j_idx = vertices[j_id]->GetIdx();
+    j_idx = edge.first->GetOtherV(j_idx);
+    j_id = GetIdByIdx(j_idx);
+  }
+  distance[i_id][j_id] = distance[j_id][i_id] = res;
   return res;
 }
 
@@ -185,6 +232,7 @@ void ParseCoordFromJSON(std::shared_ptr<Graph> g, char* data)
 
 void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
 {
+  Logger& l = Logger::GetInstance();
   json json_parsed = json::parse(data);
   json posts_j = json_parsed.at("posts");
   json trains_j = json_parsed.at("trains");
@@ -201,6 +249,10 @@ void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     {
       s = post_j["player_idx"].get<std::string>();
       City* c = new City(idx, point_idx, s);
+      c->SetCurProduct(post_j["product"]);
+      c->SetMaxProduct(post_j["product_capacity"]);
+      c->SetCurArmor(post_j["armor"]);
+      c->SetMaxArmor(post_j["armor_capacity"]);
       g->AppendPost(c);
       break;
     }
@@ -215,6 +267,8 @@ void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     case PostType::STORAGE:
     {
       Storage* st = new Storage(idx, point_idx);
+      st->SetCurArmor(post_j["armor"]);
+      st->SetMaxArmor(post_j["armor_capacity"]);
       g->AppendPost(st);
       break;
     }
@@ -228,12 +282,18 @@ void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     int position = train_j.at("position");
     std::string s = train_j.at("player_idx");
     Train* t = new Train(idx, line_idx, position, s);
+    int goods = train_j.at("goods");
+    int goods_cap = train_j.at("goods_capacity");
+    t->SetGoodsCap(goods_cap);
+    t->SetGoods(goods);
+    t->SetGoodsType(Train::Goods::NONE);
     g->AppendTrain(t);
   }
 }
 
 void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
 {
+  Logger& l = Logger::GetInstance();
   json json_parsed = json::parse(data);
   json posts_j = json_parsed.at("posts");
   json trains_j = json_parsed.at("trains");
@@ -249,6 +309,8 @@ void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     case PostType::CITY:
     {
       City* c = g->GetCityByIdx(idx);
+      c->SetCurProduct(post_j["product"]);
+      c->SetCurArmor(post_j["armor"]);
       break;
     }
     case PostType::MARKET:
@@ -260,6 +322,7 @@ void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     case PostType::STORAGE:
     {
       Storage* st = g->GetStorageByIdx(idx);
+      st->SetCurArmor(post_j["armor"]);
       break;
     }
     }
@@ -270,9 +333,29 @@ void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     int idx = train_j.at("idx");
     int line_idx = train_j.at("line_idx");
     int position = train_j.at("position");
+    int goods = train_j.at("goods");
+    int goods_cap = train_j.at("goods_capacity");
+    json j_type = train_j.at("goods_type");
+    std::string type;
+    if (j_type.is_null())
+      type = "null";
+    else
+      type = std::to_string(j_type.get<int>());
+    //l << type;
+    //l << std::string("\n");
+    Train::Goods g_type = Train::Goods::NONE;
+    if (type == "null")
+      g_type = Train::Goods::NONE;
+    else if (type == "1")
+      g_type = Train::Goods::FOOD;
+    else if (type == "2")
+      g_type = Train::Goods::ARMOR;
     Train* t = g->GetTrainByIdx(idx);
     t->SetLineIdx(line_idx);
     t->SetPosition(position);
+    t->SetGoods(goods);
+    t->SetGoodsCap(goods_cap);
+    t->SetGoodsType(g_type);
   }
 }
 
