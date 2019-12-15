@@ -28,12 +28,13 @@ namespace White {
         int GetCurArmor() { return cur_armor; }
         int GetMaxProduct() { return max_product; }
         int GetMaxArmor() { return max_armor; }
+        bool Vacant() { return is_vacant; }
 
         void SetCurProduct(int val) { cur_product = val; }
         void SetMaxProduct(int val) { max_product = val; }
         void SetCurArmor(int val) { cur_armor = val; }
         void SetMaxArmor(int val) { max_armor = val; }
-        //Train* getAssignedTrain() { return assignedTrain; }
+        void SetVacant(bool val) { is_vacant = val; }
 
       protected:
         void SetPostType(PostType type) { this->type = type; }
@@ -46,7 +47,7 @@ namespace White {
         int max_product;
         int cur_armor;
         int max_armor;
-        //Train* assignedTrain;
+        bool is_vacant = true;
       };
 
       class Market : public Post {
@@ -56,8 +57,6 @@ namespace White {
           SetPostType(MARKET);
         }
       private:
-        int max_food;
-        int cur_food;
       };
 
       class Storage : public Post {

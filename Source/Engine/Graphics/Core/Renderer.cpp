@@ -32,7 +32,6 @@ void Renderer::Render() {
     std::chrono::milliseconds cur 
         = std::chrono::duration_cast<std::chrono::milliseconds>
           (std::chrono::system_clock::now().time_since_epoch());
-    std::chrono::milliseconds time = cur - lastTime;
     game->Play();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
