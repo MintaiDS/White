@@ -51,7 +51,6 @@ namespace White {
         WSAStartup(ver, (LPWSADATA)&wsaData);
 #endif
 
-        //������� �����
         clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
         if (clientSocket == SOCKET_ERROR)
@@ -183,6 +182,22 @@ namespace White {
         return "{\"line_idx\":" + std::to_string(lineIdx) + ","
           + "\"speed\":" + std::to_string(speed) + ","
           + "\"train_idx\":" + std::to_string(trainIdx) + "}";
+      }
+      std::string Connection::UpgradeMessage(std::vector<int>& train_idxs, int city_idx)
+      {
+        std::string s = "{\"posts\":[";
+        if (city_idx != -1)
+          s += std::to_string(city_idx);
+        s += "],\"trains\":[";
+        size_t sz = train_idxs.size();
+        for (size_t i = 0; i < sz; ++i)
+        {
+          s += std::to_string(train_idxs[i]);
+          if (i != sz - 1)
+            s += ",";
+        }
+        s += "]}";
+        return s;
       }
     }
   }

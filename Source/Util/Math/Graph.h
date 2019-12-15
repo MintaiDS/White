@@ -13,6 +13,8 @@ namespace White {
   namespace Util {
     namespace Math {
 
+      class Graph;
+
       struct Pnt {
         double x;
         double y;
@@ -22,6 +24,19 @@ namespace White {
           this->y += r.y;
           return *this;
         }
+      };
+
+      class Path {
+      public:
+        Path() {};
+        Path(std::vector<std::pair<Edge*, bool>> v, int dist) : path(v), distance(dist) {}
+        static Path FormPath(Graph& g, int i_idx, int j_idx, std::vector<std::pair<Edge*, bool>>& dijkstra);
+
+        std::vector<std::pair<Edge*, bool>> GetPath() { return path; }
+        int GetDist() { return distance; }
+      private:
+        std::vector<std::pair<Edge*, bool>> path;
+        int distance;
       };
 
 
@@ -76,9 +91,9 @@ namespace White {
 
         void SetSize(int x, int y);
 
-        void InitWorldPaths();
-        void FillWorldPaths();
-        void FillWorldPath(int i);
+        void InitWorldPaths(int my_city_idx);
+        //void FillWorldPaths();
+        void FillWorldPath(int idx);
         std::vector<std::pair<Edge*, bool>> GetPath(int i, int j);
         std::vector<std::pair<Edge*, bool>> GetPathReverse(int i, int j);
         int GetPathLen(int i, int j);
@@ -107,8 +122,8 @@ namespace White {
         std::map<int, Market*> markets;
         std::map<int, Storage*> storages;
         std::map<int, Train*> trains;
-        std::vector<std::vector<std::pair<Edge*, bool>>> world_map;
-        std::vector<std::vector<int>> distance;
+        std::vector<std::vector<Path*>> world_map;
+        //std::vector<std::vector<int>> distance;
       };
 
       std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename);

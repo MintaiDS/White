@@ -7,6 +7,8 @@ namespace White {
   namespace Util {
     namespace Math {
 
+      const int Train::level_cost[2] = { 40, 80 };
+
       void Train::Task::SetTask(TaskType t, std::vector<std::pair<Edge*, bool>>& path, Post* p, int start_idx)
       {
         Logger& l = Logger::GetInstance();
@@ -29,29 +31,9 @@ namespace White {
       {
         Logger& l = Logger::GetInstance();
         int line_idx = edge->GetIdx();
-        //l << std::to_string(line_idx) + " " + std::to_string(position) + "\n";
         assert(task != NO_TASK);
         Edge* e = path[path_idx].first;
         bool is_back = path[path_idx].second;
-        //l << 1001;
-        //if (go_back)
-        //{
-        //  //add waiting for another train
-        //  if ((is_back && position == e->GetLength()) || (!is_back && position == 0))
-        //  {
-        //    if (path_idx == 0)
-        //      //unaccessable?
-        //      return new std::pair<int, int>{ line_idx, 0 };
-        //    Edge* e_next = path[path_idx - 1].first;
-        //    bool is_next_back = path[path_idx - 1].second;
-        //    if (is_next_back)
-        //      return new std::pair<int, int>{ e_next->GetIdx(), 1 };
-        //    else
-        //      return new std::pair<int, int>{ e_next->GetIdx(), -1 };
-        //  }
-        //}
-        //else
-        //{
         if (position == edge->GetLength() || position == 0)
         {
           int idx;
@@ -61,8 +43,6 @@ namespace White {
           }
           else
             idx = edge->GetTo();
-          //l << idx << start_idx;
-          //l << path[path_idx].second;
           if (idx == start_idx)
             return new std::pair<int, int>{ e->GetIdx(), path[path_idx].second ? -1 : 1 };
         }
@@ -70,35 +50,25 @@ namespace White {
         if ((is_back && position == 0) || (!is_back && position == e->GetLength()))
         {
           assert(path_idx != path.size());
-          /*if (path_idx == path.size() - 1)
-          {
-            go_back = 1;
-            return new std::pair<int, int>{ line_idx, is_back ? 1 : -1 };
-          }*/
           Edge* e_next = path[path_idx + 1].first;
           bool is_next_back = path[path_idx + 1].second;
-          //l << 1003;
           if (is_next_back)
             return new std::pair<int, int>{ e_next->GetIdx(), -1 };
           else
             return new std::pair<int, int>{ e_next->GetIdx(), 1 };
         }
-        //}
-        //l << 1004;
         return NULL;
       }
       bool Train::Task::TaskEnded(int line_idx, int position)
       {
+        Logger& l = Logger::GetInstance();
         if (task == NO_TASK)
           return false;
         if (path_idx == path.size() - 1)
-        //if (go_back && path_idx == 0)
         {
           if (path[path_idx].second)
-            //return position == path[path_idx].first->GetLength();
             return position == 0;
           else
-            //return position == 0;
             return position == path[path_idx].first->GetLength();
         }
         return false;
@@ -114,14 +84,11 @@ namespace White {
       void Train::Task::CheckPathIdx(int line_idx)
       {
         Logger& l = Logger::GetInstance();
-        //l << std::string("edge_idx: ") + std::to_string(line_idx) + std::string("\n");
         if (path[path_idx].first->GetIdx() != line_idx)
         {
-          //l << path.size();
           for (int i = 0; i < path.size(); ++i)
           {
             Edge* e = path[i].first;
-            //l << std::string("e_idx: ") + std::to_string(e->GetIdx()) + std::string("\n");
             if (e->GetIdx() == line_idx)
             {
               path_idx = i;
@@ -129,7 +96,6 @@ namespace White {
             }
           }
         }
-        //l << std::string("idx: ") + std::to_string(path_idx) + std::string("\n");
       }
     }
   }
