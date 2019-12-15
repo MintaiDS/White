@@ -16,6 +16,7 @@ namespace White {
         void Init(std::string playerName);
         void Turn();
         void CheckStatus();
+        void TryUpgrade();
         void AssignTasks();
         void MakeMoves();
 
@@ -27,6 +28,7 @@ namespace White {
         std::vector<Train*> trains;
         Connection& conn;
         std::string player_idx;
+        int armor_buffer = 10;
 
         void GetMyTrains();
         std::pair<Train::Task::TaskType, int> ChooseTask(Train* t, int point_id);

@@ -12,13 +12,14 @@ namespace White {
 
       class Train {
       public:
+        static const int level_cost[2];
         Train() {}
         Train(int idx, int line_idx, int position, std::string& player_idx) : idx(idx), line_idx(line_idx), position(position), player_idx(player_idx) {}
 
         enum Goods {
           NONE = 0,
-          FOOD = 1,
-          ARMOR = 2
+          FOOD = 2,
+          ARMOR = 3
         };
 
         class Task {
@@ -58,6 +59,7 @@ namespace White {
         Goods GetGoodsType() { return goodsType; }
         std::string& GetPlayerIdx() { return player_idx; }
         Task::TaskType GetTask() { return task.GetTask(); }
+        int GetLevel() { return level; }
 
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
@@ -67,6 +69,7 @@ namespace White {
         void IncGoods(int val) { goods += val; }
         void SetGoodsType(Goods type) { goodsType = type; }
         void SetGoodsCap(int val) { goodsCapacity = val; }
+        void SetLevel(int val) { level = val; }
 
       private:
         int idx;
@@ -76,6 +79,7 @@ namespace White {
         Goods goodsType;
         int goodsCapacity;
         int goods;
+        int level;
       };
     }
   }

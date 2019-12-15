@@ -5,10 +5,9 @@ namespace White {
   namespace Util {
     namespace Math {
 
-      std::vector<std::pair<Edge*, bool>> Dijkstra(Graph & g, int id, const std::map<int, int>* forbidden_e, std::map<int, int>* forbidden_v)
+      std::vector<std::pair<Edge*, bool>> Dijkstra(Graph & g, int idx, const std::map<int, int>* forbidden_e, std::map<int, int>* forbidden_v)
       {
         //Logger& l = Logger::GetInstance();
-        //l << 1000;
         std::vector<Vertex*> vrtx = g.GetVertices();
         size_t num_v = vrtx.size();
         std::vector<int> dist(num_v, INT_MAX);
@@ -16,7 +15,7 @@ namespace White {
         std::vector<std::pair<Edge*, bool>> p(num_v);
 
         std::priority_queue<std::pair<int, int>> q;
-        int idx = vrtx[id]->GetIdx();
+        int id = g.GetIdByIdx(idx);
         dist[id] = 0;
         q.push(std::make_pair(0, idx));
         while (!q.empty()) {
@@ -94,7 +93,6 @@ namespace White {
               xvel -= dst.x / weight;
               yvel -= dst.y / weight;
             }
-            //lg << xvel << yvel;
             if (fabs(xvel) < 0.1 && fabs(yvel) < 0.1)
               xvel = yvel = 0;
             else

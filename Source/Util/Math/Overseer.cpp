@@ -24,7 +24,6 @@ namespace White {
         std::string data = "{\"name\":\"" + playerName + "\"}";
         ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
         ResponseMessage resp;
-        //l << 20;
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
@@ -33,20 +32,16 @@ namespace White {
         }
         else
           assert(0 && "LOGIN");
-        //l << 21;
         delete[](msg.data);
         msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
         conn.Request(msg, resp);
-        //l << resp.result;
         if (resp.result == Result::OKEY)
         {
           ParseGraphFromJSON(graph, resp.data);
-          //l << 210;
           delete[](resp.data);
         }
         else
           assert(0 && "MAP0");
-        //l << 22;
         delete[](msg.data);
         msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         conn.Request(msg, resp);
@@ -58,16 +53,14 @@ namespace White {
         }
         else
           assert(0 && "MAP1 parse");
-        //l << 23;
         GetMyTrains();
         FindMyCity();
-        graph->InitWorldPaths();
+        graph->InitWorldPaths(my_city->GetPointIdx());
       }
 
       void Overseer::Turn()
       {
-        //Logger& l = Logger::GetInstance();
-        //l << 1;
+        Logger& l = Logger::GetInstance();
         ActionMessage msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         ResponseMessage resp;
         conn.Request(msg, resp);
@@ -79,13 +72,10 @@ namespace White {
         else
           assert(0 && "MAP1 update");
         delete[](msg.data);
-        //l << 2;
         CheckStatus();
-        //l << 3;
+        TryUpgrade();
         AssignTasks();
-        //l << 4;
         MakeMoves();
-        //l << 5;
         msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
@@ -98,13 +88,10 @@ namespace White {
       void Overseer::CheckStatus()
       {
         //Logger& l = Logger::GetInstance();
-        //l << 10;
         for (auto& t : trains)
         {
-          //l << (int)(t->GetTask());
           if (t->GetTask() != Train::Task::NO_TASK)
           {
-            //l << 12;
             t->task.CheckPathIdx(t->GetLineIdx());
             //if (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition()))
             //{
@@ -117,10 +104,48 @@ namespace White {
         }
       }
 
+      void Overseer::TryUpgrade()
+      {
+        Logger& l = Logger::GetInstance();
+        int city_level = my_city->GetLevel();
+        int city_armor = my_city->GetCurArmor();
+        int city_idx = -1;
+        if (city_level < 3 && city_armor > City::level_cost[city_level - 1] + armor_buffer)
+        {
+          city_idx = my_city->GetIdx();
+          my_city->SetCurArmor(city_armor - City::level_cost[city_level - 1]);
+        }
+        std::vector<int> idxs;
+        for (auto t : trains)
+        {
+          int train_level = t->GetLevel();
+          int city_armor = my_city->GetCurArmor();
+          if (train_level < 3 && city_armor > Train::level_cost[train_level - 1] + armor_buffer)
+          {
+            idxs.push_back(t->GetIdx());
+            my_city->SetCurArmor(city_armor - Train::level_cost[train_level - 1]);
+            t->SetLevel(train_level + 1);
+          }
+        }
+        if (city_idx != -1 || idxs.size() > 0)
+        {
+          l << std::string("Update ");
+          if (city_idx != -1)
+            l << std::string("City ");
+          if (idxs.size() > 0)
+            l << std::string("Train ");
+          l << std::string("\n");
+          std::string data = conn.UpgradeMessage(idxs, city_idx);
+          auto msg = conn.FormActionMessage(Action::UPGRADE, data);
+          ResponseMessage resp;
+          conn.Request(msg, resp);
+          //DS add actions for failure
+        }
+      }
+
       void Overseer::AssignTasks()
       {
         Logger& l = Logger::GetInstance();
-        //l << 0;
         l << std::string("Food: ");
         l << my_city->GetCurProduct();
         l << std::string("Armor: ");
@@ -139,10 +164,7 @@ namespace White {
               auto task = ChooseTask(t, point_idx);
               if (task.first == Train::Task::NO_TASK)
               {
-                //l << std::string("home\n");
-                auto path = graph->GetPathReverse(point_idx, my_city->GetPointIdx());
-                //l << point_idx << my_city->GetPointIdx();
-                //l << path[0].second;
+                auto path = graph->GetPath(point_idx, my_city->GetPointIdx());
                 t->task.DropTask();
                 t->task.SetTask(Train::Task::COME_HOME, path, my_city, point_idx);
                 l << t->GetGoods();
@@ -150,27 +172,18 @@ namespace White {
               else
               {
                 auto path = graph->GetPath(point_idx, task.second);
-                //l << path.size();
-                //l << std::string("market\n");
-                //l << my_city->GetPointIdx() << market->GetPointIdx();
                 t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), point_idx);
               }
             }
           }
           if (t->GetTask() == Train::Task::NO_TASK)
           {
-            //l << 1;
             auto task = ChooseTask(t, my_city->GetPointIdx());
             if (task.first != Train::Task::NO_TASK)
             {
               auto path = graph->GetPath(my_city->GetPointIdx(), task.second);
-              //l << path.size();
-              //l << std::string("market\n");
-              //l << my_city->GetPointIdx() << market->GetPointIdx();
               t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), my_city->GetPointIdx());
             }
-              //l << 6;
-            //}
           }
         }
       }
@@ -178,17 +191,14 @@ namespace White {
       void Overseer::MakeMoves()
       {
         //Logger& l = Logger::GetInstance();
-        //l.Init("run.log");
         for (auto& t : trains)
         {
           auto task = t->GetTask();
           if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
           {
-            //l << 10;
             auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
             if (step != NULL)
             {
-              //l << 20;
               std::string data = conn.MoveMessage(step->first, step->second, t->GetIdx());
               ActionMessage msg = conn.FormActionMessage(Action::MOVE, data);
               ResponseMessage resp;
@@ -212,12 +222,13 @@ namespace White {
       std::pair<Train::Task::TaskType, int> Overseer::ChooseTask(Train * t, int point_idx)
       {
         Logger& l = Logger::GetInstance();
+        //l << (int)t->GetGoodsType();
         if (t->GetGoodsType() != Train::Goods::ARMOR)
         {
           double percent = getFoodPercentage();
           double max_val = 0.;
           Market* mrkt = NULL;
-          if (percent < 0.8)
+          if (percent < 0.5)
           {
             for (auto& v : graph->GetMarkets())
             {

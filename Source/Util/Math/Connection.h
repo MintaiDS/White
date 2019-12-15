@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #ifdef __unix__
 #include <unistd>
 #define on_Windows 0
@@ -70,6 +71,7 @@ namespace White {
         bool Request(const ActionMessage& msg, ResponseMessage& resp);
         ActionMessage FormActionMessage(Action a, std::string data);
         std::string MoveMessage(int lineIdx, int speed, int trainIdx);
+        std::string UpgradeMessage(std::vector<int>& train_idxs, int city_idx = -1);
         //bool Reconnect();
 
       private:
