@@ -124,7 +124,6 @@ namespace White {
 
         char szResponse[5];
         retVal = recv(clientSocket, szResponse, 4, 0);
-        //l << retVal;
         if (retVal == SOCKET_ERROR)
         {
           l << std::string("Unable to recv\n");
@@ -134,8 +133,8 @@ namespace White {
           return false;
         }
         resp.result = (Result)toInt(szResponse);
-        if (resp.result != Result::OKEY)
-          return false;
+        //if (resp.result != Result::OKEY)
+          //return false;
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
