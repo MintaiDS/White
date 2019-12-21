@@ -10,6 +10,8 @@
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
+#include "Logger.h"
+
 namespace White {
   namespace Util {
     namespace Math {

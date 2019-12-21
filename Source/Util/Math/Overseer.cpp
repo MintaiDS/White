@@ -20,7 +20,7 @@ namespace White {
 
       void Overseer::Init(std::string playerName)
       {
-        //Logger& l = Logger::GetInstance();
+        Logger& l = Logger::GetInstance();
         std::string data = "{\"name\":\"" + playerName + "\"}";
         ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
         ResponseMessage resp;

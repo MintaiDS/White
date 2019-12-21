@@ -269,7 +269,10 @@ void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     {
     case PostType::CITY:
     {
-      s = post_j["player_idx"].get<std::string>();
+      if (!post_j["player_idx"].is_null())
+        s = post_j["player_idx"].get<std::string>();
+      else
+        s = "null";
       City* c = new City(idx, point_idx, s);
       c->SetCurProduct(post_j["product"]);
       c->SetMaxProduct(post_j["product_capacity"]);
@@ -303,7 +306,9 @@ void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
     int idx = train_j.at("idx");
     int line_idx = train_j.at("line_idx");
     int position = train_j.at("position");
-    std::string s = train_j.at("player_idx");
+    std::string s = "null";
+    if (!train_j["player_idx"].is_null())
+     s = train_j["player_idx"].get<std::string>();
     Train* t = new Train(idx, line_idx, position, s);
     int goods = train_j.at("goods");
     int goods_cap = train_j.at("goods_capacity");
