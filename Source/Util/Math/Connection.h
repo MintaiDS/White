@@ -7,7 +7,7 @@
 #else
 #include <winsock.h>
 #define on_Windows 1
-#pragma comment(lib, "Ws2_32.lib")
+//#pragma comment(lib, "Ws2_32.lib")
 #endif
 
 #include "Logger.h"
