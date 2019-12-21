@@ -6,6 +6,7 @@
 #include "Connection.h"
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 
 namespace White {
@@ -96,6 +97,7 @@ namespace White {
 
       bool Connection::Request(const ActionMessage & msg, ResponseMessage& resp)
       {
+        Logger& l = Logger::GetInstance();
         int retVal = 0;
         std::stringstream ss;
         ss << std::hex;
@@ -105,12 +107,12 @@ namespace White {
         std::string s = ss.str();
         const char* pBuf = s.c_str();
 
-        printf("Sending request from client\n");
+        //l << std::string("Sending request from client\n");
         retVal = send(clientSocket, pBuf, s.size(), 0);
 
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to send\n");
+          l << std::string("Unable to send\n");
 #ifndef __unix__
           WSACleanup();
 #endif
@@ -122,9 +124,10 @@ namespace White {
 
         char szResponse[5];
         retVal = recv(clientSocket, szResponse, 4, 0);
+        //l << retVal;
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to recv\n");
+          l << std::string("Unable to recv\n");
 #ifndef __unix__
           WSACleanup();
 #endif
@@ -136,7 +139,7 @@ namespace White {
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to recv\n");
+          l << std::string("Unable to recv\n");
 #ifndef __unix__
           WSACleanup();
 #endif
@@ -153,7 +156,7 @@ namespace White {
           if (retVal == SOCKET_ERROR)
           {
 
-            printf("Unable to recv\n");
+            l << std::string("Unable to recv\n");
 #ifndef __unix__
             WSACleanup();
 #endif
@@ -163,7 +166,7 @@ namespace White {
           data_buf = data_buf + retVal;
         }
         resp.data[resp.dataLength] = '\0';
-        printf("Got the response for\n%s\n", msg.data);
+        //l << std::string("Got the response\n");
         return true;
       }
 
