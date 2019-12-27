@@ -2,5 +2,6 @@ branches:
     only:
         - master
         - dev_networking_release
+        - dev_stable
 build_script:
     build

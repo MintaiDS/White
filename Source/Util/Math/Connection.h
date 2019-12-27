@@ -9,70 +9,82 @@
 //#pragma comment(lib, "Ws2_32.lib")
 #endif
 
+namespace White {
+  namespace Util {
+    namespace Math {
+
 #define SERVER_ADDR "wgforge-srv.wargaming.net"
 #define SERVER_PORT 443
 
-namespace White {
-namespace Engine {
+      enum Action
+      {
+        LOGIN = 1,
+        LOGOUT = 2,
+        MOVE = 3,
+        UPGRADE = 4,
+        TURN = 5,
+        PLAYER = 6,
+        GAMES = 7,
+        MAP = 10
+      };
 
-enum Action {
-    LOGIN = 1,
-    LOGOUT = 2,
-    MOVE = 3,
-    UPGRADE = 4,
-    TURN = 5,
-    PLAYER = 6,
-    GAMES = 7,
-    MAP = 10
-};
+      enum Result
+      {
+        OKEY = 0,
+        BAD_COMMAND = 1,
+        RESOURCE_NOT_FOUND = 2,
+        ACCESS_DENIED = 3,
+        INAPPROPRIATE_GAME_STATE = 4,
+        TIMEOUT = 5,
+        INTERNAL_SERVER_ERROR = 500
+      };
 
-enum Result {
-    OKEY = 0,
-    BAD_COMMAND = 1,
-    RESOURCE_NOT_FOUND = 2,
-    ACCESS_DENIED = 3,
-    INAPPROPRIATE_GAME_STATE = 4,
-    TIMEOUT = 5,
-    INTERNAL_SERVER_ERROR = 500
-};
+      struct ActionMessage
+      {
+        Action actionCode;
+        size_t dataLength;
+        char* data;
+      };
 
-struct ActionMessage {
-    Action actionCode;
-    size_t dataLength;
-    char* data;
-};
+      struct ResponseMessage
+      {
+        Result result;
+        size_t dataLength;
+        char* data;
+      };
 
-struct ResponseMessage {
-    Result result;
-    size_t dataLength;
-    char* data;
-};
+      class Connection
+      {
+      public:
+        const char* LAYER0 = "{\"layer\":0}";
+        const char* LAYER1 = "{\"layer\":1}";
+        const char* END_TURN = "";
+        //const char* LAYER10 = "{\"layer\":10}";
 
-class Connection {
-public:
-    const char* LAYER0 = "{\"layer\":0}";
-    const char* LAYER1 = "{\"layer\":1}";
-    const char* LAYER10 = "{\"layer\":10}";
-  
-    static Connection& GetInstance(const char* hostname, int port) {
-        static Connection instance(hostname, port);
+        static Connection& GetInstance(const char* hostname, int port)
+        {
+          static Connection instance(hostname, port);
+          return instance;
+        }
 
-        return instance;
+        bool Request(const ActionMessage& msg, ResponseMessage& resp);
+        ActionMessage FormActionMessage(Action a, std::string data);
+        std::string MoveMessage(int lineIdx, int speed, int trainIdx);
+        //bool Reconnect();
+
+      private:
+        SOCKET clientSocket = SOCKET_ERROR;
+
+        Connection(const char* hostname, int port) {
+          Connect(hostname, port);
+        }
+        Connection(const Connection&);
+        Connection& operator= (Connection&);
+        ~Connection();
+        bool Connect(const char* hostname, int port);
+
+      };
     }
-
-    bool Request(const ActionMessage& msg, ResponseMessage& resp);
-    ActionMessage FormActionMessage(Action a, std::string data);
-  
-private:
-    SOCKET clientSocket = SOCKET_ERROR;
-    Connection(const char* hostname, int port) {
-        Connect(hostname, port);
-    }
-    Connection(const Connection& );
-    Connection& operator= (Connection& );
-    ~Connection();
-    bool Connect(const char* hostname, int port); 
-};
-
+  }
 }
-}
+

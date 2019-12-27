@@ -1,10 +1,13 @@
 #pragma once
 
 #include "ObjectIDProvider.h"
+#include "InterfaceProvider.h"
+#include "ITransformable.h"
 #include "VertexData.h"
 #include "IDrawable.h"
 #include "Polygon.h"
 #include "Matrix.h"
+#include "Object.h"
 
 #include <windows.h>
 #include <gl/gl.h>
@@ -16,7 +19,7 @@ namespace Engine {
 namespace Graphics {
 
 template<typename T, typename U = unsigned>
-class Mesh : public IDrawable<T> {
+class Mesh : public Object, public ITransformable {
 public:
     Mesh();
     Mesh(const Mesh<T, U>& other);
@@ -27,6 +30,8 @@ public:
     std::size_t GetSize() const;
     std::size_t GetCount() const;
     unsigned GetID() const;
+    bool IsTransformed() const;
+    void ToggleTransform();
 
     Matrix<T> GetRotationMatrix() const;
     Matrix<T> GetScalingMatrix() const;
@@ -35,9 +40,14 @@ public:
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
 
-    virtual void Rotate(const Vector<T>& rotation);
-    virtual void Scale(const Vector<T>& scaling);
-    virtual void Translate(const Vector<T>& translation);
+    virtual void Scale(const Vector<float>& scaling);
+    virtual void Rotate(const Vector<float>& rotation);
+    virtual void Translate(const Vector<float>& translation);
+    virtual void Transform(const Vector<float>& scaling, 
+                           const Vector<float>& rotation, 
+                           const Vector<float>& translation); 
+
+    Matrix<float>& GetTransformationMatrix();
 
     T* GetRawData();
     U* GetRawIndices();
@@ -46,12 +56,23 @@ public:
     std::vector<U> indices;
 
 protected:
+    void UpdateTransformationMatrix();
+    void UpdateTransformationMatrix(Matrix<float> parental);
+
+    struct {
+        Matrix<float> parental;
+        Matrix<float> that;
+    } transformation;
+
+    Matrix<float> parentalTransformationMatrix;
+    Matrix<float> transformationMatrix;
     unsigned id; 
     T* rawData;
     U* rawIndices;
-    Vector<T> rotation;
-    Vector<T> scaling;
-    Vector<T> translation;
+    Vector<float> rotation;
+    Vector<float> scaling;
+    Vector<float> translation;
+    bool isTransformed;
 };
 
 template<typename T, typename U = unsigned>
@@ -60,7 +81,11 @@ Mesh<T, U>::Mesh()
         , rawIndices(nullptr)
         , rotation({0, 0, 0})
         , translation({0, 0, 0})
-        , scaling({1, 1, 1}) {}
+        , scaling({1, 1, 1}) {
+    UpdateTransformationMatrix();
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
+}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const Mesh<T, U>& other) 
@@ -70,7 +95,11 @@ Mesh<T, U>::Mesh(const Mesh<T, U>& other)
         , rawIndices(nullptr) 
         , rotation(other.rotation)
         , translation(other.translation)
-        , scaling(other.scaling) {}
+        , scaling(other.scaling) {
+    UpdateTransformationMatrix();
+    transformation.parental = other.transformation.parental;
+    UpdateTransformationMatrix(transformation.parental);
+}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices) 
@@ -79,7 +108,11 @@ Mesh<T, U>::Mesh(const std::vector<VertexData<T>>& vertices)
         , rawIndices(nullptr) 
         , rotation({0, 0, 0})
         , translation({0, 0, 0})
-        , scaling({1, 1, 1}) {}
+        , scaling({1, 1, 1}) {
+    UpdateTransformationMatrix();
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
+}
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices) 
@@ -91,12 +124,25 @@ Mesh<T, U>::Mesh(const std::size_t size, const VertexData<T>* vertices)
     for (int i = 0; i < size; i++) {
         this->vertices.push_back(vertices[i]);
     }
+    UpdateTransformationMatrix();
+    transformation.parental = Matrix<float>::Identity(4);
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
 Mesh<T, U>::~Mesh() {
     delete[] rawData;
     delete[] rawIndices;
+}
+
+template<typename T, typename U = unsigned> 
+bool Mesh<T, U>::IsTransformed() const {
+    return isTransformed;
+}
+
+template<typename T, typename U = unsigned> 
+void Mesh<T, U>::ToggleTransform() {
+    isTransformed = !isTransformed;    
 }
 
 //template<typename T, typename U = unsigned>
@@ -125,21 +171,25 @@ std::size_t Mesh<T, U>::GetID() const {
 
 template<typename T, typename U = unsigned>
 Matrix<T> Mesh<T, U>::GetRotationMatrix() const {
+    UpdateTransformationMatrix();
     return Matrix::Rotation(rotation);
 }
 
 template<typename T, typename U = unsigned>
 Matrix<T> Mesh<T, U>::GetScalingMatrix() const {
+    //UpdateTransformationMatrix();
     return Matrix::Scaling(scaling);
 }
 
 template<typename T, typename U = unsigned>
 Matrix<T> Mesh<T, U>::GetTranslationMatrix() const {
+    //UpdateTransformationMatrix();
     return Matrix::Translation(translation);
 }
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetRotation() const {
+    //UpdateTransformationMatrix();
     Vector<T> ret(rotation);
 
     return ret;
@@ -147,6 +197,7 @@ Vector<T> Mesh<T, U>::GetRotation() const {
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetScaling() const {
+    //UpdateTransformationMatrix();
     Vector<T> ret(scaling);
 
     return ret;
@@ -154,24 +205,104 @@ Vector<T> Mesh<T, U>::GetScaling() const {
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetTranslation() const {
+    //UpdateTransformationMatrix();
     Vector<T> ret(translation);
 
     return ret;
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Rotate(const Vector<T>& rotation) {
-    this->rotation += rotation; 
+void Mesh<T, U>::Scale(const Vector<float>& scaling) {
+    this->scaling = scaling; 
+    isTransformed = true;
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Scale(const Vector<T>& scaling) {
-    this->scaling = scaling;
+void Mesh<T, U>::Rotate(const Vector<float>& rotation) {
+    this->rotation += rotation;
+    isTransformed = true;
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
-void Mesh<T, U>::Translate(const Vector<T>& translation) {
+void Mesh<T, U>::Translate(const Vector<float>& translation) {
     this->translation += translation;
+    isTransformed = true;
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::Transform(const Vector<float>& scaling, 
+                           const Vector<float>& rotation, 
+                           const Vector<float>& translation) {
+    Scale(scaling);
+    Rotate(rotation);
+    Translate(translation);
+    isTransformed = true;
+    //UpdateTransformationMatrix();
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+Matrix<float>& Mesh<T, U>::GetTransformationMatrix() {
+    //UpdateTransformationMatrix();
+    return transformation.that;//transformationMatrix;
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::UpdateTransformationMatrix() {
+    Matrix<float> scalingMatrix = Matrix<float>::Scaling(scaling);
+    Matrix<float> rotationMatrix = Matrix<float>::Rotation(rotation); 
+    Matrix<float> translationMatrix = Matrix<float>::Translation(translation);
+    scalingMatrix 
+        = {{scalingMatrix[0][0], scalingMatrix[0][1], scalingMatrix[0][2], 0},
+           {scalingMatrix[1][0], scalingMatrix[1][1], scalingMatrix[1][2], 0}, 
+           {scalingMatrix[2][0], scalingMatrix[2][1], scalingMatrix[2][2], 0},
+           {0, 0, 0, 1.0f}};
+   rotationMatrix 
+        = {{rotationMatrix[0][0], 
+            rotationMatrix[0][1], rotationMatrix[0][2], 0},
+           {rotationMatrix[1][0], 
+            rotationMatrix[1][1], rotationMatrix[1][2], 0}, 
+           {rotationMatrix[2][0], 
+            rotationMatrix[2][1], rotationMatrix[2][2], 0},
+           {0, 0, 0, 1.0f}};
+    transformationMatrix = translationMatrix * rotationMatrix * scalingMatrix;
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::UpdateTransformationMatrix(Matrix<float> parental) {
+    //Matrix<float> scalingMatrix = Matrix<float>::Scaling(scaling);
+    //Matrix<float> rotationMatrix = Matrix<float>::Rotation(rotation); 
+    //Matrix<float> translationMatrix = Matrix<float>::Translation(translation);
+    //scalingMatrix 
+    //    = {{scalingMatrix[0][0], scalingMatrix[0][1], scalingMatrix[0][2], 0},
+    //       {scalingMatrix[1][0], scalingMatrix[1][1], scalingMatrix[1][2], 0}, 
+    //       {scalingMatrix[2][0], scalingMatrix[2][1], scalingMatrix[2][2], 0},
+    //       {0, 0, 0, 1.0f}};
+    //rotationMatrix 
+    //    = {{rotationMatrix[0][0], 
+    //        rotationMatrix[0][1], rotationMatrix[0][2], 0},
+    //       {rotationMatrix[1][0], 
+    //        rotationMatrix[1][1], rotationMatrix[1][2], 0}, 
+    //       {rotationMatrix[2][0], 
+    //        rotationMatrix[2][1], rotationMatrix[2][2], 0},
+    //       {0, 0, 0, 1.0f}};
+    //transformationMatrix = translationMatrix * rotationMatrix * scalingMatrix;
+    UpdateTransformationMatrix();
+    transformation.parental = parental;
+    transformation.that = parental * transformationMatrix;
+    InterfaceProvider ip;
+    for (int i = 0; i < childs.size(); i++) {
+        auto mesh = ip.Query<Mesh<float>>(childs[i]);
+        if (mesh) {
+            mesh->UpdateTransformationMatrix(transformation.that);
+        }
+    }
 }
 
 template<typename T, typename U = unsigned>

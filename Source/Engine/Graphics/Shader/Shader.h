@@ -9,7 +9,7 @@ namespace Engine {
 namespace Graphics {
 
 struct Shader {
-    Shader(GLenum shaderType = GL_VERTEX_SHADER);
+    Shader();
     ~Shader(); 
     
     void Create(GLenum shaderType = GL_VERTEX_SHADER);

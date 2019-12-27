@@ -1,6 +1,5 @@
 #include "StartupSettings.h"
 
-#include <windows.h>
 #include <shellapi.h>
 
 namespace White {
@@ -26,6 +25,14 @@ void StartupSettings::ParseCommandLineArgs() {
     for (int i = 0; i < numArgs; ++i) {
         args.push_back(std::wstring(argsArray[i]));
     }
+}
+
+HWND StartupSettings::GetWindowHandle() const {
+    return hWnd;
+}
+
+void StartupSettings::SetWindowHandle(HWND hWnd) {
+    this->hWnd = hWnd;
 }
 
 StartupSettings::StartupSettings() {}

@@ -27,6 +27,7 @@ FUNCTION_ADDRESS(glBindBuffer);
 FUNCTION_ADDRESS(glBufferData);
 FUNCTION_ADDRESS(glVertexAttribPointer);
 FUNCTION_ADDRESS(glEnableVertexAttribArray);
+FUNCTION_ADDRESS(glDisableVertexAttribArray);
 FUNCTION_ADDRESS(glBufferSubData);
 FUNCTION_ADDRESS(glDeleteBuffers);
 FUNCTION_ADDRESS(glDeleteVertexArrays);
@@ -47,6 +48,8 @@ FUNCTION_ADDRESS(glGetShaderSource);
 FUNCTION_ADDRESS(glGetProgramBinary);
 FUNCTION_ADDRESS(glGetProgramInfoLog);
 FUNCTION_ADDRESS(glGetError);
+FUNCTION_ADDRESS(glDisable);
+FUNCTION_ADDRESS(glGenerateMipmap);
 
 void* GetFunctionAddress(char* name, HMODULE hModule) {
     PROC address = wglGetProcAddress(name);
@@ -76,6 +79,7 @@ void LoadFunctions() {
     LOAD_FUNCTION(glBufferData);
     LOAD_FUNCTION(glVertexAttribPointer);
     LOAD_FUNCTION(glEnableVertexAttribArray);
+    LOAD_FUNCTION(glDisableVertexAttribArray);
     LOAD_FUNCTION(glBufferSubData);
     LOAD_FUNCTION(glDeleteBuffers);
     LOAD_FUNCTION(glDeleteVertexArrays);
@@ -97,6 +101,8 @@ void LoadFunctions() {
     LOAD_FUNCTION(glGetProgramBinary);
     LOAD_FUNCTION(glGetProgramInfoLog);
     LOAD_FUNCTION(glGetError);
+    LOAD_FUNCTION(glDisable);
+    LOAD_FUNCTION(glGenerateMipmap);
 }
 
 }
