@@ -154,7 +154,6 @@ namespace White {
           retVal = recv(clientSocket, data_buf, data_left, 0);
           if (retVal == SOCKET_ERROR)
           {
-
             l << std::string("Unable to recv\n");
 #ifndef __unix__
             WSACleanup();

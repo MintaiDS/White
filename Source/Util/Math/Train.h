@@ -60,7 +60,6 @@ namespace White {
         std::string& GetPlayerIdx() { return player_idx; }
         Task::TaskType GetTask() { return task.GetTask(); }
         int GetLevel() { return level; }
-
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
         void SetLineIdx(int line_idx) { this->line_idx = line_idx; }
@@ -70,7 +69,6 @@ namespace White {
         void SetGoodsType(Goods type) { goodsType = type; }
         void SetGoodsCap(int val) { goodsCapacity = val; }
         void SetLevel(int val) { level = val; }
-
       private:
         int idx;
         int line_idx;

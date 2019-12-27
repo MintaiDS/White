@@ -60,6 +60,7 @@ namespace White {
 
       void Overseer::Turn()
       {
+
         Logger& l = Logger::GetInstance();
         ActionMessage msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         ResponseMessage resp;
@@ -289,7 +290,6 @@ namespace White {
         }
         return std::make_pair(Train::Task::NO_TASK, -1);
       }
-
 
       std::string Overseer::GetPlayerIdxFromJson(char* data)
       {
