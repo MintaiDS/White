@@ -12,8 +12,15 @@ namespace White {
 
       class Train {
       public:
+        static const int level_cost[2];
         Train() {}
         Train(int idx, int line_idx, int position, std::string& player_idx) : idx(idx), line_idx(line_idx), position(position), player_idx(player_idx) {}
+
+        enum Goods {
+          NONE = 0,
+          FOOD = 2,
+          ARMOR = 3
+        };
 
         class Task {
         public:
@@ -31,7 +38,7 @@ namespace White {
 
           TaskType GetTask() { return task; }
           bool TaskEnded(int line_idx, int position);
-          void DropTask() { task = NO_TASK; }
+          void DropTask();
           void CheckPathIdx(int line_idx);
           Post* GetDestination() { return destination; }
         private:
@@ -47,19 +54,30 @@ namespace White {
         int GetIdx() { return idx; }
         int GetPosition() { return position; }
         int GetLineIdx() { return line_idx; }
+        int GetGoods() { return goods; }
+        int GetGoodsCap() { return goodsCapacity; }
+        Goods GetGoodsType() { return goodsType; }
         std::string& GetPlayerIdx() { return player_idx; }
-
+        Task::TaskType GetTask() { return task.GetTask(); }
+        int GetLevel() { return level; }
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
         void SetLineIdx(int line_idx) { this->line_idx = line_idx; }
         void SetPlayerIdx(std::string& player_idx) { this->player_idx = player_idx; }
-        Task::TaskType GetTask() { return task.GetTask(); }
-
+        void SetGoods(int val) { goods = val; }
+        void IncGoods(int val) { goods += val; }
+        void SetGoodsType(Goods type) { goodsType = type; }
+        void SetGoodsCap(int val) { goodsCapacity = val; }
+        void SetLevel(int val) { level = val; }
       private:
         int idx;
         int line_idx;
         int position;
         std::string player_idx;
+        Goods goodsType;
+        int goodsCapacity;
+        int goods;
+        int level;
       };
     }
   }

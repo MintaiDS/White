@@ -16,6 +16,7 @@ namespace White {
         void Init(std::string playerName);
         void Turn();
         void CheckStatus();
+        void TryUpgrade();
         void AssignTasks();
         void MakeMoves();
 
@@ -25,14 +26,15 @@ namespace White {
         std::shared_ptr<Graph> graph;
         City* my_city;
         std::vector<Train*> trains;
-        std::set<std::pair<double, Market*>> markets;
         Connection& conn;
         std::string player_idx;
+        int armor_buffer = 10;
 
         void GetMyTrains();
-        void SortMarkets();
+        std::pair<Train::Task::TaskType, int> ChooseTask(Train* t, int point_id);
         std::string GetPlayerIdxFromJson(char* data);
         void FindMyCity();
+        double getFoodPercentage() { return (double)(my_city->GetCurProduct()) / my_city->GetMaxProduct(); }
       };
     }
   }

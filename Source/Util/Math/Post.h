@@ -1,6 +1,8 @@
 #pragma once
 
 //#include "Train.h"
+#include <string>
+
 namespace White {
   namespace Util {
     namespace Math {
@@ -28,12 +30,15 @@ namespace White {
         int GetCurArmor() { return cur_armor; }
         int GetMaxProduct() { return max_product; }
         int GetMaxArmor() { return max_armor; }
+        int GetLevel() { return level; }
+        bool Vacant() { return is_vacant; }
 
         void SetCurProduct(int val) { cur_product = val; }
         void SetMaxProduct(int val) { max_product = val; }
         void SetCurArmor(int val) { cur_armor = val; }
         void SetMaxArmor(int val) { max_armor = val; }
-        //Train* getAssignedTrain() { return assignedTrain; }
+        void SetLevel(int val) { level = val; }
+        void SetVacant(bool val) { is_vacant = val; }
 
       protected:
         void SetPostType(PostType type) { this->type = type; }
@@ -46,7 +51,8 @@ namespace White {
         int max_product;
         int cur_armor;
         int max_armor;
-        //Train* assignedTrain;
+        bool is_vacant = true;
+        int level;
       };
 
       class Market : public Post {
@@ -56,8 +62,6 @@ namespace White {
           SetPostType(MARKET);
         }
       private:
-        int max_food;
-        int cur_food;
       };
 
       class Storage : public Post {
@@ -71,6 +75,8 @@ namespace White {
 
       class City : public Post {
       public:
+        static const int level_cost[2];
+
         City() { SetPostType(CITY); }
         City(int idx, int point_idx, std::string& player_idx) : Post(idx, point_idx), player_idx(player_idx)
         {

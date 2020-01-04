@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #ifdef __unix__
 #include <unistd>
 #define on_Windows 0
@@ -8,6 +9,8 @@
 #define on_Windows 1
 //#pragma comment(lib, "Ws2_32.lib")
 #endif
+
+#include "Logger.h"
 
 namespace White {
   namespace Util {
@@ -70,6 +73,7 @@ namespace White {
         bool Request(const ActionMessage& msg, ResponseMessage& resp);
         ActionMessage FormActionMessage(Action a, std::string data);
         std::string MoveMessage(int lineIdx, int speed, int trainIdx);
+        std::string UpgradeMessage(std::vector<int>& train_idxs, int city_idx = -1);
         //bool Reconnect();
 
       private:

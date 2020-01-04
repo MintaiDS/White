@@ -6,6 +6,7 @@
 #include "Connection.h"
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 
 namespace White {
@@ -51,7 +52,6 @@ namespace White {
         WSAStartup(ver, (LPWSADATA)&wsaData);
 #endif
 
-        //������� �����
         clientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
         if (clientSocket == SOCKET_ERROR)
@@ -97,6 +97,7 @@ namespace White {
 
       bool Connection::Request(const ActionMessage & msg, ResponseMessage& resp)
       {
+        Logger& l = Logger::GetInstance();
         int retVal = 0;
         std::stringstream ss;
         ss << std::hex;
@@ -106,12 +107,12 @@ namespace White {
         std::string s = ss.str();
         const char* pBuf = s.c_str();
 
-        printf("Sending request from client\n");
+        //l << std::string("Sending request from client\n");
         retVal = send(clientSocket, pBuf, s.size(), 0);
 
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to send\n");
+          l << std::string("Unable to send\n");
 #ifndef __unix__
           WSACleanup();
 #endif
@@ -125,19 +126,19 @@ namespace White {
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to recv\n");
+          l << std::string("Unable to recv\n");
 #ifndef __unix__
           WSACleanup();
 #endif
           return false;
         }
         resp.result = (Result)toInt(szResponse);
-        if (resp.result != Result::OKEY)
-          return false;
+        //if (resp.result != Result::OKEY)
+          //return false;
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
-          printf("Unable to recv\n");
+          l << std::string("Unable to recv\n");
 #ifndef __unix__
           WSACleanup();
 #endif
@@ -153,8 +154,7 @@ namespace White {
           retVal = recv(clientSocket, data_buf, data_left, 0);
           if (retVal == SOCKET_ERROR)
           {
-
-            printf("Unable to recv\n");
+            l << std::string("Unable to recv\n");
 #ifndef __unix__
             WSACleanup();
 #endif
@@ -164,7 +164,7 @@ namespace White {
           data_buf = data_buf + retVal;
         }
         resp.data[resp.dataLength] = '\0';
-        printf("Got the response for\n%s\n", msg.data);
+        //l << std::string("Got the response\n");
         return true;
       }
 
@@ -183,6 +183,22 @@ namespace White {
         return "{\"line_idx\":" + std::to_string(lineIdx) + ","
           + "\"speed\":" + std::to_string(speed) + ","
           + "\"train_idx\":" + std::to_string(trainIdx) + "}";
+      }
+      std::string Connection::UpgradeMessage(std::vector<int>& train_idxs, int city_idx)
+      {
+        std::string s = "{\"posts\":[";
+        if (city_idx != -1)
+          s += std::to_string(city_idx);
+        s += "],\"trains\":[";
+        size_t sz = train_idxs.size();
+        for (size_t i = 0; i < sz; ++i)
+        {
+          s += std::to_string(train_idxs[i]);
+          if (i != sz - 1)
+            s += ",";
+        }
+        s += "]}";
+        return s;
       }
     }
   }

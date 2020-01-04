@@ -32,6 +32,7 @@ protected:
     Thread<GraphVisualizer> overseerThread;
     Vector<float> prev;
     Vector<float> dir;
+    Vector<float> rotation;
     int mode = 0;
     int keys[13] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     float scaleFactor;
