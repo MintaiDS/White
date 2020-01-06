@@ -190,6 +190,21 @@ int Graph::GetPathLen(int i_idx, int j_idx)
   return res->GetDist();
 }
 
+int Graph::GetCommonPointIdx(int edge_idx1, int edge_idx2)
+{
+  Edge* e1 = GetEdgeByIdx(edge_idx1);
+  Edge* e2 = GetEdgeByIdx(edge_idx2);
+  int from1 = e1->GetFrom();
+  int to1 = e1->GetTo();
+  int from2 = e2->GetFrom();
+  int to2 = e2->GetTo();
+  if (from1 == from2 || from1 == to2)
+    return from1;
+  if (to1 == from2 || to1 == to2)
+    return to1;
+  return -1;
+}
+
 std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename)
 {
   std::ifstream f_inp;
@@ -406,6 +421,7 @@ Path Path::FormPath(Graph& g, int i_idx, int j_idx, std::vector<std::pair<Edge*,
     j_idx = edge.first->GetOtherV(j_idx);
     j_id = g.GetIdByIdx(j_idx);
   }
+  res.push_back({NULL, false});
   res.shrink_to_fit();
   size_t sz = res.size();
   for (int i = 0; i < sz / 2; ++i)

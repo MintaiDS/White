@@ -111,6 +111,8 @@ namespace White {
         std::map<int, Edge*>& GetEdges() { return edges; }
         int GetEdgeCnt() { return edges.size(); }
 
+        int GetCommonPointIdx(int edge_idx1, int edge_idx2);
+
       private:
         int idx;
         std::string name;

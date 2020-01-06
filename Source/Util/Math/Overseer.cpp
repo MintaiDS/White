@@ -18,10 +18,18 @@ namespace White {
         l.Init("run.log");
       }
 
-      void Overseer::Init(std::string playerName)
+      void Overseer::Init(std::string playerName, std::string game)
       {
         Logger& l = Logger::GetInstance();
-        std::string data = "{\"name\":\"" + playerName + "\"}";
+        l << playerName << std::string(" ") << game;
+        std::string data;
+        if (game == playerName)
+          data = "{\"name\":\"" + playerName + "\"}";
+        else
+        {
+          l << std::string("Multiplayer!\n");
+          data = "{\"name\":\"" + playerName + "\",\"game\":\"" + game + "\",\"num_players\":2}";
+        }
         ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
         ResponseMessage resp;
         conn.Request(msg, resp);
@@ -48,6 +56,7 @@ namespace White {
         if (resp.result == Result::OKEY)
         {
           ParseInfrastructureFromJSON(graph, resp.data);
+          l << std::string(resp.data);
           delete[](resp.data);
 
         }
@@ -78,11 +87,12 @@ namespace White {
         MakeMoves();
         msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
         conn.Request(msg, resp);
-        if (resp.result == Result::OKEY)
+        while (resp.result != Result::OKEY)
         {
+          Sleep(500);
+          conn.Request(msg, resp);
         }
-        else
-          assert(0 && "END TURN");
+        l << std::string("End Turn!\n");
       }
 
       void Overseer::CheckStatus()
@@ -90,9 +100,11 @@ namespace White {
         //Logger& l = Logger::GetInstance();
         for (auto& t : trains)
         {
+          t->SetMoved(false);
           if (t->GetTask() != Train::Task::NO_TASK)
           {
-            t->task.CheckPathIdx(t->GetLineIdx());
+            if (!t->task.PathIdxValid(t->GetLineIdx()))
+              t->SetDirection(0);
             //if (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition()))
             //{
               //Post* p = t->task.GetDestination();
@@ -154,6 +166,7 @@ namespace White {
         {
           if ((t->GetTask() != Train::Task::NO_TASK) && (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition())))
           {
+            UnblockLine(t->GetLineIdx(), t);
             if (t->GetTask() == Train::Task::COME_HOME)
             {
               t->task.DropTask();
@@ -190,22 +203,277 @@ namespace White {
 
       void Overseer::MakeMoves()
       {
-        //Logger& l = Logger::GetInstance();
-        for (auto& t : trains)
+        Logger& l = Logger::GetInstance();
+        for (auto t : trains)
         {
-          auto task = t->GetTask();
-          if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
+          if (!t->IsMoved())
+            TryMakeMove(t);
+          auto move = t->GetMove();
+          l << std::string("Move:") << std::to_string(move.first) << std::string(" ") << std::to_string(move.second) << std::string("\n");
+          conn.SendMoveMessage(move.first, move.second, t->GetIdx());
+        }
+      }
+
+      void Overseer::TryMakeMove(Train * t)
+      {
+        Logger& l = Logger::GetInstance();
+        l << t->GetIdx();
+        t->SetMoved(true);
+        auto task = t->GetTask();
+        if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
+        {
+          auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
+          l << std::string("Step: ") << std::to_string(step.first) + std::string(" ") + std::to_string(step.second) + std::string("\n");
+          l << std::string("Position: ") << std::to_string(t->GetLineIdx()) + std::string(" ") + std::to_string(t->GetPosition()) + std::string("\n");
+          if (step.first != t->GetLineIdx() || (t->GetPosition() == 0 || t->GetPosition() == graph->GetEdgeByIdx(step.first)->GetLength()))
           {
-            auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
-            if (step != NULL)
+            int new_pos = step.second == 1 ? 1 : graph->GetEdgeByIdx(step.first)->GetLength() - 1;
+            //l << std::string("Got here!\n");
+            Train* tr_coll = CheckForCollision(t, step.first, new_pos);
+            if (tr_coll != NULL)
             {
-              std::string data = conn.MoveMessage(step->first, step->second, t->GetIdx());
-              ActionMessage msg = conn.FormActionMessage(Action::MOVE, data);
-              ResponseMessage resp;
-              conn.Request(msg, resp);
+              //l << std::string("Found someone!\n");
+              int tr_pos = tr_coll->GetPosition();
+              if (!tr_coll->IsMoved())
+              {
+                TryMakeMove(tr_coll);
+                if (tr_pos != tr_coll->GetPosition())
+                {
+                  //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+                  UnblockLine(t->GetLineIdx(), t);
+                  BlockLine(step.first, t);
+                  
+                  t->SetMove(step);
+                  t->SetDirection(step.second);
+                  t->SetPosition(new_pos);
+                  t->SetLineIdx(step.first);
+
+                }
+                else
+                {
+                  int common_point, t_line_idx = t->GetLineIdx(), tr_coll_line_idx = tr_coll->GetLineIdx();
+                  if (t_line_idx == tr_coll_line_idx)
+                  {
+                    Edge* e = graph->GetEdgeByIdx(t_line_idx);
+                    common_point = step.second < 0 ? e->GetTo() : e->GetFrom();
+                  }
+                  else
+                    common_point = graph->GetCommonPointIdx(t_line_idx, tr_coll_line_idx);
+                  if (step.second == tr_coll->GetDirection() || !MakeEvasionMove(t, common_point, t->GetLineIdx(), tr_coll->GetLineIdx()))
+                  {
+                    //conn.SendMoveMessage(t->GetLineIdx(), 0, t->GetIdx());
+                    t->SetMove({ t->GetLineIdx(), 0 });
+                    t->SetDirection(0);
+                  }
+                  else
+                    //TryMakeMove(tr_coll);
+                    tr_coll->SetMoved(false);
+                }
+              }
+              else
+              {
+                int common_point, t_line_idx = t->GetLineIdx(), tr_coll_line_idx = tr_coll->GetLineIdx();
+                if (t_line_idx == tr_coll_line_idx)
+                {
+                  Edge* e = graph->GetEdgeByIdx(t_line_idx);
+                  common_point = step.second < 0 ? e->GetTo() : e->GetFrom();
+                }
+                else
+                  common_point = graph->GetCommonPointIdx(t_line_idx, tr_coll_line_idx);
+                if (step.second == tr_coll->GetDirection() || !MakeEvasionMove(t, common_point, t->GetLineIdx(), tr_coll->GetLineIdx()))
+                {
+                  //conn.SendMoveMessage(t->GetLineIdx(), 0, t->GetIdx());
+                  t->SetMove({ t->GetLineIdx(), 0 });
+                  t->SetDirection(0);
+                }
+              }
+            }
+            else
+            {
+              //l << std::string("Made move\n");
+              Train* tr_block = CheckLine(step.first);
+              if (tr_block == NULL || tr_block->GetDirection() == step.second)
+              {
+                //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+                UnblockLine(t->GetLineIdx(), t);
+                BlockLine(step.first, t);
+                
+                t->SetMove(step);
+                t->SetDirection(step.second);
+                t->SetPosition(new_pos);
+                t->SetLineIdx(step.first);
+
+              }
+              else
+              {
+                //conn.SendMoveMessage(step.first, 0, t->GetIdx());
+                t->SetMove({ t->GetLineIdx(), 0 });
+                t->SetDirection(0);
+              }
+            }
+          }
+          else
+          {
+            //l << std::string("Here?\n");
+            Train* tr_coll = CheckForCollision(t, t->GetLineIdx(), t->GetPosition() + step.second);
+            if (tr_coll != NULL)
+            {
+              //l << std::string("Collision?\n");
+              int tr_pos = tr_coll->GetPosition();
+              if (!tr_coll->IsMoved())
+              {
+                TryMakeMove(tr_coll);
+                if (tr_pos != tr_coll->GetPosition())
+                {
+                  if (t->GetDirection() != step.second)
+                  {
+                    //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+                    t->SetMove(step);
+                    t->SetDirection(step.second);
+                  }
+                  t->SetPosition(t->GetPosition() + step.second);
+                }
+                else
+                {
+                  //conn.SendMoveMessage(step.first, 0, t->GetIdx());
+                  t->SetMove({ t->GetLineIdx(), 0 });
+                  t->SetDirection(0);
+                }
+              }
+              else
+              {
+                //conn.SendMoveMessage(step.first, 0, t->GetIdx());
+                t->SetMove({ t->GetLineIdx(), 0 });
+                t->SetDirection(0);
+              }
+            }
+            else
+            {
+              //l << std::string("moved\n");
+              //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+              t->SetMove(step);
+              t->SetPosition(t->GetPosition() + step.second);
+              t->SetDirection(step.second);
             }
           }
         }
+      }
+
+      bool Overseer::MakeEvasionMove(Train * t, int point_idx, int locked_edge_from, int locked_edge_to)
+      {
+        Logger& l = Logger::GetInstance();
+        l << locked_edge_from << locked_edge_to;
+        int pos, dir;
+        Vertex* v = graph->GetVByIdx(point_idx);
+        for (auto edge : v->GetEdgeList())
+        {
+          if (edge->GetIdx() != locked_edge_from && edge->GetIdx() != locked_edge_to)
+          {
+            if (edge->GetFrom() == point_idx)
+            {
+              l << std::string("->\n");
+              pos = 1;
+              dir = 1;
+            }
+            else
+            {
+              assert(edge->GetTo() == point_idx);
+              l << std::string("<-\n");
+              pos = edge->GetLength() - 1;
+              dir = -1;
+            }
+            Train* tr = CheckForCollision(t, edge->GetIdx(), pos);
+            if (tr != NULL)
+            {
+              int tr_pos = tr->GetPosition();
+              if (!tr->IsMoved())
+              {
+                TryMakeMove(tr);
+                if (tr_pos != tr->GetPosition())
+                {
+                  l << edge->GetIdx();
+                  //conn.SendMoveMessage(edge->GetIdx(), dir, t->GetIdx());
+                  BlockLine(edge->GetIdx(), t);
+                  UnblockLine(t->GetLineIdx(), t);
+
+                  t->SetMove({ edge->GetIdx(), dir });
+                  if (t->task.IsFirst(t->GetPosition()))
+                  {
+                    t->task.SetPathIdx(0);
+                    t->task.DestroyStartIdx();
+                  }
+                  t->task.ChangeCurrentPath({ edge, dir > 0 });
+                  t->SetDirection(dir);
+
+                  t->SetLineIdx(edge->GetIdx());
+                  t->SetPosition(pos);
+                  return true;
+                }
+              }
+            }
+            else
+            {
+              l << edge->GetIdx();
+              //conn.SendMoveMessage(edge->GetIdx(), dir, t->GetIdx());
+              BlockLine(edge->GetIdx(), t);
+              UnblockLine(t->GetLineIdx(), t);
+              
+              t->SetMove({ edge->GetIdx(), dir });
+              if (t->task.IsFirst(t->GetPosition()))
+              {
+                t->task.SetPathIdx(0);
+                t->task.DestroyStartIdx();
+              }
+              t->task.ChangeCurrentPath({ edge, dir > 0 });
+              t->SetDirection(dir);
+
+              t->SetLineIdx(edge->GetIdx());
+              t->SetPosition(pos);
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      Train* Overseer::CheckForCollision(Train* t, int edge_idx, int position)
+      {
+        Logger& l = Logger::GetInstance();
+        Edge* edge = graph->GetEdgeByIdx(edge_idx);
+        int pnt_idx = edge->GetPointIdxFromPosition(position);
+
+        for (auto tr : trains)
+        {
+          if (tr != t)
+          {
+            Edge* tr_edge = graph->GetEdgeByIdx(tr->GetLineIdx());
+            int tr_pnt_idx = tr_edge->GetPointIdxFromPosition(tr->GetPosition());
+            if ((edge == tr_edge && position == tr->GetPosition()) || (pnt_idx != -1 && pnt_idx != my_city->GetIdx() && pnt_idx == tr_pnt_idx))
+              return tr;
+          }
+        }
+        return NULL;
+      }
+
+      Train * Overseer::CheckLine(int edge_idx)
+      {
+        std::map<int, Train*>::iterator it;
+        if ((it = blocked_lines.find(edge_idx)) != blocked_lines.end())
+          return it->second;
+        else
+          return NULL;
+      }
+
+      void Overseer::BlockLine(int edge_idx, Train * t)
+      {
+        blocked_lines[edge_idx] = t;
+      }
+
+      void Overseer::UnblockLine(int edge_idx, Train* t)
+      {
+        std::map<int, Train*>::iterator it;
+        if ((it = blocked_lines.find(edge_idx)) != blocked_lines.end() && it->second == t)
+          blocked_lines.erase(edge_idx);
       }
 
       void Overseer::GetMyTrains()
@@ -214,6 +482,7 @@ namespace White {
         {
           if (p.second->GetPlayerIdx() == player_idx)
           {
+            p.second->SetDirection(0);
             trains.push_back(p.second);
           }
         }
