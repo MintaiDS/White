@@ -198,6 +198,27 @@ Vector<T> Mesh<T, U>::GetTranslation() const {
 }
 
 template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetRotation(const Vector<float>& rotation) {
+    this->rotation = rotation;
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetScaling(const Vector<float>& scaling) {
+    this->scaling = scaling; 
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetTranslation(const Vector<float>& translation) {
+    this->translation = translation;
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 
     isTransformed = true;

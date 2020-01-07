@@ -120,7 +120,7 @@ void GraphVisualizer::Play() {
         overseer->Init(name, game);
         graph = overseer->GetGraph();
         int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 70 * (std::sqrt(verticesCnt) + 1); 
+        int dimension = 90 * (std::sqrt(verticesCnt) + 1); 
         grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
                             {dimension, dimension}, 
                             {1.0f, 1.0f}));

@@ -191,7 +191,7 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
 
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
-    Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
+    Math::Vector<float> color = {0.28f, 0.28f, 0.28f, 1.0f};
     Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
     Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
     Math::Vector<float> dir = end - begin;
