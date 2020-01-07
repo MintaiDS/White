@@ -88,6 +88,7 @@ namespace White {
 
         void SetIdx(int idx) { this->idx = idx; }
         void SetName(const std::string& name) { this->name = name; }
+        void SetPlayerIdx(std::string val) { player_idx = val; }
 
         void SetSize(int x, int y);
 
@@ -95,7 +96,7 @@ namespace White {
         //void FillWorldPaths();
         void FillWorldPath(int idx);
         std::vector<std::pair<Edge*, bool>> GetPath(int i, int j);
-        std::vector<std::pair<Edge*, bool>> GetPathReverse(int i, int j);
+        //std::vector<std::pair<Edge*, bool>> GetPathReverse(int i, int j);
         int GetPathLen(int i, int j);
 
         City* GetCityByIdx(int idx) { return cities[idx]; }
@@ -110,6 +111,15 @@ namespace White {
         std::map<int, City*>& GetCities() { return cities; }
         std::map<int, Edge*>& GetEdges() { return edges; }
         int GetEdgeCnt() { return edges.size(); }
+        std::string GetPlayerIdx() { return player_idx; }
+
+        int GetCommonPointIdx(int edge_idx1, int edge_idx2);
+        int GetPointIdxByPosition(int edge_idx, int position);
+
+        Train* CheckLine(int edge_idx);
+        void BlockLine(int edge_idx, Train* t);
+        void UnblockLine(int edge_idx, Train* t);
+        void CollisionCleanup(Train* t);
 
       private:
         int idx;
@@ -123,6 +133,8 @@ namespace White {
         std::map<int, Storage*> storages;
         std::map<int, Train*> trains;
         std::vector<std::vector<Path*>> world_map;
+        std::map<int, Train*> blocked_lines;
+        std::string player_idx;
         //std::vector<std::vector<int>> distance;
       };
 
@@ -131,7 +143,6 @@ namespace White {
       void ParseCoordFromJSON(std::shared_ptr<Graph> g, char* data);
       void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
       void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
-
     }
   }
 }

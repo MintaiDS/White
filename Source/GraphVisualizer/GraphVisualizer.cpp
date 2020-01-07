@@ -103,14 +103,21 @@ void GraphVisualizer::Play() {
         std::vector<std::wstring> args = settings.GetArgs();
         //std::wstring graphPath = args[1];
         std::wstring playerName = args[1];
+        std::wstring gameID = args[1];
+        if (args.size() > 2)
+          gameID = args[2];
         //CW2A cw2a(graphPath.c_str());
         CW2A cw2a(playerName.c_str());
+        CW2A cw2a_1(gameID.c_str());
         // std::string path = cw2a;
         std::string name = cw2a;
+        std::string game = cw2a_1;
         //LoadGraph(path); 
         overseer = std::make_shared<Overseer>();
+        Logger& l = Logger::GetInstance();
+        l << args.size();
         //logger << 2.1;
-        overseer->Init(name);
+        overseer->Init(name, game);
         graph = overseer->GetGraph();
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = 70 * (std::sqrt(verticesCnt) + 1); 

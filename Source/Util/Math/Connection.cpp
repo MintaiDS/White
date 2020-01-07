@@ -179,6 +179,17 @@ namespace White {
         return msg;
       }
 
+      void Connection::SendMoveMessage(int edge_idx, int dir, int idx)
+      {
+        Logger& l = Logger::GetInstance();
+        std::string data = MoveMessage(edge_idx, dir, idx);
+        ActionMessage msg = FormActionMessage(Action::MOVE, data);
+        ResponseMessage resp;
+        Request(msg, resp);
+        //if (edge_idx == 149)
+          //l << std::to_string((int)resp.result);
+      }
+
       std::string Connection::MoveMessage(int lineIdx, int speed, int trainIdx)
       {
         return "{\"line_idx\":" + std::to_string(lineIdx) + ","

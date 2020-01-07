@@ -34,12 +34,18 @@ namespace White {
           };
 
           void SetTask(TaskType t, std::vector<std::pair<Edge*, bool>>& path, Post* p, int start_idx);
-          std::pair<int, int>* ContinueMovement(Edge* edge, int position);
+          std::pair<int, int>& ContinueMovement(Edge* edge, int position);
 
           TaskType GetTask() { return task; }
           bool TaskEnded(int line_idx, int position);
           void DropTask();
-          void CheckPathIdx(int line_idx);
+          bool PathIdxValid(int line_idx);
+          //for evasive movement
+          void ChangeCurrentPath(std::pair<Edge*, bool> new_path);
+          int GetPathIdx() { return path_idx; }
+          void SetPathIdx(int val) { path_idx = val; }
+          void DestroyStartIdx() { start_idx = -1; }
+          bool IsFirst(int position);
           Post* GetDestination() { return destination; }
         private:
           int path_idx;
@@ -60,6 +66,11 @@ namespace White {
         std::string& GetPlayerIdx() { return player_idx; }
         Task::TaskType GetTask() { return task.GetTask(); }
         int GetLevel() { return level; }
+        int GetDirection() { return direction; }
+        bool IsMoved() { return moved; }
+        std::pair<int, int> GetMove() { return move; }
+        int GetDecCooldown();
+        int GetCooldown() { return cooldown; }
 
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
@@ -70,6 +81,11 @@ namespace White {
         void SetGoodsType(Goods type) { goodsType = type; }
         void SetGoodsCap(int val) { goodsCapacity = val; }
         void SetLevel(int val) { level = val; }
+        void SetMoved(bool val) { moved = val; }
+        void SetDirection(int val) { direction = val; }
+        void SetMove(std::pair<int, int> val) { move = val; }
+        
+        void ResetCooldown();
 
       private:
         int idx;
@@ -80,6 +96,10 @@ namespace White {
         int goodsCapacity;
         int goods;
         int level;
+        int direction;
+        bool moved;
+        std::pair<int, int> move;
+        int cooldown = 0;
       };
     }
   }

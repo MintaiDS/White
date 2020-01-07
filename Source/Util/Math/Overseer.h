@@ -4,6 +4,7 @@
 #include "Connection.h"
 
 #include <set>
+#include <map>
 #include <string>
 
 namespace White {
@@ -13,12 +14,16 @@ namespace White {
       class Overseer {
       public:
         Overseer();
-        void Init(std::string playerName);
+        void Init(std::string playerName, std::string game);
         void Turn();
         void CheckStatus();
         void TryUpgrade();
         void AssignTasks();
         void MakeMoves();
+        void TryMakeMove(Train* t);
+        bool MakeEvasionMove(Train* t, int point_idx, int locked_edge_from, int locked_edge_to);
+        Train* CheckForCollision(Train* t, int edge_idx, int position);
+
 
         std::shared_ptr<Graph> GetGraph() { return graph; }
       private:

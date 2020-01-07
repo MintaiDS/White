@@ -17,6 +17,7 @@ namespace White {
         int GetTo() { return v[1]; }
         int GetOtherV(int idx) { return idx == v[0] ? v[1] : v[0]; }
         int GetLength() { return length; }
+        int GetPointIdxFromPosition(int position);
 
       private:
         int idx;

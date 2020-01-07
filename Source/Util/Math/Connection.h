@@ -72,6 +72,7 @@ namespace White {
 
         bool Request(const ActionMessage& msg, ResponseMessage& resp);
         ActionMessage FormActionMessage(Action a, std::string data);
+        void SendMoveMessage(int edge_idx, int dir, int idx);
         std::string MoveMessage(int lineIdx, int speed, int trainIdx);
         std::string UpgradeMessage(std::vector<int>& train_idxs, int city_idx = -1);
         //bool Reconnect();
