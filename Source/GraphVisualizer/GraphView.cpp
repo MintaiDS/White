@@ -291,7 +291,6 @@ void GraphView::UpdateTrains() {
     int i = 0;
     for (auto& p : graph->GetTrains()) {
         Train* trainObj = p.second;
-
         auto mesh = ip.Query<Mesh<float>>(trains[i]);
         Math::Vector<float> translation = mesh->GetTranslation();
         mesh->Translate(translation * -1);
@@ -303,12 +302,18 @@ void GraphView::UpdateTrains() {
         Math::Vector<float> dir = end - begin; 
         float len = dir.Length();
         float step = len / edgePtr->GetLength();
+        Math::Vector<float> initial = {dir.Length(), 0};
+        float dot = initial.Dot(dir);
+        Math::Vector<float> diff = initial - dir;
+        float phi = Math::ToDegrees(atan2(initial[0] * dir[1] - dir[0] * initial[1],
+                                          initial[0] * dir[0] + initial[1] * dir[1]));
+        Math::Vector<float> rotation = {0.0f, 0.0f, phi};  
         dir *= (1.0f / len);
         dir *= step;
         Math::Vector<float> position = begin + dir * trainObj->GetPosition();
         mesh->Translate({position[0], position[1], -15.0f + 0.1});
+        mesh->SetRotation(rotation);
         i++;
-
     }
 }
 

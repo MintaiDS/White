@@ -39,6 +39,9 @@ public:
     Vector<T> GetRotation() const;
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
+    void SetRotation(const Vector<float>& rotation);
+    void SetScaling(const Vector<float>& scaling);
+    void SetTranslation(const Vector<float>& translation);
 
     virtual void Scale(const Vector<float>& scaling);
     virtual void Rotate(const Vector<float>& rotation);
