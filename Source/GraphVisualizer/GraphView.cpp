@@ -281,7 +281,7 @@ void GraphView::DisplayTrain(Train* trainObj) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
     renderer->AddMesh(trainMesh);
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
-    ip.Query<IScalable>(trainMesh)->Scale<float>({21.0f, 14.0f, 10.0f});
+    ip.Query<IScalable>(trainMesh)->Scale<float>({21.0f, 14.0f, 14.0f});
     ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], -15.0f + 0.1}); 
 }
 
