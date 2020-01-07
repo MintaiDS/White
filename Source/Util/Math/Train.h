@@ -69,6 +69,8 @@ namespace White {
         int GetDirection() { return direction; }
         bool IsMoved() { return moved; }
         std::pair<int, int> GetMove() { return move; }
+        int GetDecCooldown();
+        int GetCooldown() { return cooldown; }
 
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
@@ -82,6 +84,8 @@ namespace White {
         void SetMoved(bool val) { moved = val; }
         void SetDirection(int val) { direction = val; }
         void SetMove(std::pair<int, int> val) { move = val; }
+        
+        void ResetCooldown();
 
       private:
         int idx;
@@ -95,6 +99,7 @@ namespace White {
         int direction;
         bool moved;
         std::pair<int, int> move;
+        int cooldown = 0;
       };
     }
   }

@@ -23,9 +23,7 @@ namespace White {
         void TryMakeMove(Train* t);
         bool MakeEvasionMove(Train* t, int point_idx, int locked_edge_from, int locked_edge_to);
         Train* CheckForCollision(Train* t, int edge_idx, int position);
-        Train* CheckLine(int edge_idx);
-        void BlockLine(int edge_idx, Train* t);
-        void UnblockLine(int edge_idx, Train* t);
+
 
         std::shared_ptr<Graph> GetGraph() { return graph; }
       private:
@@ -35,7 +33,6 @@ namespace White {
         std::vector<Train*> trains;
         Connection& conn;
         std::string player_idx;
-        std::map<int, Train*> blocked_lines;
         int armor_buffer = 10;
 
         void GetMyTrains();

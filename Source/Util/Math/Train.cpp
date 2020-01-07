@@ -84,8 +84,7 @@ namespace White {
       void Train::Task::DropTask() 
       { 
         task = NO_TASK;
-        if (destination->GetPostType() != PostType::CITY)
-          destination->SetVacant(true);
+        destination->SetVacant(true);
       }
 
       bool Train::Task::PathIdxValid(int line_idx)
@@ -113,6 +112,34 @@ namespace White {
       {
         return (path_idx == 1 && path[path_idx].second ? position == path[path_idx].first->GetLength() : position == 0);
       }
-    }
+      int Train::GetDecCooldown()
+      {
+        if (cooldown > 0)
+          return cooldown--;
+        return 0;
+
+      }
+      void Train::ResetCooldown()
+      {
+        switch (level)
+        {
+        case 1:
+        {
+          cooldown = 2;
+          break;
+        }
+        case 2:
+        {
+          cooldown = 1;
+          break;
+        }
+        case 3:
+        {
+          cooldown = 0;
+          break;
+        }
+        }
+      }
+}
   }
 }

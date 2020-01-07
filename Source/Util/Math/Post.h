@@ -83,10 +83,13 @@ namespace White {
         }
 
         std::string& GetPlayerIdx() { return player_idx; }
+        int GetPopulation() { return population; }
 
         void SetPlayerIdx(std::string& player_idx) { this->player_idx = player_idx; }
+        void SetPopulation(int val) { population = val; }
       private:
         std::string player_idx;
+        int population;
       };
     }
   }
