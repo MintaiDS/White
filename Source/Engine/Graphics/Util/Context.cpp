@@ -135,7 +135,6 @@ void Context::Loop(Core& core) {
         } 
         core.renderer.Render();
         SwapBuffers(GetDC(hWnd));
-        //Sleep(100);
     }  
 }
 

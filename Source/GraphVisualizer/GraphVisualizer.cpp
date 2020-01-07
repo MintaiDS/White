@@ -130,7 +130,7 @@ void GraphVisualizer::Play() {
         graphView.Init();
         graphView.Display();
         camera.Rotate({0.0f, 180.0f, 0.0f});
-        camera.Translate({0.0f, 1.0f, -6.0f});
+        camera.Translate({0.0f, 40.0f, -6.0f});
         ObjectManager& om = ObjectManager::GetInstance();
         dir = {0.0f, 0.0f, 1.0f};
         prev = {0.0f, 0.0f};

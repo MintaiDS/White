@@ -57,7 +57,7 @@ void GraphView::Display() {
     format.numShaders = 0;
     format.isTextured = false;
     format.isIndexed = false;
-   InterfaceProvider ip;
+    InterfaceProvider ip;
     auto model = ip.Query<Model>(mainModel);
     model->SetFormat(format);
     model->SetMesh(mainMesh);
@@ -163,8 +163,8 @@ void GraphView::DisplayPost(int node) {
     }
     mesh = loader.mesh;
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
-    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 7, grid->cellSize[1] * 7, 3.0f});
-    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
+    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 20, grid->cellSize[1] * 20, 20.0f});
+    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], -50.0f}); 
     ip.Query<IRotatable>(postMesh)->Rotate<float>({-90.0f, 0.0f, 0.0f});
     model.SetMesh(postMesh);
     unsigned modelId = om.Create<Model>(model);
@@ -281,8 +281,8 @@ void GraphView::DisplayTrain(Train* trainObj) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
     renderer->AddMesh(trainMesh);
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
-    ip.Query<IScalable>(trainMesh)->Scale<float>({6.0f, 4.0f, 1.0f});
-    ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
+    ip.Query<IScalable>(trainMesh)->Scale<float>({21.0f, 14.0f, 10.0f});
+    ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], -50.0f + 0.1}); 
 }
 
 void GraphView::UpdateTrains() {
@@ -306,7 +306,7 @@ void GraphView::UpdateTrains() {
         dir *= (1.0f / len);
         dir *= step;
         Math::Vector<float> position = begin + dir * trainObj->GetPosition();
-        mesh->Translate({position[0], position[1], 0.7f + 0.1});
+        mesh->Translate({position[0], position[1], -50.0f + 0.1});
         i++;
 
     }
