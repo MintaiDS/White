@@ -409,6 +409,11 @@ namespace White {
             g_type = Train::Goods::FOOD;
           else if (type == "3")
             g_type = Train::Goods::ARMOR;
+          if (idx > g->GetTrains().size())
+          {
+            Train* t = new Train(idx, line_idx, position, player_idx);
+            g->AppendTrain(t);
+          }
           Train* t = g->GetTrainByIdx(idx);
           t->SetLineIdx(line_idx);
           t->SetPosition(position);

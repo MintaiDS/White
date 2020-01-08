@@ -36,6 +36,7 @@ namespace White {
         int armor_buffer = 10;
 
         void GetMyTrains();
+        bool IsCityCollision(Train* t, Train* tr, std::pair<int, int> step);
         std::pair<Train::Task::TaskType, int> ChooseTask(Train* t, int point_id);
         std::string GetPlayerIdxFromJson(char* data);
         void FindMyCity();
