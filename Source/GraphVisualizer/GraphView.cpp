@@ -57,7 +57,7 @@ void GraphView::Display() {
     format.numShaders = 0;
     format.isTextured = false;
     format.isIndexed = false;
-   InterfaceProvider ip;
+    InterfaceProvider ip;
     auto model = ip.Query<Model>(mainModel);
     model->SetFormat(format);
     model->SetMesh(mainMesh);
@@ -163,8 +163,8 @@ void GraphView::DisplayPost(int node) {
     }
     mesh = loader.mesh;
     unsigned postMesh = om.Create<Mesh<float>>(mesh);
-    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 7, grid->cellSize[1] * 7, 3.0f});
-    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], 0.7f}); 
+    ip.Query<IScalable>(postMesh)->Scale<float>({grid->cellSize[0] * 55, grid->cellSize[1] * 55, 30.0f});
+    ip.Query<ITranslatable>(postMesh)->Translate<float>({pos[0], pos[1], -15.0f}); 
     ip.Query<IRotatable>(postMesh)->Rotate<float>({-90.0f, 0.0f, 0.0f});
     model.SetMesh(postMesh);
     unsigned modelId = om.Create<Model>(model);
@@ -191,7 +191,7 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
 
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
-    Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
+    Math::Vector<float> color = {0.28f, 0.28f, 0.28f, 1.0f};
     Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
     Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
     Math::Vector<float> dir = end - begin;
@@ -281,8 +281,8 @@ void GraphView::DisplayTrain(Train* trainObj) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(trainMesh);
     renderer->AddMesh(trainMesh);
     ip.Query<IRotatable>(trainMesh)->Rotate<float>(rotation);
-    ip.Query<IScalable>(trainMesh)->Scale<float>({6.0f, 4.0f, 1.0f});
-    ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], 0.7f + 0.1}); 
+    ip.Query<IScalable>(trainMesh)->Scale<float>({45.0f, 30.0f, 25.0f});
+    ip.Query<ITranslatable>(trainMesh)->Translate<float>({position[0], position[1], -15.0f + 0.1}); 
 }
 
 void GraphView::UpdateTrains() {
@@ -291,7 +291,6 @@ void GraphView::UpdateTrains() {
     int i = 0;
     for (auto& p : graph->GetTrains()) {
         Train* trainObj = p.second;
-
         auto mesh = ip.Query<Mesh<float>>(trains[i]);
         Math::Vector<float> translation = mesh->GetTranslation();
         mesh->Translate(translation * -1);
@@ -303,12 +302,18 @@ void GraphView::UpdateTrains() {
         Math::Vector<float> dir = end - begin; 
         float len = dir.Length();
         float step = len / edgePtr->GetLength();
+        Math::Vector<float> initial = {dir.Length(), 0};
+        float dot = initial.Dot(dir);
+        Math::Vector<float> diff = initial - dir;
+        float phi = Math::ToDegrees(atan2(initial[0] * dir[1] - dir[0] * initial[1],
+                                          initial[0] * dir[0] + initial[1] * dir[1]));
+        Math::Vector<float> rotation = {0.0f, 0.0f, phi};  
         dir *= (1.0f / len);
         dir *= step;
         Math::Vector<float> position = begin + dir * trainObj->GetPosition();
-        mesh->Translate({position[0], position[1], 0.7f + 0.1});
+        mesh->Translate({position[0], position[1], -15.0f + 0.1});
+        mesh->SetRotation(rotation);
         i++;
-
     }
 }
 

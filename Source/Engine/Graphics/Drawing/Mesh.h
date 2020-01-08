@@ -39,6 +39,9 @@ public:
     Vector<T> GetRotation() const;
     Vector<T> GetScaling() const;
     Vector<T> GetTranslation() const;
+    void SetRotation(const Vector<float>& rotation);
+    void SetScaling(const Vector<float>& scaling);
+    void SetTranslation(const Vector<float>& translation);
 
     virtual void Scale(const Vector<float>& scaling);
     virtual void Rotate(const Vector<float>& rotation);
@@ -145,15 +148,6 @@ void Mesh<T, U>::ToggleTransform() {
     isTransformed = !isTransformed;    
 }
 
-//template<typename T, typename U = unsigned>
-//Mesh<T, U> Mesh<T, U>::CreateFromShape(
-//                        const Segment<T>& segment, const Vector<T>& color) {
-//    std::vector<VertexData<T>> vertices;    
-//    Mesh<T, U> ret(vertices);
-//
-//    return ret;
-//}
-
 template<typename T, typename U = unsigned>
 std::size_t Mesh<T, U>::GetSize() const {
     return vertices.size() * vertices[0].GetSize();
@@ -177,19 +171,16 @@ Matrix<T> Mesh<T, U>::GetRotationMatrix() const {
 
 template<typename T, typename U = unsigned>
 Matrix<T> Mesh<T, U>::GetScalingMatrix() const {
-    //UpdateTransformationMatrix();
     return Matrix::Scaling(scaling);
 }
 
 template<typename T, typename U = unsigned>
 Matrix<T> Mesh<T, U>::GetTranslationMatrix() const {
-    //UpdateTransformationMatrix();
     return Matrix::Translation(translation);
 }
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetRotation() const {
-    //UpdateTransformationMatrix();
     Vector<T> ret(rotation);
 
     return ret;
@@ -197,7 +188,6 @@ Vector<T> Mesh<T, U>::GetRotation() const {
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetScaling() const {
-    //UpdateTransformationMatrix();
     Vector<T> ret(scaling);
 
     return ret;
@@ -205,17 +195,36 @@ Vector<T> Mesh<T, U>::GetScaling() const {
 
 template<typename T, typename U = unsigned>
 Vector<T> Mesh<T, U>::GetTranslation() const {
-    //UpdateTransformationMatrix();
     Vector<T> ret(translation);
 
     return ret;
 }
 
 template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetRotation(const Vector<float>& rotation) {
+    this->rotation = rotation;
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetScaling(const Vector<float>& scaling) {
+    this->scaling = scaling; 
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
+void Mesh<T, U>::SetTranslation(const Vector<float>& translation) {
+    this->translation = translation;
+    isTransformed = true;
+    UpdateTransformationMatrix(transformation.parental);
+}
+
+template<typename T, typename U = unsigned>
 void Mesh<T, U>::Scale(const Vector<float>& scaling) {
     this->scaling = scaling; 
     isTransformed = true;
-    //UpdateTransformationMatrix();
     UpdateTransformationMatrix(transformation.parental);
 }
 
@@ -223,7 +232,6 @@ template<typename T, typename U = unsigned>
 void Mesh<T, U>::Rotate(const Vector<float>& rotation) {
     this->rotation += rotation;
     isTransformed = true;
-    //UpdateTransformationMatrix();
     UpdateTransformationMatrix(transformation.parental);
 }
 
@@ -231,7 +239,6 @@ template<typename T, typename U = unsigned>
 void Mesh<T, U>::Translate(const Vector<float>& translation) {
     this->translation += translation;
     isTransformed = true;
-    //UpdateTransformationMatrix();
     UpdateTransformationMatrix(transformation.parental);
 }
 
@@ -243,14 +250,12 @@ void Mesh<T, U>::Transform(const Vector<float>& scaling,
     Rotate(rotation);
     Translate(translation);
     isTransformed = true;
-    //UpdateTransformationMatrix();
     UpdateTransformationMatrix(transformation.parental);
 }
 
 template<typename T, typename U = unsigned>
 Matrix<float>& Mesh<T, U>::GetTransformationMatrix() {
-    //UpdateTransformationMatrix();
-    return transformation.that;//transformationMatrix;
+    return transformation.that;
 }
 
 template<typename T, typename U = unsigned>
@@ -276,23 +281,6 @@ void Mesh<T, U>::UpdateTransformationMatrix() {
 
 template<typename T, typename U = unsigned>
 void Mesh<T, U>::UpdateTransformationMatrix(Matrix<float> parental) {
-    //Matrix<float> scalingMatrix = Matrix<float>::Scaling(scaling);
-    //Matrix<float> rotationMatrix = Matrix<float>::Rotation(rotation); 
-    //Matrix<float> translationMatrix = Matrix<float>::Translation(translation);
-    //scalingMatrix 
-    //    = {{scalingMatrix[0][0], scalingMatrix[0][1], scalingMatrix[0][2], 0},
-    //       {scalingMatrix[1][0], scalingMatrix[1][1], scalingMatrix[1][2], 0}, 
-    //       {scalingMatrix[2][0], scalingMatrix[2][1], scalingMatrix[2][2], 0},
-    //       {0, 0, 0, 1.0f}};
-    //rotationMatrix 
-    //    = {{rotationMatrix[0][0], 
-    //        rotationMatrix[0][1], rotationMatrix[0][2], 0},
-    //       {rotationMatrix[1][0], 
-    //        rotationMatrix[1][1], rotationMatrix[1][2], 0}, 
-    //       {rotationMatrix[2][0], 
-    //        rotationMatrix[2][1], rotationMatrix[2][2], 0},
-    //       {0, 0, 0, 1.0f}};
-    //transformationMatrix = translationMatrix * rotationMatrix * scalingMatrix;
     UpdateTransformationMatrix();
     transformation.parental = parental;
     transformation.that = parental * transformationMatrix;
