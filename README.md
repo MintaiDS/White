@@ -35,7 +35,7 @@ cmake --build Build
 ### Running application
 - Pass username as a command line argument to the run script.
 ```batch
- run <username>
+ run <username> [game_name [num_players]]
 ```
 ### Keyboard controls
 - WASD - moving in four directions.
@@ -43,6 +43,6 @@ cmake --build Build
 - Control - move down.
 - Hold left button and mouse move - rotate camera.
 ### Development status
-Train displaying and movement completed. Simple resource consumption
+Trains displaying and movement completed. Multiple resource consumption, multiple trains
 strategy implemented. Server messages processing is separated from rendering thread.
 ![progress](Docs/progress.gif)

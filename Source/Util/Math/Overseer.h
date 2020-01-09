@@ -14,7 +14,7 @@ namespace White {
       class Overseer {
       public:
         Overseer();
-        void Init(std::string playerName, std::string game);
+        void Init(std::string playerName, std::string game, std::string num_players);
         void Turn();
         void CheckStatus();
         void TryUpgrade();

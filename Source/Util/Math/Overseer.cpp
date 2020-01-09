@@ -19,18 +19,20 @@ namespace White {
         l.Init("run.log");
       }
 
-      void Overseer::Init(std::string playerName, std::string game)
+      void Overseer::Init(std::string playerName, std::string game, std::string num_players)
       {
         Logger& l = Logger::GetInstance();
-        l << playerName << std::string(" ") << game;
         std::string data;
-        if (game == playerName)
-          data = "{\"name\":\"" + playerName + "\"}";
-        else
+        data = "{\"name\":\"" + playerName + "\"";
+        if (game != playerName)
+          data += ",\"game\":\"" + game + "\"";
+        if (num_players != playerName)
         {
           l << std::string("Multiplayer!\n");
-          data = "{\"name\":\"" + playerName + "\",\"game\":\"" + game + "\",\"num_players\":2}";
+          data += ",\"num_players\":" + num_players;
         }
+        data += "}";
+        l << data << std::string("\n");
         ActionMessage msg = conn.FormActionMessage(Action::LOGIN, data);
         ResponseMessage resp;
         conn.Request(msg, resp);
