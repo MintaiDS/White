@@ -71,6 +71,7 @@ namespace White {
       void Overseer::Turn()
       {
         Logger& l = Logger::GetInstance();
+        l << std::string("New Turn!\n");
         ActionMessage msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         ResponseMessage resp;
         conn.Request(msg, resp);
@@ -86,6 +87,8 @@ namespace White {
         l << my_city->GetCurProduct();
         l << std::string("Armor: ");
         l << my_city->GetCurArmor();
+        l << std::string("Population: ");
+        l << my_city->GetPopulation();
         CheckStatus();
         TryUpgrade();
         AssignTasks();
@@ -176,7 +179,7 @@ namespace White {
         {
           if (t->GetCooldown() == 0)
           {
-            if ((t->GetTask() != Train::Task::NO_TASK) && (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition())))
+            /*if ((t->GetTask() != Train::Task::NO_TASK) && (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition())))
             {
               graph->UnblockLine(t->GetLineIdx(), t);
               if (t->GetTask() == Train::Task::COME_HOME)
@@ -192,12 +195,14 @@ namespace White {
                   auto path = graph->GetPath(point_idx, my_city->GetPointIdx());
                   t->task.DropTask();
                   t->task.SetTask(Train::Task::COME_HOME, path, my_city, point_idx);
+                  l << std::to_string(t->GetIdx()) << std::string(" ") << std::to_string((int)(Train::Task::COME_HOME)) << std::string("\n");
                   l << t->GetGoods();
                 }
                 else
                 {
                   auto path = graph->GetPath(point_idx, task.second);
                   t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), point_idx);
+                  l << std::to_string(t->GetIdx()) << std::string(" ") << std::to_string((int)(task.first)) << std::string("\n");
                 }
               }
             }
@@ -208,6 +213,43 @@ namespace White {
               {
                 auto path = graph->GetPath(my_city->GetPointIdx(), task.second);
                 t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), my_city->GetPointIdx());
+                l << std::to_string(t->GetIdx()) << std::string(" ") << std::to_string((int)(task.first)) << std::string("\n");
+              }
+            }*/
+            if ((t->GetTask() != Train::Task::NO_TASK) && (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition())))
+            {
+              graph->UnblockLine(t->GetLineIdx(), t);
+              t->task.DropTask();
+              int point_idx = t->task.GetDestination()->GetPointIdx();
+              if (point_idx == my_city->GetPointIdx())
+              {
+                t->SetGoods(0);
+                t->SetGoodsType(Train::NONE);
+              }
+              auto task = ChooseTask(t, point_idx);
+              if (task.first == Train::Task::NO_TASK)
+              {
+                auto path = graph->GetPath(point_idx, my_city->GetPointIdx());
+                t->task.SetTask(Train::Task::COME_HOME, path, my_city, point_idx);
+                l << t->GetGoods();
+              }
+              else
+              {
+                auto path = graph->GetPath(point_idx, task.second);
+                t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), point_idx);
+                l << std::to_string(t->GetIdx()) << std::string(" ") << std::to_string((int)(task.first)) << std::string("\n");
+              }
+            }
+            if (t->GetTask() == Train::Task::NO_TASK)
+            {
+              int point_idx = graph->GetPointIdxByPosition(t->GetLineIdx(), t->GetPosition());
+              assert(point_idx != -1);
+              auto task = ChooseTask(t, point_idx);
+              if (task.first != Train::Task::NO_TASK)
+              {
+                auto path = graph->GetPath(my_city->GetPointIdx(), task.second);
+                t->task.SetTask(task.first, path, graph->GetVByIdx(task.second)->GetPost(), my_city->GetPointIdx());
+                l << std::to_string(t->GetIdx()) << std::string(" ") << std::to_string((int)(task.first)) << std::string("\n");
               }
             }
           }
@@ -235,6 +277,14 @@ namespace White {
         }
       }
 
+      bool Overseer::IsCityCollision(Train* t, Train* tr, std::pair<int, int> step)
+      {
+        Vertex* v = graph->GetVByIdx(graph->GetPointIdxByPosition(t->GetLineIdx(), t->GetPosition()));
+        Post* p = v->GetPost();
+        //quite messy check
+        return (p != NULL && p->GetPostType() == CITY && step.second != tr->GetDirection() && step.first == tr->GetMove().first);
+      }
+
       void Overseer::TryMakeMove(Train * t)
       {
         Logger& l = Logger::GetInstance();
@@ -260,15 +310,22 @@ namespace White {
                 TryMakeMove(tr_coll);
                 if (tr_pos != tr_coll->GetPosition())
                 {
-                  //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
-                  graph->UnblockLine(t->GetLineIdx(), t);
-                  graph->BlockLine(step.first, t);
-                  
-                  t->SetMove(step);
-                  t->SetDirection(step.second);
-                  t->SetPosition(new_pos);
-                  t->SetLineIdx(step.first);
+                  if (IsCityCollision(t, tr_coll, step))
+                  {
+                    t->SetMove({ t->GetLineIdx(), 0 });
+                    t->SetDirection(0);
+                  }
+                  else
+                  {
+                    //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+                    graph->UnblockLine(t->GetLineIdx(), t);
+                    graph->BlockLine(step.first, t);
 
+                    t->SetMove(step);
+                    t->SetDirection(step.second);
+                    t->SetPosition(new_pos);
+                    t->SetLineIdx(step.first);
+                  }
                 }
                 else
                 {
@@ -313,7 +370,6 @@ namespace White {
             }
             else
             {
-              //l << std::string("Made move\n");
               Train* tr_block = graph->CheckLine(step.first);
               if (tr_block == NULL || tr_block->GetDirection() == step.second)
               {
@@ -337,11 +393,9 @@ namespace White {
           }
           else
           {
-            //l << std::string("Here?\n");
             Train* tr_coll = CheckForCollision(t, t->GetLineIdx(), t->GetPosition() + step.second);
             if (tr_coll != NULL)
             {
-              //l << std::string("Collision?\n");
               int tr_pos = tr_coll->GetPosition();
               if (!tr_coll->IsMoved())
               {
@@ -463,16 +517,40 @@ namespace White {
       {
         Logger& l = Logger::GetInstance();
         Edge* edge = graph->GetEdgeByIdx(edge_idx);
+        bool is_city = false;
         int pnt_idx = edge->GetPointIdxFromPosition(position);
-
+        if (pnt_idx != -1)
+        {
+          Vertex* v = graph->GetVByIdx(pnt_idx);
+          Post* p = v->GetPost();
+          if (p != NULL && p->GetPostType() == CITY)
+            is_city = true;
+        }
         for (auto tr : trains)
         {
           if (tr != t)
           {
             Edge* tr_edge = graph->GetEdgeByIdx(tr->GetLineIdx());
             int tr_pnt_idx = tr_edge->GetPointIdxFromPosition(tr->GetPosition());
-            if ((edge == tr_edge && position == tr->GetPosition()) || (pnt_idx != -1 && pnt_idx != my_city->GetIdx() && pnt_idx == tr_pnt_idx))
-              return tr;
+            if (edge == tr_edge && position == tr->GetPosition() || (tr_pnt_idx != -1 && tr_pnt_idx == pnt_idx))
+            {
+              if (is_city)
+              {
+                if (!tr->IsMoved())
+                {
+                  auto step = tr->task.ContinueMovement(graph->GetEdgeByIdx(tr->GetLineIdx()), tr->GetPosition());
+                  t->SetMove({ edge_idx, position - t->GetPosition() });
+                  if (IsCityCollision(tr, t, step))
+                  {
+                    tr->SetMoved(true);
+                    tr->SetMove({ tr->GetLineIdx(), 0 });
+                    tr->SetDirection(0);
+                  }
+                }
+              }
+              else
+                return tr;
+            }
           }
         }
         return NULL;
