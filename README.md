@@ -45,4 +45,4 @@ cmake --build Build
 ### Development status
 Trains displaying and movement completed. Multiple resource consumption, multiple trains
 strategy implemented. Server messages processing is separated from rendering thread.
-![progress](Docs/progress.gif)
+<!--- ![progress](Docs/progress.gif) --->
