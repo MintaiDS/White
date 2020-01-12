@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <math.h>
 
+#include <time.h>
+
 #include "json.hpp"
 
 namespace White {
@@ -19,17 +21,28 @@ namespace White {
         l.Init("run.log");
       }
 
-      void Overseer::Init(std::string playerName, std::string game, std::string num_players)
+      void Overseer::Init(std::string playerName, std::string game, std::string num_players, std::string num_turns)
       {
         Logger& l = Logger::GetInstance();
         std::string data;
         data = "{\"name\":\"" + playerName + "\"";
         if (game != playerName)
+        {
+          game_name = game;
           data += ",\"game\":\"" + game + "\"";
+        }
+        else
+        {
+          game_name = "Game of " + game;
+        }
         if (num_players != playerName)
         {
           l << std::string("Multiplayer!\n");
           data += ",\"num_players\":" + num_players;
+        }
+        if (num_turns != playerName)
+        {
+          data += ",\"num_turns\":" + num_turns;
         }
         data += "}";
         l << data << std::string("\n");
@@ -38,7 +51,7 @@ namespace White {
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
-          player_idx = GetPlayerIdxFromJson(resp.data);
+          ParseLogin(resp.data);
           delete[](resp.data);
         }
         else
@@ -59,7 +72,7 @@ namespace White {
         if (resp.result == Result::OKEY)
         {
           ParseInfrastructureFromJSON(graph, resp.data);
-          l << std::string(resp.data);
+          l << std::string(resp.data) << std::string("\n");
           delete[](resp.data);
 
         }
@@ -70,12 +83,35 @@ namespace White {
         graph->InitWorldPaths(my_city->GetPointIdx());
       }
 
-      void Overseer::Turn()
+      bool Overseer::Turn()
       {
         Logger& l = Logger::GetInstance();
-        l << std::string("New Turn!\n");
-        ActionMessage msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
+        l << std::string("Turn ") <<std::to_string(++(graph->turn_counter)) << std::string("\n");
+        GameState game_state = FINISHED;
+        ActionMessage msg = conn.FormActionMessage(Action::GAMES, "");
         ResponseMessage resp;
+        conn.Request(msg, resp);
+        if (resp.result == Result::OKEY)
+        {
+          //l << std::string(resp.data) << std::string("\n");
+          game_state = ParseGameState(resp.data);
+        }
+        delete[](resp.data);
+        while (game_state == INIT)
+        {
+          Sleep(sleep_time);
+          conn.Request(msg, resp);
+          if (resp.result == Result::OKEY)
+            game_state = ParseGameState(resp.data);
+          else
+            game_state = FINISHED;
+        }
+        if (game_state == FINISHED)
+          return 0;
+        assert(game_state == RUN);
+        //clock_t start_time = clock();
+        
+        msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
@@ -85,24 +121,60 @@ namespace White {
         else
           assert(0 && "MAP1 update");
         delete[](msg.data);
+        
+        //clock_t end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        
         l << std::string("Food: ");
         l << my_city->GetCurProduct();
         l << std::string("Armor: ");
         l << my_city->GetCurArmor();
         l << std::string("Population: ");
         l << my_city->GetPopulation();
+
+        //start_time = clock();
+
         CheckStatus();
+
+        //end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        //start_time = clock();
+
         TryUpgrade();
+
+       // end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        //start_time = clock();
+
         AssignTasks();
+
+        //end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        //start_time = clock();
+
         MakeMoves();
+
+        //end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        //start_time = clock();
+
         msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
         conn.Request(msg, resp);
         while (resp.result != Result::OKEY)
         {
-          Sleep(500);
+          Sleep(sleep_time);
           conn.Request(msg, resp);
         }
+
+        //end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
         l << std::string("End Turn!\n");
+        return 1;
       }
 
       void Overseer::CheckStatus()
@@ -263,13 +335,29 @@ namespace White {
         Logger& l = Logger::GetInstance();
         for (auto t : trains)
         {
+
+          
+
           if (t->GetDecCooldown() == 0)
           {
+
+            //clock_t start_time = clock();
+
             if (!t->IsMoved())
               TryMakeMove(t);
+
+            //clock_t end_time = clock();
+            //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
             auto move = t->GetMove();
+
+            //start_time = clock();
+
             l << std::string("Move:") << std::to_string(move.first) << std::string(" ") << std::to_string(move.second) << std::string("\n");
             conn.SendMoveMessage(move.first, move.second, t->GetIdx());
+
+            //end_time = clock();
+            //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
           }
           else
           {
@@ -558,6 +646,13 @@ namespace White {
         return NULL;
       }
 
+      void Overseer::Logout()
+      {
+        ActionMessage msg = conn.FormActionMessage(Action::LOGOUT, "");
+        ResponseMessage resp;
+        conn.Request(msg, resp);
+      }
+
       void Overseer::GetMyTrains()
       {
         for (auto& p : graph->GetTrains())
@@ -643,10 +738,10 @@ namespace White {
       }
 
 
-      std::string Overseer::GetPlayerIdxFromJson(char* data)
+      void Overseer::ParseLogin(char* data)
       {
         json json_parsed = json::parse(data);
-        return json_parsed["idx"];
+        player_idx = json_parsed["idx"].get<std::string>();
       }
       void Overseer::FindMyCity()
       {
@@ -659,6 +754,20 @@ namespace White {
             return;
           }
         }
+      }
+      Overseer::GameState Overseer::ParseGameState(char * data)
+      {
+        json json_parsed = json::parse(data);
+        json games = json_parsed.at("games");
+        for (int i = 0; i < games.size(); ++i)
+        {
+          std::string name = games[i].at("name");
+          if (name == game_name)
+          {
+            return games[i].at("state");
+          }
+        }
+        return FINISHED;
       }
     }
   }

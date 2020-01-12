@@ -186,6 +186,8 @@ namespace White {
         ActionMessage msg = FormActionMessage(Action::MOVE, data);
         ResponseMessage resp;
         Request(msg, resp);
+        if (resp.result != OKEY)
+          l << resp.data << std::string("\n");
         //if (edge_idx == 149)
           //l << std::to_string((int)resp.result);
       }

@@ -378,6 +378,7 @@ namespace White {
           }
           }
         }
+        l << std::string("trains: ") << std::to_string(trains_j.size()) << std::string("\n");
         for (int i = 0; i < trains_j.size(); ++i)
         {
           json train_j = trains_j[i];
@@ -386,6 +387,7 @@ namespace White {
           json j_event = train_j.at("events");
           if (player_idx == g->GetPlayerIdx() && j_event.size() != 0)
           {
+            g->turn_counter = j_event[0]["tick"];
             l << train_j.dump() << "\n";
             g->CollisionCleanup(g->GetTrainByIdx(idx));
           }

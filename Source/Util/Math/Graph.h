@@ -121,6 +121,8 @@ namespace White {
         void UnblockLine(int edge_idx, Train* t);
         void CollisionCleanup(Train* t);
 
+        int turn_counter = 0;
+
       private:
         int idx;
         std::string name;

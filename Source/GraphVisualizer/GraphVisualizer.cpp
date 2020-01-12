@@ -17,6 +17,8 @@
 #include "Camera.h"
 #include "BMPLoader.h"
 
+#include <time.h>
+
 #include <atlbase.h>
 #include <atlconv.h>
 
@@ -39,19 +41,24 @@ GraphVisualizer::GraphVisualizer(Renderer& renderer) : Game(renderer) {
 }
 
 DWORD GraphVisualizer::Listener() {
-    while (true) {
+  Logger &l = Logger::GetInstance();
+  while (true) {
         std::chrono::milliseconds curTime 
             = std::chrono::duration_cast<std::chrono::milliseconds>
               (std::chrono::system_clock::now().time_since_epoch());
         std::chrono::milliseconds time = curTime - prevTime;
-        overseer->Turn();
+       // clock_t start_time = clock();
+        if (!overseer->Turn())
+          break;
+        //clock_t end_time = clock();
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         if (time > std::chrono::milliseconds(1)) {
             prevTime = curTime;
             graphView.UpdateTrains();
         }
     }
-
-    return 0;
+  overseer->Logout();
+  return 0;
 }
 
 void GraphVisualizer::LoadGraph(std::string name) {
@@ -105,24 +112,29 @@ void GraphVisualizer::Play() {
         std::wstring playerName = args[1];
         std::wstring gameID = args[1];
         std::wstring num_players = args[1];
+        std::wstring num_turns = args[1];
         if (args.size() > 2)
           gameID = args[2];
         if (args.size() > 3)
           num_players = args[3];
+        if (args.size() > 4)
+          num_turns = args[4];
         //CW2A cw2a(graphPath.c_str());
         CW2A cw2a(playerName.c_str());
         CW2A cw2a_1(gameID.c_str());
         CW2A cw2a_2(num_players.c_str());
+        CW2A cw2a_3(num_turns.c_str());
         // std::string path = cw2a;
         std::string name = cw2a;
         std::string game = cw2a_1;
         std::string players = cw2a_2;
+        std::string turns = cw2a_3;
         //LoadGraph(path); 
         overseer = std::make_shared<Overseer>();
         Logger& l = Logger::GetInstance();
         l << args.size();
         //logger << 2.1;
-        overseer->Init(name, game, players);
+        overseer->Init(name, game, players, turns);
         graph = overseer->GetGraph();
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
