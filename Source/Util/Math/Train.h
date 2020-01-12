@@ -71,7 +71,7 @@ namespace White {
         std::pair<int, int> GetMove() { return move; }
         int GetDecCooldown();
         int GetCooldown() { return cooldown; }
-
+        
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
         void SetLineIdx(int line_idx) { this->line_idx = line_idx; }

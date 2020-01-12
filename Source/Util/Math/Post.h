@@ -76,6 +76,7 @@ namespace White {
       class City : public Post {
       public:
         static const int level_cost[2];
+
         City() { SetPostType(CITY); }
         City(int idx, int point_idx, std::string& player_idx) : Post(idx, point_idx), player_idx(player_idx)
         {

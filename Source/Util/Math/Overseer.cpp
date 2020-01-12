@@ -85,6 +85,7 @@ namespace White {
 
       bool Overseer::Turn()
       {
+
         Logger& l = Logger::GetInstance();
         l << std::string("Turn ") <<std::to_string(++(graph->turn_counter)) << std::string("\n");
         GameState game_state = FINISHED;
@@ -736,7 +737,6 @@ namespace White {
         }
         return std::make_pair(Train::Task::NO_TASK, -1);
       }
-
 
       void Overseer::ParseLogin(char* data)
       {

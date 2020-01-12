@@ -39,7 +39,6 @@ namespace White {
         int distance;
       };
 
-
       class Vertex {
 
       public:
@@ -91,7 +90,6 @@ namespace White {
         void SetPlayerIdx(std::string val) { player_idx = val; }
 
         void SetSize(int x, int y);
-
         void InitWorldPaths(int my_city_idx);
         //void FillWorldPaths();
         void FillWorldPath(int idx);
@@ -107,6 +105,7 @@ namespace White {
 
         std::map<int, Train*>& GetTrains() { return trains; }
         std::map<int, Market*>& GetMarkets() { return markets; }
+
         std::map<int, Storage*>& GetStorages() { return storages; }
         std::map<int, City*>& GetCities() { return cities; }
         std::map<int, Edge*>& GetEdges() { return edges; }
