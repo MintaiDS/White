@@ -291,6 +291,8 @@ void GraphView::UpdateTrains() {
     int i = 0;
     for (auto& p : graph->GetTrains()) {
         Train* trainObj = p.second;
+        if (i >= trains.size())
+          DisplayTrain(trainObj);
         auto mesh = ip.Query<Mesh<float>>(trains[i]);
         Math::Vector<float> translation = mesh->GetTranslation();
         mesh->Translate(translation * -1);
