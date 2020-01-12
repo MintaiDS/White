@@ -35,7 +35,7 @@ cmake --build Build
 ### Running application
 - Pass username as a command line argument to the run script.
 ```batch
- run <username> [game_name [num_players]]
+ run <username> [game_name [num_players [num_turns]]]
 ```
 ### Keyboard controls
 - WASD - moving in four directions.
