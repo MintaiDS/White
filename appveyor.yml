@@ -3,5 +3,6 @@ branches:
         - master
         - dev_networking_release
         - dev_stable
+        - dev_unstable_task_5
 build_script:
     build
