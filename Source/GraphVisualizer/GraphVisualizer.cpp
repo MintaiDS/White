@@ -104,6 +104,11 @@ void GraphVisualizer::UpdateCamera() {
 
 void GraphVisualizer::Play() {
     if (!overseer) {
+      Logger& l = Logger::GetInstance();
+      l.Init("run.log");
+
+      clock_t start_time = clock();
+      
         //logger.Log(2);
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
@@ -130,11 +135,22 @@ void GraphVisualizer::Play() {
         std::string players = cw2a_2;
         std::string turns = cw2a_3;
         //LoadGraph(path); 
+
+        clock_t end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        start_time = clock();
+
         overseer = std::make_shared<Overseer>();
-        Logger& l = Logger::GetInstance();
         l << args.size();
         //logger << 2.1;
         overseer->Init(name, game, players, turns);
+
+        end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        start_time = clock();
+
         graph = overseer->GetGraph();
         int verticesCnt = graph->GetVerticesCnt();
         int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
@@ -163,6 +179,10 @@ void GraphVisualizer::Play() {
             renderer.AddModel(cubeModel);
         }
         renderer.UpdateVertexData();
+
+        end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        l << std::string("Game started!\n");
         overseerThread.Start(this, &GraphVisualizer::Listener);
     }
     InterfaceProvider ip;

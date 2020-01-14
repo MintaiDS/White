@@ -1,5 +1,6 @@
 #include "Algo.h"
 #include "Logger.h"
+#include "Vector.h"
 
 namespace White {
   namespace Util {
@@ -47,62 +48,77 @@ namespace White {
         return p;
       }
 
-      Pnt dist(Vertex * v1, Vertex * v2)
+      Math::Vector<float> dist(Vertex * v1, Vertex * v2)
       {
         //Logger& lg = Logger::GetInstance();
-        Pnt p1 = v1->GetCoord();
-        Pnt p2 = v2->GetCoord();
-        return { p2.x - p1.x, p2.y - p1.y };
+        auto p1 = v1->GetCoord();
+        auto p2 = v2->GetCoord();
+        return p2 - p1;
       }
 
-      void PlaceVertices(Graph & g)
+      void PlaceVertices(std::shared_ptr<Graph> g)
       {
-        //Logger& lg = Logger::GetInstance();
+        int num = 0;
+        Logger& lg = Logger::GetInstance();
         //lg.Init("run.log");
-        std::vector<Vertex*> vs = g.GetVertices();
+        std::vector<Vertex*> vs = g->GetVertices();
+        std::vector<Math::Vector<float>> shift(vs.size());
         int sz = vs.size();
         int step = sqrt(sz) + 1;
         for (int i = 0; i < sz; ++i)
         {
           vs[i]->SetCoord(100. + 10. * (i % step), 100. + 10. * (i / step));
+          shift[i] = { 0.0, 0.0 };
         }
         double xvel = 0.;
         double yvel = 0.;
         bool shifted = true;
         while (shifted)
         {
+          num++;
+          for (int i = 0; i < vs.size(); ++i)
+            vs[i]->ShiftCoord(shift[i]);
           shifted = false;
           for (int i = 0; i < vs.size(); ++i) {
             Vertex* v0 = vs[i];
+            xvel = 0.;
+            yvel = 0.;
             for (int j = 0; j < vs.size(); ++j)
             {
               Vertex* v1 = vs[j];
-              Pnt dst = dist(v0, v1);
-              double dx = dst.x;
-              double dy = dst.y;
-              double l = 2.0 * (dx * dx + dy * dy);
+              auto dst = dist(v1, v0);
+              double dx = dst[0];
+              double dy = dst[1];
+              double l = 4.0 * (dx * dx + dy * dy);
               if (l > 0) {
                 xvel += (dx * 150.0) / l;
                 yvel += (dy * 150.0) / l;
               }
             }
-            double weight = (g.GetEdgeCnt() + 1) * 10;
+            //printf("%d %f %f\n", i, xvel, yvel);
+            double weight = (v0->GetEdgeList().size() + 1) * 1;
             for (Edge* e : v0->GetEdgeList()) {
-              Pnt dst;
-              dst = dist(v0, g.GetVByIdx(e->GetOtherV(v0->GetIdx())));
-              xvel -= dst.x / weight;
-              yvel -= dst.y / weight;
+              auto dst = dist(g->GetVByIdx(e->GetOtherV(v0->GetIdx())), v0);
+              xvel -= dst[0] / weight;
+              yvel -= dst[1] / weight;
             }
-            if (fabs(xvel) < 0.1 && fabs(yvel) < 0.1)
+            if (fabs(xvel) < 0.01 && fabs(yvel) < 0.01)
               xvel = yvel = 0;
             else
             {
               shifted = true;
-              Pnt pnt{ xvel, yvel };
-              v0->ShiftCoord(pnt);
+              //Pnt pnt{ xvel, yvel };
+              //v0->ShiftCoord(pnt);
             }
+            shift[i][0] = xvel;
+            shift[i][1] = yvel;
           }
+          //for (int i = 0; i < shift.size(); ++i)
+            //printf("%d: %f %f\n", i, shift[i].x, shift[i].y);
+          //system("pause");
         }
+        lg << std::string("Placed in ") + std::to_string(num) + "\n";
+        //system("pause");
       }
     }
   }

@@ -13,8 +13,8 @@ namespace White {
 
       void Vertex::SetSize(int x, int y)
       {
-        coord.x = x;
-        coord.y = y;
+        coord[0] = x;
+        coord[1] = y;
       }
 
       void Graph::AppendEdge(Edge* e)

@@ -4,10 +4,12 @@
 #include <map>
 #include <string>
 #include <memory>
+#include "Vector.h"
 
 #include "Post.h"
 #include "Train.h"
 #include "Edge.h"
+
 
 namespace White {
   namespace Util {
@@ -42,8 +44,8 @@ namespace White {
       class Vertex {
 
       public:
-        Vertex() {}
-        Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx) {}
+        Vertex(): coord(2) {}
+        Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx), coord(2) {}
 
         int GetIdx() { return idx; }
         size_t GetId() { return id; }
@@ -56,16 +58,16 @@ namespace White {
         void AppendEdge(Edge* e) { edges.push_back(e); }
 
         std::vector<Edge*>& GetEdgeList() { return edges; }
-        Pnt GetCoord() { return coord; }
-        void SetCoord(double x, double y) { coord = { x, y }; }
-        void ShiftCoord(Pnt& p) { coord += p; }
+        Math::Vector<float> GetCoord() { return coord; }
+        void SetCoord(double x, double y) { coord[0] = x; coord[1] = y; }
+        void ShiftCoord(Math::Vector<float>& p) { coord += p; }
 
       private:
         size_t id;
         int idx;
         int post_idx;
         std::vector<Edge*> edges;
-        Pnt coord;
+        Math::Vector<float> coord;
         Post* post = NULL;
       };
 

@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <algorithm>
 #include <math.h>
+#include "Algo.h"
 
 #include <time.h>
 
@@ -18,7 +19,7 @@ namespace White {
       {
         graph = std::make_shared<Graph>();
         Logger& l = Logger::GetInstance();
-        l.Init("run.log");
+        //l.Init("run.log");
       }
 
       void Overseer::Init(std::string playerName, std::string game, std::string num_players, std::string num_turns)
@@ -72,12 +73,13 @@ namespace White {
         if (resp.result == Result::OKEY)
         {
           ParseInfrastructureFromJSON(graph, resp.data);
-          l << std::string(resp.data) << std::string("\n");
+          //l << std::string(resp.data) << std::string("\n");
           delete[](resp.data);
 
         }
         else
           assert(0 && "MAP1 parse");
+        PlaceVertices(graph);
         GetMyTrains();
         FindMyCity();
         graph->InitWorldPaths(my_city->GetPointIdx());
