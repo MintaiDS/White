@@ -46,9 +46,9 @@ void GraphView::Display() {
    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayPost(i);
     }
-    for (auto& p : graph->GetEdges()) {
-        DisplayEdge(p.second);
-    }
+    //for (auto& p : graph->GetEdges()) {
+    //    DisplayEdge(p.second);
+    //}
     for (auto& p : graph->GetTrains()) {
         DisplayTrain(p.second);
     }
