@@ -268,7 +268,8 @@ namespace White {
           idx = coord_j[i].at("idx");
           Vertex* v = g->GetVByIdx(idx);
           assert(v != nullptr);
-          v->SetSize(coord_j[i].at("x"), coord_j[i].at("y"));
+          v->SetCoord(coord_j[i].at("x"), coord_j[i].at("y"));
+          //v->SetSize();
         }
       }
 

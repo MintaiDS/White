@@ -62,7 +62,7 @@ namespace White {
         const char* LAYER0 = "{\"layer\":0}";
         const char* LAYER1 = "{\"layer\":1}";
         const char* END_TURN = "";
-        //const char* LAYER10 = "{\"layer\":10}";
+        const char* LAYER10 = "{\"layer\":10}";
 
         static Connection& GetInstance(const char* hostname, int port)
         {
