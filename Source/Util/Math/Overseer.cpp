@@ -58,6 +58,7 @@ namespace White {
         else
           assert(0 && "LOGIN");
         delete[](msg.data);
+        l << std::string("Login\n");
         msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
@@ -68,6 +69,7 @@ namespace White {
         else
           assert(0 && "MAP0");
         delete[](msg.data);
+        l << std::string("Layer0\n");
         msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
@@ -79,15 +81,29 @@ namespace White {
         }
         else
           assert(0 && "MAP1 parse");
-        PlaceVertices(graph);
+        l << std::string("Layer1\n");
+        msg = conn.FormActionMessage(Action::MAP, conn.LAYER10);
+        conn.Request(msg, resp);
+        if (resp.result == Result::OKEY)
+        {
+          ParseCoordFromJSON(graph, resp.data);
+          //l << std::string(resp.data) << std::string("\n");
+          delete[](resp.data);
+
+        }
+        else
+          assert(0 && "MAP1 parse");
+        l << std::string("Layer2\n");
+        //PlaceVertices(graph);
         GetMyTrains();
         FindMyCity();
         graph->InitWorldPaths(my_city->GetPointIdx());
+        l << std::string("Dijkstra\n");
       }
 
       bool Overseer::Turn()
       {
-
+        clock_t start_time = clock();
         Logger& l = Logger::GetInstance();
         l << std::string("Turn ") <<std::to_string(++(graph->turn_counter)) << std::string("\n");
         GameState game_state = FINISHED;
@@ -177,6 +193,8 @@ namespace White {
         //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
 
         l << std::string("End Turn!\n");
+        clock_t end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         return 1;
       }
 
