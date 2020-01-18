@@ -7,7 +7,9 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <thread>
 
+#include <cassert>
 
 namespace White {
   namespace Util {
@@ -95,9 +97,59 @@ namespace White {
         return true;
       }
 
-      bool Connection::Request(const ActionMessage & msg, ResponseMessage& resp)
+      void Connection::ReadWhatLeft()
       {
         Logger& l = Logger::GetInstance();
+        for (int i = 0; i < need_prev; ++i)
+        {
+          clock_t start_time = clock();
+          char resp[5];
+          int retVal = recv(clientSocket, resp, 4, 0);
+          if (retVal == SOCKET_ERROR)
+          {
+            l << std::string("Unable to recv\n");
+#ifndef __unix__
+            WSACleanup();
+#endif
+            return;
+          }
+
+          int data_left = toInt(resp);
+          int data_size = data_left;
+          char* data = new char[data_left + 1];
+          char* data_buf = data;
+          while (data_left)
+          {
+
+            retVal = recv(clientSocket, data_buf, data_left, 0);
+            if (retVal == SOCKET_ERROR)
+            {
+              l << std::string("Unable to recv\n");
+#ifndef __unix__
+              WSACleanup();
+#endif
+              return;
+            }
+            data_left -= retVal;
+            data_buf = data_buf + retVal;
+          }
+          data[data_size] = '\0';
+          //l << std::string("Got the response\n");
+          l << std::string("Finished!\n");
+          clock_t end_time = clock();
+          l << std::string("Left Recv message time: ");
+          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        }
+        need_prev = 0;
+      }
+
+      bool Connection::Request(const ActionMessage & msg, ResponseMessage& resp)
+      {
+        bool is_move = (msg.actionCode == MOVE);
+        FD_SET ReadSet;
+
+        Logger& l = Logger::GetInstance();
+        l << std::string("Message type ") << std::to_string((int)msg.actionCode) << std::string("\n");
         int retVal = 0;
         std::stringstream ss;
         ss << std::hex;
@@ -122,6 +174,8 @@ namespace White {
         if (msg.actionCode == Action::LOGOUT)
           return true;
 
+        clock_t start_time = clock();
+
         char szResponse[5];
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
@@ -133,8 +187,42 @@ namespace White {
           return false;
         }
         resp.result = (Result)toInt(szResponse);
-        //if (resp.result != Result::OKEY)
-          //return false;
+        //resp.result = (Result)toInt(code);
+
+        clock_t end_time = clock();
+        //if (is_move)
+        //{
+          l << std::string("1 Recv message time: ");
+          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        //}
+
+        //if (is_move)
+        //{
+        //  //std::thread read_zero(ReadWhatLeft, &clientSocket);
+        //  return true;
+        //}
+          //return true;
+
+        
+        /*if (is_move)
+        {
+          struct timeval tv;
+          tv.tv_sec = 0.;
+          tv.tv_usec = 10000.0;
+          start_time = clock();
+          FD_ZERO(&ReadSet);
+          FD_SET(clientSocket, &ReadSet);
+          int total = select(0, &ReadSet, NULL, NULL, &tv);
+          if (!total)
+          {
+            need_prev++;
+            return true;
+          }
+          end_time = clock();
+          l << std::string("2 Recv message time: ");
+          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        }*/
+
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
@@ -144,8 +232,11 @@ namespace White {
 #endif
           return false;
         }
+        start_time = clock();
+
         resp.dataLength = toInt(szResponse);
         int data_left = resp.dataLength;
+        //l << std::to_string(data_left) << std::string("\n");
         resp.data = new char[resp.dataLength + 1];
         char* data_buf = resp.data;
         while (data_left)
@@ -165,6 +256,13 @@ namespace White {
         }
         resp.data[resp.dataLength] = '\0';
         //l << std::string("Got the response\n");
+
+        end_time = clock();
+        //if (is_move)
+        //{
+          l << std::string("Recv message time: ");
+          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        //}
         return true;
       }
 
@@ -181,10 +279,14 @@ namespace White {
       void Connection::SendMoveMessage(int edge_idx, int dir, int idx)
       {
         Logger& l = Logger::GetInstance();
+        
+        //ReadWhatLeft();
+        
         std::string data = MoveMessage(edge_idx, dir, idx);
         ActionMessage msg = FormActionMessage(Action::MOVE, data);
         ResponseMessage resp;
         Request(msg, resp);
+        //l << std::to_string((int)resp.result) << std::string("\n");
         if (resp.result != OKEY)
           l << resp.data << std::string("\n");
         //if (edge_idx == 149)

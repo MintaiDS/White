@@ -73,14 +73,14 @@ void GraphVisualizer::LoadGraph(std::string name) {
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY) {
-        ParseGraphFromJSON(graph, resp.data);
+        overseer->ParseGraphFromJSON(resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY) {
-        ParseInfrastructureFromJSON(graph, resp.data);
+        overseer->ParseInfrastructureFromJSON(resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);

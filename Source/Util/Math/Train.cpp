@@ -39,7 +39,7 @@ namespace White {
       {
         Logger& l = Logger::GetInstance();
         int line_idx = edge->GetIdx();
-        assert(task != NO_TASK);
+        //assert(task != NO_TASK);
         Edge* e = path[path_idx].first;
         bool is_back = path[path_idx].second;
         if (position == edge->GetLength() || position == 0)
@@ -56,7 +56,7 @@ namespace White {
         }
         if ((is_back && position == 0) || (!is_back && position == e->GetLength()))
         {
-          assert(path_idx != path.size());
+          //assert(path_idx != path.size());
           Edge* e_next = path[path_idx + 1].first;
           bool is_next_back = path[path_idx + 1].second;
           if (is_next_back)
@@ -83,6 +83,8 @@ namespace White {
 
       void Train::Task::DropTask() 
       { 
+        Logger& l = Logger::GetInstance();
+        l << std::string("task dropped\n");
         task = NO_TASK;
         destination->SetVacant(true);
       }

@@ -140,12 +140,6 @@ namespace White {
         std::string player_idx;
         //std::vector<std::vector<int>> distance;
       };
-
-      std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename);
-      void ParseGraphFromJSON(std::shared_ptr<Graph> g, char* data);
-      void ParseCoordFromJSON(std::shared_ptr<Graph> g, char* data);
-      void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
-      void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
     }
   }
 }

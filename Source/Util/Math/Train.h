@@ -71,6 +71,7 @@ namespace White {
         std::pair<int, int> GetMove() { return move; }
         int GetDecCooldown();
         int GetCooldown() { return cooldown; }
+        bool IsMessageNeeded() { return need_message; }
         
         void SetIdx(int idx) { this->idx = idx; }
         void SetPosition(int position) { this->position = position; }
@@ -84,6 +85,7 @@ namespace White {
         void SetMoved(bool val) { moved = val; }
         void SetDirection(int val) { direction = val; }
         void SetMove(std::pair<int, int> val) { move = val; }
+        void SetNeedMessage(bool val) { need_message = val; }
         
         void ResetCooldown();
 
@@ -98,6 +100,7 @@ namespace White {
         int level;
         int direction;
         bool moved;
+        bool need_message;
         std::pair<int, int> move;
         int cooldown = 0;
       };

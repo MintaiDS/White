@@ -63,7 +63,7 @@ namespace White {
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
-          ParseGraphFromJSON(graph, resp.data);
+          ParseGraphFromJSON(resp.data);
           delete[](resp.data);
         }
         else
@@ -74,8 +74,8 @@ namespace White {
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
-          ParseInfrastructureFromJSON(graph, resp.data);
-          //l << std::string(resp.data) << std::string("\n");
+          ParseInfrastructureFromJSON(resp.data);
+          l << std::string(resp.data) << std::string("\n");
           delete[](resp.data);
 
         }
@@ -86,7 +86,7 @@ namespace White {
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
-          ParseCoordFromJSON(graph, resp.data);
+          ParseCoordFromJSON(resp.data);
           //l << std::string(resp.data) << std::string("\n");
           delete[](resp.data);
 
@@ -105,7 +105,7 @@ namespace White {
       {
         clock_t start_time = clock();
         Logger& l = Logger::GetInstance();
-        l << std::string("Turn ") <<std::to_string(++(graph->turn_counter)) << std::string("\n");
+        l << std::string("Turn ") << std::to_string(++(graph->turn_counter)) << std::string("\n");
         GameState game_state = FINISHED;
         ActionMessage msg = conn.FormActionMessage(Action::GAMES, "");
         ResponseMessage resp;
@@ -129,21 +129,21 @@ namespace White {
           return 0;
         assert(game_state == RUN);
         //clock_t start_time = clock();
-        
+
         msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {
-          UpdateInfrastructureFromJSON(graph, resp.data);
+          UpdateInfrastructureFromJSON(resp.data);
           delete[](resp.data);
         }
         else
           assert(0 && "MAP1 update");
         delete[](msg.data);
-        
+        l << std::string("Rating: ") << std::to_string(rating) << std::string("\n");
         //clock_t end_time = clock();
         //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
-        
+
         l << std::string("Food: ");
         l << my_city->GetCurProduct();
         l << std::string("Armor: ");
@@ -162,10 +162,10 @@ namespace White {
 
         TryUpgrade();
 
-       // end_time = clock();
-        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        // end_time = clock();
+         //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
 
-        //start_time = clock();
+         //start_time = clock();
 
         AssignTasks();
 
@@ -181,20 +181,25 @@ namespace White {
 
         //start_time = clock();
 
-        msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
-        conn.Request(msg, resp);
-        while (resp.result != Result::OKEY)
-        {
-          Sleep(sleep_time);
-          conn.Request(msg, resp);
-        }
+        conn.ReadWhatLeft();
 
+        clock_t end_time = clock();
+        double full_time = (double)(end_time - prev_clock) / CLOCKS_PER_SEC;
+        if (prev_clock == 0. || full_time < 0.8)
+        {
+          msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
+          conn.Request(msg, resp);
+          while (resp.result != Result::OKEY)
+          {
+            Sleep(sleep_time);
+            conn.Request(msg, resp);
+          }
+        }
         //end_time = clock();
         //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
-
         l << std::string("End Turn!\n");
-        clock_t end_time = clock();
-        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        l << std::to_string(full_time) << std::string("\n");
+        prev_clock = end_time;
         return 1;
       }
 
@@ -236,13 +241,14 @@ namespace White {
           if (graph->GetPointIdxByPosition(t->GetLineIdx(), t->GetPosition()) == my_city->GetPointIdx())
           {
             int train_level = t->GetLevel();
-              int city_armor = my_city->GetCurArmor();
-              if (train_level < 3 && city_armor > Train::level_cost[train_level - 1] + armor_buffer)
-              {
-                idxs.push_back(t->GetIdx());
-                  my_city->SetCurArmor(city_armor - Train::level_cost[train_level - 1]);
-                  t->SetLevel(train_level + 1);
-              }
+            int city_armor = my_city->GetCurArmor();
+            if (train_level < 3 && city_armor > Train::level_cost[train_level - 1] + armor_buffer)
+            {
+              idxs.push_back(t->GetIdx());
+              my_city->SetCurArmor(city_armor - Train::level_cost[train_level - 1]);
+              t->SetLevel(train_level + 1);
+              t->SetGoodsCap(40 * train_level + 1);
+            }
           }
         }
         if (city_idx != -1 || idxs.size() > 0)
@@ -338,7 +344,7 @@ namespace White {
             if (t->GetTask() == Train::Task::NO_TASK)
             {
               int point_idx = graph->GetPointIdxByPosition(t->GetLineIdx(), t->GetPosition());
-              assert(point_idx != -1);
+              //assert(point_idx != -1);
               auto task = ChooseTask(t, point_idx);
               if (task.first != Train::Task::NO_TASK)
               {
@@ -357,7 +363,7 @@ namespace White {
         for (auto t : trains)
         {
 
-          
+
 
           if (t->GetDecCooldown() == 0)
           {
@@ -372,13 +378,15 @@ namespace White {
 
             auto move = t->GetMove();
 
-            //start_time = clock();
+            clock_t start_time = clock();
 
-            l << std::string("Move:") << std::to_string(move.first) << std::string(" ") << std::to_string(move.second) << std::string("\n");
-            conn.SendMoveMessage(move.first, move.second, t->GetIdx());
+            //l << std::string("Move:") << std::to_string(move.first) << std::string(" ") << std::to_string(move.second) << std::string("\n");
+            if (t->IsMessageNeeded())
+              conn.SendMoveMessage(move.first, move.second, t->GetIdx());
 
-            //end_time = clock();
-            //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+            clock_t end_time = clock();
+            l << std::string("Move message time: ");
+            l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
           }
           else
           {
@@ -398,6 +406,7 @@ namespace White {
 
       void Overseer::TryMakeMove(Train * t)
       {
+        t->SetNeedMessage(false);
         Logger& l = Logger::GetInstance();
         l << t->GetIdx();
         t->SetMoved(true);
@@ -405,10 +414,11 @@ namespace White {
         if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
         {
           auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
-          l << std::string("Step: ") << std::to_string(step.first) + std::string(" ") + std::to_string(step.second) + std::string("\n");
-          l << std::string("Position: ") << std::to_string(t->GetLineIdx()) + std::string(" ") + std::to_string(t->GetPosition()) + std::string("\n");
+          //l << std::string("Step: ") << std::to_string(step.first) + std::string(" ") + std::to_string(step.second) + std::string("\n");
+          //l << std::string("Position: ") << std::to_string(t->GetLineIdx()) + std::string(" ") + std::to_string(t->GetPosition()) + std::string("\n");
           if (step.first != t->GetLineIdx() || (t->GetPosition() == 0 || t->GetPosition() == graph->GetEdgeByIdx(step.first)->GetLength()))
           {
+            t->SetNeedMessage(true);
             int new_pos = step.second == 1 ? 1 : graph->GetEdgeByIdx(step.first)->GetLength() - 1;
             //l << std::string("Got here!\n");
             Train* tr_coll = CheckForCollision(t, step.first, new_pos);
@@ -440,7 +450,10 @@ namespace White {
                 }
                 else
                 {
-                  int common_point, t_line_idx = t->GetLineIdx(), tr_coll_line_idx = tr_coll->GetLineIdx();
+                  int common_point, t_line_idx = step.first, tr_coll_line_idx = tr_coll->GetLineIdx();
+                  Edge* e = graph->GetEdgeByIdx(tr_coll_line_idx);
+                  if (e->GetPointIdxFromPosition(tr_coll->GetPosition()) != -1)
+                    tr_coll_line_idx = t_line_idx;
                   if (t_line_idx == tr_coll_line_idx)
                   {
                     Edge* e = graph->GetEdgeByIdx(t_line_idx);
@@ -462,7 +475,10 @@ namespace White {
               }
               else
               {
-                int common_point, t_line_idx = t->GetLineIdx(), tr_coll_line_idx = tr_coll->GetLineIdx();
+                int common_point, t_line_idx = step.first, tr_coll_line_idx = tr_coll->GetLineIdx();
+                Edge* e = graph->GetEdgeByIdx(tr_coll_line_idx);
+                if (e->GetPointIdxFromPosition(tr_coll->GetPosition()) != -1)
+                  tr_coll_line_idx = t_line_idx;
                 if (t_line_idx == tr_coll_line_idx)
                 {
                   Edge* e = graph->GetEdgeByIdx(t_line_idx);
@@ -487,7 +503,7 @@ namespace White {
                 //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
                 graph->UnblockLine(t->GetLineIdx(), t);
                 graph->BlockLine(step.first, t);
-                
+
                 t->SetMove(step);
                 t->SetDirection(step.second);
                 t->SetPosition(new_pos);
@@ -518,6 +534,7 @@ namespace White {
                     //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
                     t->SetMove(step);
                     t->SetDirection(step.second);
+                    t->SetNeedMessage(true);
                   }
                   t->SetPosition(t->GetPosition() + step.second);
                 }
@@ -526,6 +543,7 @@ namespace White {
                   //conn.SendMoveMessage(step.first, 0, t->GetIdx());
                   t->SetMove({ t->GetLineIdx(), 0 });
                   t->SetDirection(0);
+                  t->SetNeedMessage(true);
                 }
               }
               else
@@ -533,15 +551,20 @@ namespace White {
                 //conn.SendMoveMessage(step.first, 0, t->GetIdx());
                 t->SetMove({ t->GetLineIdx(), 0 });
                 t->SetDirection(0);
+                t->SetNeedMessage(true);
               }
             }
             else
             {
               //l << std::string("moved\n");
-              //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
-              t->SetMove(step);
+              if (t->GetDirection() != step.second)
+              {
+                //conn.SendMoveMessage(step.first, step.second, t->GetIdx());
+                t->SetMove(step);
+                t->SetDirection(step.second);
+                t->SetNeedMessage(true);
+              }
               t->SetPosition(t->GetPosition() + step.second);
-              t->SetDirection(step.second);
             }
           }
         }
@@ -551,6 +574,7 @@ namespace White {
       {
         Logger& l = Logger::GetInstance();
         l << locked_edge_from << locked_edge_to;
+        l << point_idx;
         int pos, dir;
         Vertex* v = graph->GetVByIdx(point_idx);
         for (auto edge : v->GetEdgeList())
@@ -565,7 +589,7 @@ namespace White {
             }
             else
             {
-              assert(edge->GetTo() == point_idx);
+              //assert(edge->GetTo() == point_idx);
               l << std::string("<-\n");
               pos = edge->GetLength() - 1;
               dir = -1;
@@ -605,7 +629,7 @@ namespace White {
               //conn.SendMoveMessage(edge->GetIdx(), dir, t->GetIdx());
               graph->BlockLine(edge->GetIdx(), t);
               graph->UnblockLine(t->GetLineIdx(), t);
-              
+
               t->SetMove({ edge->GetIdx(), dir });
               if (t->task.IsFirst(t->GetPosition()))
               {
@@ -621,6 +645,7 @@ namespace White {
             }
           }
         }
+        l << std::string("Nothing");
         return false;
       }
 
@@ -689,14 +714,15 @@ namespace White {
       std::pair<Train::Task::TaskType, int> Overseer::ChooseTask(Train * t, int point_idx)
       {
         Logger& l = Logger::GetInstance();
-        //l << (int)t->GetGoodsType();
+        l << std::string("task choosing ") << std::to_string(t->GetIdx()) << std::string("\n");
+        l << (int)t->GetGoodsType();
         if (t->GetGoodsType() != Train::Goods::ARMOR)
         {
           double percent = getFoodPercentage();
           double pop_percent = my_city->GetPopulation() / 100.;
           double max_val = 0.;
           Market* mrkt = NULL;
-          if (percent < 0.45 + (log(pop_percent * 5) + 3.)/ 8.)
+          if (percent < 0.45 + (log(pop_percent * 5) + 3.) / 8.)
           {
             for (auto& v : graph->GetMarkets())
             {
@@ -788,6 +814,226 @@ namespace White {
           }
         }
         return FINISHED;
+      }
+
+      std::shared_ptr<Graph> Overseer::ParseGraphFromJSONFile(std::string filename)
+      {
+        std::ifstream f_inp;
+        f_inp.open(filename, std::ifstream::in);
+        std::string result = "", buf;
+        while (!f_inp.eof())
+        {
+          std::getline(f_inp, buf);
+          result += buf;
+        }
+        std::shared_ptr<Graph> g = std::make_shared<Graph>();
+        char* data = (char*)result.c_str();
+        ParseGraphFromJSON(data);
+        return g;
+      }
+
+      void Overseer::ParseGraphFromJSON(char* data)
+      {
+        json json_parsed = json::parse(data);
+        int idx = json_parsed.at("idx");
+        std::string name = json_parsed.at("name");
+        graph->SetIdx(idx);
+        graph->SetName(name);
+        json v_arr = json_parsed.at("points");
+        size_t v_size = v_arr.size();
+        for (size_t i = 0; i < v_size; ++i)
+        {
+          json v_j = v_arr[i];
+          int v_idx = v_j.at("idx");
+          int v_post_idx = v_j["post_idx"].is_null() ? -1 : v_j.at("post_idx");
+          Vertex* v = new Vertex(v_idx, v_post_idx);
+          graph->AppendVertex(v);
+        }
+        json e_arr = json_parsed.at("lines");
+        size_t e_size = e_arr.size();
+        for (size_t i = 0; i < e_size; ++i)
+        {
+          json e_j = e_arr[i];
+          int e_idx = e_j.at("idx");
+          int e_len = e_j.at("length");
+          json vertices = e_j.at("points");
+          Edge* e = new Edge(e_idx, e_len, vertices[0], vertices[1]);
+          graph->AppendEdge(e);
+        }
+      }
+
+      void Overseer::ParseCoordFromJSON(char* data)
+      {
+        json json_parsed = json::parse(data);
+        json coord_j = json_parsed.at("coordinates");
+        int idx = json_parsed.at("idx");
+        json size_j = json_parsed.at("size");
+        graph->SetSize(size_j[0], size_j[1]);
+        for (int i = 0; i < coord_j.size(); ++i)
+        {
+          idx = coord_j[i].at("idx");
+          Vertex* v = graph->GetVByIdx(idx);
+          assert(v != nullptr);
+          v->SetCoord(coord_j[i].at("x"), coord_j[i].at("y"));
+          //v->SetSize();
+        }
+      }
+
+      void Overseer::ParseInfrastructureFromJSON(char* data)
+      {
+        Logger& l = Logger::GetInstance();
+        json json_parsed = json::parse(data);
+        json posts_j = json_parsed.at("posts");
+        json trains_j = json_parsed.at("trains");
+        for (int i = 0; i < posts_j.size(); ++i)
+        {
+          json post_j = posts_j[i];
+          int type = post_j.at("type");
+          int idx = post_j.at("idx");
+          int point_idx = post_j.at("point_idx");
+          std::string s;
+          switch (type)
+          {
+          case PostType::CITY:
+          {
+            if (!post_j["player_idx"].is_null())
+              s = post_j["player_idx"].get<std::string>();
+            else
+              s = "null";
+            City* c = new City(idx, point_idx, s);
+            c->SetCurProduct(post_j["product"]);
+            c->SetMaxProduct(post_j["product_capacity"]);
+            c->SetCurArmor(post_j["armor"]);
+            c->SetMaxArmor(post_j["armor_capacity"]);
+            c->SetLevel(post_j["level"]);
+            graph->AppendPost(c);
+            break;
+          }
+          case PostType::MARKET:
+          {
+            Market* m = new Market(idx, point_idx);
+            m->SetCurProduct(post_j["product"]);
+            m->SetMaxProduct(post_j["product_capacity"]);
+            graph->AppendPost(m);
+            break;
+          }
+          case PostType::STORAGE:
+          {
+            Storage* st = new Storage(idx, point_idx);
+            st->SetCurArmor(post_j["armor"]);
+            st->SetMaxArmor(post_j["armor_capacity"]);
+            graph->AppendPost(st);
+            break;
+          }
+          }
+        }
+        for (int i = 0; i < trains_j.size(); ++i)
+        {
+          json train_j = trains_j[i];
+          int idx = train_j.at("idx");
+          int line_idx = train_j.at("line_idx");
+          int position = train_j.at("position");
+          std::string s = "null";
+          if (!train_j["player_idx"].is_null())
+            s = train_j["player_idx"].get<std::string>();
+          Train* t = new Train(idx, line_idx, position, s);
+          int goods = train_j.at("goods");
+          int goods_cap = train_j.at("goods_capacity");
+          t->SetGoodsCap(goods_cap);
+          t->SetGoods(goods);
+          t->SetGoodsType(Train::Goods::NONE);
+          t->SetLevel(train_j.at("level"));
+          graph->AppendTrain(t);
+        }
+      }
+
+      void Overseer::UpdateInfrastructureFromJSON(char* data)
+      {
+        Logger& l = Logger::GetInstance();
+        json json_parsed = json::parse(data);
+        json posts_j = json_parsed.at("posts");
+        json trains_j = json_parsed.at("trains");
+        for (int i = 0; i < posts_j.size(); ++i)
+        {
+          json post_j = posts_j[i];
+          int type = post_j.at("type");
+          int idx = post_j.at("idx");
+          std::string s;
+
+          switch (type)
+          {
+          case PostType::CITY:
+          {
+            City* c = graph->GetCityByIdx(idx);
+            c->SetCurProduct(post_j["product"]);
+            c->SetCurArmor(post_j["armor"]);
+            c->SetLevel(post_j["level"]);
+            c->SetPopulation(post_j["population"]);
+            break;
+          }
+          case PostType::MARKET:
+          {
+            Market* m = graph->GetMarketByIdx(idx);
+            m->SetCurProduct(post_j["product"]);
+            break;
+          }
+          case PostType::STORAGE:
+          {
+            Storage* st = graph->GetStorageByIdx(idx);
+            st->SetCurArmor(post_j["armor"]);
+            break;
+          }
+          }
+        }
+        l << std::string("trains: ") << std::to_string(trains_j.size()) << std::string("\n");
+        for (int i = 0; i < trains_j.size(); ++i)
+        {
+          json train_j = trains_j[i];
+          int idx = train_j.at("idx");
+          std::string player_idx = train_j.at("player_idx");
+          json j_event = train_j.at("events");
+          if (player_idx == graph->GetPlayerIdx() && j_event.size() != 0)
+          {
+            graph->turn_counter = j_event[0]["tick"];
+            l << train_j.dump() << "\n";
+            graph->CollisionCleanup(graph->GetTrainByIdx(idx));
+          }
+          int line_idx = train_j.at("line_idx");
+          int position = train_j.at("position");
+          int goods = train_j.at("goods");
+          int goods_cap = train_j.at("goods_capacity");
+          json j_type = train_j.at("goods_type");
+          std::string type;
+          if (j_type.is_null())
+            type = "null";
+          else
+            type = std::to_string(j_type.get<int>());
+          //l << std::string("Goods type: ");
+          //l << type;
+          //l << std::string("\n");
+          Train::Goods g_type = Train::Goods::NONE;
+          if (type == "null")
+            g_type = Train::Goods::NONE;
+          else if (type == "2")
+            g_type = Train::Goods::FOOD;
+          else if (type == "3")
+            g_type = Train::Goods::ARMOR;
+          auto trains = graph->GetTrains();
+          if (trains.find(idx) == trains.end())
+          {
+            Train* t = new Train(idx, line_idx, position, player_idx);
+            graph->AppendTrain(t);
+          }
+          Train* t = graph->GetTrainByIdx(idx);
+          t->SetLineIdx(line_idx);
+          t->SetPosition(position);
+          t->SetGoods(goods);
+          t->SetGoodsCap(goods_cap);
+          t->SetGoodsType(g_type);
+          t->SetLevel(train_j.at("level"));
+        }
+        json ratings = json_parsed.at("ratings");
+        SetRating(ratings.at(player_idx).at("rating"));
       }
     }
   }
