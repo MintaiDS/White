@@ -144,7 +144,7 @@ void GraphView::DisplayPost(int node) {
     Math::Vector<float> pos = graph->GetVById(node)->GetCoord();
     Post* post = graph->GetVById(node)->GetPost();
     if (!post) {
-        DisplayNode(node);
+        //DisplayNode(node);
         return;
     }
     int type = post->GetPostType();
