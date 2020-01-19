@@ -22,6 +22,7 @@ public:
     GraphVisualizer(Renderer& renderer);
 
     DWORD Listener();
+    DWORD ViewInitializer();
 
     void LoadGraph(std::string path);
     void UpdateCamera();
@@ -30,6 +31,7 @@ public:
 
 protected:
     Thread<GraphVisualizer> overseerThread;
+    Thread<GraphVisualizer> initializerThread; 
     Vector<float> prev;
     Vector<float> dir;
     Vector<float> rotation;
