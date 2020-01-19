@@ -767,7 +767,7 @@ namespace White {
                 //double koef = 1.05;
                 double pure_val = (double)cap / dist;
                 double val = (double)cap / dist;
-                if (val > max_val || (val == max_val && dist < min_dist))
+                if (val > max_val || (val == max_val && dist <= min_dist))
                 {
                   max_val = val;
                   max_pure_val = pure_val;
@@ -817,7 +817,7 @@ namespace White {
               //set a koefficient so the further the market is the less the value will be
               //double koef = 1.2;
               double val = (double)cap / dist;
-              if (val > max_val || (val == max_val && dist < min_dist))
+              if (val > max_val || (val == max_val && dist <= min_dist))
               {
                 max_val = val;
                 stor = s;
