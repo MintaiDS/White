@@ -61,7 +61,11 @@ namespace White {
         Market(int idx, int point_idx) : Post(idx, point_idx) {
           SetPostType(MARKET);
         }
+        int GetResupply() { return resupply; }
+
+        void SetResupply(int val) { resupply = val; }
       private:
+        int resupply;
       };
 
       class Storage : public Post {
@@ -70,7 +74,11 @@ namespace White {
         Storage(int idx, int point_idx) : Post(idx, point_idx) {
           SetPostType(STORAGE);
         }
+        int GetResupply() { return resupply; }
+
+        void SetResupply(int val) { resupply = val; }
       private:
+        int resupply;
       };
 
       class City : public Post {
@@ -90,7 +98,7 @@ namespace White {
         void SetPopulation(int val) { population = val; }
       private:
         std::string player_idx;
-        int population;
+        int population = 0;
       };
     }
   }

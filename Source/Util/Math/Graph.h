@@ -4,10 +4,12 @@
 #include <map>
 #include <string>
 #include <memory>
+#include "Vector.h"
 
 #include "Post.h"
 #include "Train.h"
 #include "Edge.h"
+
 
 namespace White {
   namespace Util {
@@ -42,8 +44,8 @@ namespace White {
       class Vertex {
 
       public:
-        Vertex() {}
-        Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx) {}
+        Vertex(): coord(2) {}
+        Vertex(int idx, int post_idx = -1) : idx(idx), post_idx(post_idx), coord(2) {}
 
         int GetIdx() { return idx; }
         size_t GetId() { return id; }
@@ -56,16 +58,16 @@ namespace White {
         void AppendEdge(Edge* e) { edges.push_back(e); }
 
         std::vector<Edge*>& GetEdgeList() { return edges; }
-        Pnt GetCoord() { return coord; }
-        void SetCoord(double x, double y) { coord = { x, y }; }
-        void ShiftCoord(Pnt& p) { coord += p; }
+        Math::Vector<float> GetCoord() { return coord; }
+        void SetCoord(double x, double y) { coord[0] = (float)x; coord[1] = (float)y; }
+        void ShiftCoord(Math::Vector<float>& p) { coord += p; }
 
       private:
         size_t id;
         int idx;
         int post_idx;
         std::vector<Edge*> edges;
-        Pnt coord;
+        Math::Vector<float> coord;
         Post* post = NULL;
       };
 
@@ -114,11 +116,11 @@ namespace White {
 
         int GetCommonPointIdx(int edge_idx1, int edge_idx2);
         int GetPointIdxByPosition(int edge_idx, int position);
+        int GetCloserPoint(int edge_idx, int position);
 
         Train* CheckLine(int edge_idx);
         void BlockLine(int edge_idx, Train* t);
         void UnblockLine(int edge_idx, Train* t);
-        void CollisionCleanup(Train* t);
 
         int turn_counter = 0;
 
@@ -138,12 +140,6 @@ namespace White {
         std::string player_idx;
         //std::vector<std::vector<int>> distance;
       };
-
-      std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename);
-      void ParseGraphFromJSON(std::shared_ptr<Graph> g, char* data);
-      void ParseCoordFromJSON(std::shared_ptr<Graph> g, char* data);
-      void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
-      void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data);
     }
   }
 }

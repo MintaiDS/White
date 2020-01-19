@@ -12,7 +12,7 @@ namespace White {
     namespace Math {
 
       std::vector<std::pair<Edge*, bool>> Dijkstra(Graph& g, int id, const std::map<int, int>* forbidden_e, std::map<int, int>* forbidden_v);
-      void PlaceVertices(Graph & g);
+      void PlaceVertices(std::shared_ptr<Graph> g);
     }
   }
 }

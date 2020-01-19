@@ -29,9 +29,11 @@ public:
     void UpdateVertexData();
     void SetView(Matrix<float> view);
     void SetProjection(Matrix<float> projection);
+    void ToggleActualState();
     Program& GetProgram();
 
 protected:
+    bool isUpToDate;
     std::chrono::milliseconds lastTime;
     Matrix<float> view;
     Matrix<float> projection; 

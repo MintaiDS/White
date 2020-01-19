@@ -13,8 +13,8 @@ namespace White {
 
       void Vertex::SetSize(int x, int y)
       {
-        coord.x = x;
-        coord.y = y;
+        coord[0] = (float)x;
+        coord[1] = (float)y;
       }
 
       void Graph::AppendEdge(Edge* e)
@@ -109,7 +109,7 @@ namespace White {
           world_map[my_city_id][GetIdByIdx(storage_idx)] = path;
         }
         auto dijkstra = Dijkstra(*this, my_city_idx, NULL, NULL);
-        for (int i = 0; i < sz; ++i)
+        for (size_t i = 0; i < sz; ++i)
         {
           if (world_map[my_city_id][i] == nullptr)
           {
@@ -192,12 +192,15 @@ namespace White {
 
       int Graph::GetCommonPointIdx(int edge_idx1, int edge_idx2)
       {
+        Logger& l = Logger::GetInstance();
         Edge* e1 = GetEdgeByIdx(edge_idx1);
         Edge* e2 = GetEdgeByIdx(edge_idx2);
         int from1 = e1->GetFrom();
         int to1 = e1->GetTo();
         int from2 = e2->GetFrom();
         int to2 = e2->GetTo();
+        l << edge_idx1 << from1 << to1;
+        l << edge_idx2 << from2 << to2;
         if (from1 == from2 || from1 == to2)
           return from1;
         if (to1 == from2 || to1 == to2)
@@ -210,221 +213,14 @@ namespace White {
         return GetEdgeByIdx(edge_idx)->GetPointIdxFromPosition(position);
       }
 
-      std::shared_ptr<Graph> ParseGraphFromJSONFile(std::string filename)
+      int Graph::GetCloserPoint(int edge_idx, int position)
       {
-        std::ifstream f_inp;
-        f_inp.open(filename, std::ifstream::in);
-        std::string result = "", buf;
-        while (!f_inp.eof())
-        {
-          std::getline(f_inp, buf);
-          result += buf;
-        }
-        std::shared_ptr<Graph> g = std::make_shared<Graph>();
-        char* data = (char*)result.c_str();
-        ParseGraphFromJSON(g, data);
-        return g;
-      }
-
-      void ParseGraphFromJSON(std::shared_ptr<Graph> g, char* data)
-      {
-        json json_parsed = json::parse(data);
-        int idx = json_parsed.at("idx");
-        std::string name = json_parsed.at("name");
-        g->SetIdx(idx);
-        g->SetName(name);
-        json v_arr = json_parsed.at("points");
-        size_t v_size = v_arr.size();
-        for (size_t i = 0; i < v_size; ++i)
-        {
-          json v_j = v_arr[i];
-          int v_idx = v_j.at("idx");
-          int v_post_idx = v_j["post_idx"].is_null() ? -1 : v_j.at("post_idx");
-          Vertex* v = new Vertex(v_idx, v_post_idx);
-          g->AppendVertex(v);
-        }
-        json e_arr = json_parsed.at("lines");
-        size_t e_size = e_arr.size();
-        for (size_t i = 0; i < e_size; ++i)
-        {
-          json e_j = e_arr[i];
-          int e_idx = e_j.at("idx");
-          int e_len = e_j.at("length");
-          json vertices = e_j.at("points");
-          Edge* e = new Edge(e_idx, e_len, vertices[0], vertices[1]);
-          g->AppendEdge(e);
-        }
-      }
-
-      void ParseCoordFromJSON(std::shared_ptr<Graph> g, char* data)
-      {
-        json json_parsed = json::parse(data);
-        json coord_j = json_parsed.at("coordinates");
-        int idx = json_parsed.at("idx");
-        json size_j = json_parsed.at("size");
-        g->SetSize(size_j[0], size_j[1]);
-        for (int i = 0; i < coord_j.size(); ++i)
-        {
-          idx = coord_j[i].at("idx");
-          Vertex* v = g->GetVByIdx(idx);
-          assert(v != nullptr);
-          v->SetSize(coord_j[i].at("x"), coord_j[i].at("y"));
-        }
-      }
-
-      void ParseInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
-      {
-        Logger& l = Logger::GetInstance();
-        json json_parsed = json::parse(data);
-        json posts_j = json_parsed.at("posts");
-        json trains_j = json_parsed.at("trains");
-        for (int i = 0; i < posts_j.size(); ++i)
-        {
-          json post_j = posts_j[i];
-          int type = post_j.at("type");
-          int idx = post_j.at("idx");
-          int point_idx = post_j.at("point_idx");
-          std::string s;
-          switch (type)
-          {
-          case PostType::CITY:
-          {
-            if (!post_j["player_idx"].is_null())
-              s = post_j["player_idx"].get<std::string>();
-            else
-              s = "null";
-            City* c = new City(idx, point_idx, s);
-            c->SetCurProduct(post_j["product"]);
-            c->SetMaxProduct(post_j["product_capacity"]);
-            c->SetCurArmor(post_j["armor"]);
-            c->SetMaxArmor(post_j["armor_capacity"]);
-            c->SetLevel(post_j["level"]);
-            g->AppendPost(c);
-            break;
-          }
-          case PostType::MARKET:
-          {
-            Market* m = new Market(idx, point_idx);
-            m->SetCurProduct(post_j["product"]);
-            m->SetMaxProduct(post_j["product_capacity"]);
-            g->AppendPost(m);
-            break;
-          }
-          case PostType::STORAGE:
-          {
-            Storage* st = new Storage(idx, point_idx);
-            st->SetCurArmor(post_j["armor"]);
-            st->SetMaxArmor(post_j["armor_capacity"]);
-            g->AppendPost(st);
-            break;
-          }
-          }
-        }
-        for (int i = 0; i < trains_j.size(); ++i)
-        {
-          json train_j = trains_j[i];
-          int idx = train_j.at("idx");
-          int line_idx = train_j.at("line_idx");
-          int position = train_j.at("position");
-          std::string s = "null";
-          if (!train_j["player_idx"].is_null())
-            s = train_j["player_idx"].get<std::string>();
-          Train* t = new Train(idx, line_idx, position, s);
-          int goods = train_j.at("goods");
-          int goods_cap = train_j.at("goods_capacity");
-          t->SetGoodsCap(goods_cap);
-          t->SetGoods(goods);
-          t->SetGoodsType(Train::Goods::NONE);
-          t->SetLevel(train_j.at("level"));
-          g->AppendTrain(t);
-        }
-      }
-
-      void UpdateInfrastructureFromJSON(std::shared_ptr<Graph> g, char* data)
-      {
-        Logger& l = Logger::GetInstance();
-        json json_parsed = json::parse(data);
-        json posts_j = json_parsed.at("posts");
-        json trains_j = json_parsed.at("trains");
-        for (int i = 0; i < posts_j.size(); ++i)
-        {
-          json post_j = posts_j[i];
-          int type = post_j.at("type");
-          int idx = post_j.at("idx");
-          std::string s;
-
-          switch (type)
-          {
-          case PostType::CITY:
-          {
-            City* c = g->GetCityByIdx(idx);
-            c->SetCurProduct(post_j["product"]);
-            c->SetCurArmor(post_j["armor"]);
-            c->SetLevel(post_j["level"]);
-            c->SetPopulation(post_j["population"]);
-            break;
-          }
-          case PostType::MARKET:
-          {
-            Market* m = g->GetMarketByIdx(idx);
-            m->SetCurProduct(post_j["product"]);
-            break;
-          }
-          case PostType::STORAGE:
-          {
-            Storage* st = g->GetStorageByIdx(idx);
-            st->SetCurArmor(post_j["armor"]);
-            break;
-          }
-          }
-        }
-        l << std::string("trains: ") << std::to_string(trains_j.size()) << std::string("\n");
-        for (int i = 0; i < trains_j.size(); ++i)
-        {
-          json train_j = trains_j[i];
-          int idx = train_j.at("idx");
-          std::string player_idx = train_j.at("player_idx");
-          json j_event = train_j.at("events");
-          if (player_idx == g->GetPlayerIdx() && j_event.size() != 0)
-          {
-            g->turn_counter = j_event[0]["tick"];
-            l << train_j.dump() << "\n";
-            g->CollisionCleanup(g->GetTrainByIdx(idx));
-          }
-          int line_idx = train_j.at("line_idx");
-          int position = train_j.at("position");
-          int goods = train_j.at("goods");
-          int goods_cap = train_j.at("goods_capacity");
-          json j_type = train_j.at("goods_type");
-          std::string type;
-          if (j_type.is_null())
-            type = "null";
-          else
-            type = std::to_string(j_type.get<int>());
-          //l << std::string("Goods type: ");
-          //l << type;
-          //l << std::string("\n");
-          Train::Goods g_type = Train::Goods::NONE;
-          if (type == "null")
-            g_type = Train::Goods::NONE;
-          else if (type == "2")
-            g_type = Train::Goods::FOOD;
-          else if (type == "3")
-            g_type = Train::Goods::ARMOR;
-          auto trains = g->GetTrains();
-          if (trains.find(idx) == trains.end())
-          {
-            Train* t = new Train(idx, line_idx, position, player_idx);
-            g->AppendTrain(t);
-          }
-          Train* t = g->GetTrainByIdx(idx);
-          t->SetLineIdx(line_idx);
-          t->SetPosition(position);
-          t->SetGoods(goods);
-          t->SetGoodsCap(goods_cap);
-          t->SetGoodsType(g_type);
-          t->SetLevel(train_j.at("level"));
-        }
+        Edge* e = GetEdgeByIdx(edge_idx);
+        int len = e->GetLength();
+        if (position < len - position)
+          return e->GetFrom();
+        else
+          return e->GetTo();
       }
 
       Path Path::FormPath(Graph& g, int i_idx, int j_idx, std::vector<std::pair<Edge*, bool>>& dijkstra)
@@ -445,7 +241,7 @@ namespace White {
         res.push_back({ NULL, false });
         res.shrink_to_fit();
         size_t sz = res.size();
-        for (int i = 0; i < sz / 2; ++i)
+        for (size_t i = 0; i < sz / 2; ++i)
         {
           std::swap(res[i], res[sz - 1 - i]);
         }
@@ -472,14 +268,6 @@ namespace White {
         if ((it = blocked_lines.find(edge_idx)) != blocked_lines.end() && it->second == t)
           blocked_lines.erase(edge_idx);
       }
-
-      void Graph::CollisionCleanup(Train * t)
-      {
-        t->task.DropTask();
-        UnblockLine(t->GetLineIdx(), t);
-        t->ResetCooldown();
-      }
-
     }
   }
 }

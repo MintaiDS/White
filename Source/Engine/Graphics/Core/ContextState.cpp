@@ -38,6 +38,7 @@ void ContextState::Init() {
 void ContextState::UpdateCamera(Matrix<float> view, Matrix<float> projection) {
     std::unique_ptr<GLfloat[]> raw 
         = std::make_unique<GLfloat[]>(view.rows * view.columns);
+
     for (int i = 0; i < view.rows; i++) {
         for (int j = 0; j < view.columns; j++) {
             raw.get()[i * view.columns + j] = view[i][j];
@@ -85,8 +86,6 @@ void ContextState::Render() {
         //Vector<GLfloat> scaling = mesh->GetScaling();
         //Matrix<GLfloat> scalingMatrix 
         //    = Matrix<GLfloat>::Scaling({scaling[0], scaling[1], 
-        //                                scaling[2], 1.0f});
-        //Matrix<GLfloat> model = translationMatrix 
         //                        * rotationMatrix 
         //                        * scalingMatrix;
         //std::unique_ptr<GLfloat[]> raw 

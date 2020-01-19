@@ -62,7 +62,7 @@ namespace White {
         const char* LAYER0 = "{\"layer\":0}";
         const char* LAYER1 = "{\"layer\":1}";
         const char* END_TURN = "";
-        //const char* LAYER10 = "{\"layer\":10}";
+        const char* LAYER10 = "{\"layer\":10}";
 
         static Connection& GetInstance(const char* hostname, int port)
         {
@@ -76,9 +76,11 @@ namespace White {
         std::string MoveMessage(int lineIdx, int speed, int trainIdx);
         std::string UpgradeMessage(std::vector<int>& train_idxs, int city_idx = -1);
         //bool Reconnect();
+        void ReadWhatLeft();
 
       private:
         SOCKET clientSocket = SOCKET_ERROR;
+        int need_prev = 0;
 
         Connection(const char* hostname, int port) {
           Connect(hostname, port);
@@ -87,7 +89,7 @@ namespace White {
         Connection& operator= (Connection&);
         ~Connection();
         bool Connect(const char* hostname, int port);
-
+        
       };
     }
   }

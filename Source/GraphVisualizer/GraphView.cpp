@@ -35,11 +35,11 @@ void GraphView::Init() {
         int row = i / (grid->gridSize[1]);
         int column = i % (grid->gridSize[1]);
         cells.push_back(grid->cells[row][column]);
-        shuffledIndices.push_back(i);
+        //shuffledIndices.push_back(i);
     }
-    std::random_device rd;
-    std::mt19937 g(rd()); 
-    std::shuffle(shuffledIndices.begin(), shuffledIndices.end(), g);
+    //std::random_device rd;
+    //std::mt19937 g(rd()); 
+    //std::shuffle(shuffledIndices.begin(), shuffledIndices.end(), g);
 }
 
 void GraphView::Display() {
@@ -80,7 +80,8 @@ void GraphView::DisplayNode(int node) {
     model.SetFormat(format);
     ObjectManager& om = ObjectManager::GetInstance();
     InterfaceProvider ip;
-    Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
+    //Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
+    Math::Vector<float> pos = graph->GetVById(node)->GetCoord();
     Math::Vector<float> color = {1.0f, 1.0f, 0.0f, 1.0f};
     Math::Disk<float> disk(0.2);
     Mesh<float> diskMesh = disk.ToMesh(color, 90);
@@ -99,8 +100,8 @@ void GraphView::DisplayNode(int node) {
     mesh = om.Create<Mesh<float>>(ringMesh);
     ip.Query<IScalable>(mesh)->Scale<float>({grid->cellSize[0] * 18, 
                                              grid->cellSize[1] * 18, 1.0f});
-    ip.Query<ITranslatable>(mesh)->Translate<float>({pos[0], 
-                                                     pos[1], 0.7f + 0.01f});
+    ip.Query<ITranslatable>(mesh)->Translate<float>({ pos[0],
+                                                     pos[1], 0.7f + 0.01f });
     model.SetMesh(mesh);
     modelId = om.Create<Model>(model);
     renderer->AddModel(modelId);
@@ -139,10 +140,11 @@ void GraphView::DisplayPost(int node) {
     format.shaders.push_back(L"Engine/Shaders/default.fsh");
     Model model;
     model.SetFormat(format);
-    Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
+    //Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
+    Math::Vector<float> pos = graph->GetVById(node)->GetCoord();
     Post* post = graph->GetVById(node)->GetPost();
     if (!post) {
-        DisplayNode(node);
+        //DisplayNode(node);
         return;
     }
     int type = post->GetPostType();
@@ -192,8 +194,10 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
     Math::Vector<float> color = {0.28f, 0.28f, 0.28f, 1.0f};
-    Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
-    Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+    //Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+    Math::Vector<float> begin = graph->GetVById(from)->GetCoord();
+    //Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+    Math::Vector<float> end = graph->GetVById(to)->GetCoord();
     Math::Vector<float> dir = end - begin;
     Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};
@@ -214,22 +218,22 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(seg);
     renderer->AddModel(modelId); 
 
-    std::stringstream str;
-    str << edgePtr->GetLength();
-    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.2f}, 
-                                                      {grid->cellSize[1] * 4.4f, 
-                                                      grid->cellSize[1] * 4.4f}, str.str());
-    charBlock.Scale({grid->cellSize[0] * 4.4f, grid->cellSize[1] * 4.4f, 1.0f});
-    charBlock.Translate({-0.008f, 0.001f, 0.0f});
-    std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
-    for (int i = 0; i < meshes.size(); i++) {
-        unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
-        model.SetMesh(mesh);
-        modelId = om.Create<Model>(model);
-        renderer->AddModel(modelId); 
-        ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
-        renderer->AddMesh(mesh);
-    }
+    //std::stringstream str;
+    //str << edgePtr->GetLength();
+    //White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.2f}, 
+    //                                                  {grid->cellSize[1] * 4.4f, 
+    //                                                  grid->cellSize[1] * 4.4f}, str.str());
+    //charBlock.Scale({grid->cellSize[0] * 4.4f, grid->cellSize[1] * 4.4f, 1.0f});
+    //charBlock.Translate({-0.008f, 0.001f, 0.0f});
+    //std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
+    //for (int i = 0; i < meshes.size(); i++) {
+    //    unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
+    //    model.SetMesh(mesh);
+    //    modelId = om.Create<Model>(model);
+    //    renderer->AddModel(modelId); 
+    //    ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
+    //    renderer->AddMesh(mesh);
+    //}
 }
 
 
@@ -252,8 +256,10 @@ void GraphView::DisplayTrain(Train* trainObj) {
     int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
     int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
     Math::Vector<float> color = {0.5f, 0.5f, 0.5f, 1.0f};
-    Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
-    Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+    //Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+    Math::Vector<float> begin = graph->GetVById(from)->GetCoord();
+    //Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+    Math::Vector<float> end = graph->GetVById(to)->GetCoord();
     Math::Vector<float> dir = end - begin;
     Math::Vector<float> mid = begin + dir * (1.0f / 2.0f);
     Math::Vector<float> initial = {dir.Length(), 0};
@@ -299,8 +305,10 @@ void GraphView::UpdateTrains() {
         Edge* edgePtr = graph->GetEdgeByIdx(trainObj->GetLineIdx());
         int from = graph->GetVByIdx(edgePtr->GetFrom())->GetId();
         int to = graph->GetVByIdx(edgePtr->GetTo())->GetId();
-        Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
-        Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition; 
+        //Math::Vector<float> begin = cells[shuffledIndices[from]].vertexPosition;
+        Math::Vector<float> begin = graph->GetVById(from)->GetCoord();
+        //Math::Vector<float> end = cells[shuffledIndices[to]].vertexPosition;
+        Math::Vector<float> end = graph->GetVById(to)->GetCoord();
         Math::Vector<float> dir = end - begin; 
         float len = dir.Length();
         float step = len / edgePtr->GetLength();

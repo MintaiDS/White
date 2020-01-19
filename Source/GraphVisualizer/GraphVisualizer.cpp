@@ -73,14 +73,14 @@ void GraphVisualizer::LoadGraph(std::string name) {
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER0);
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY) {
-        ParseGraphFromJSON(graph, resp.data);
+        overseer->ParseGraphFromJSON(resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
     msg = conn.FormActionMessage(Action::MAP, conn.LAYER1);
     conn.Request(msg, resp);
     if (resp.result == Result::OKEY) {
-        ParseInfrastructureFromJSON(graph, resp.data);
+        overseer->ParseInfrastructureFromJSON(resp.data);
     }
     delete[](resp.data);
     delete[](msg.data);
@@ -104,6 +104,25 @@ void GraphVisualizer::UpdateCamera() {
 
 void GraphVisualizer::Play() {
     if (!overseer) {
+      Logger& l = Logger::GetInstance();
+      l.Init("run.log");
+
+      clock_t start_time = clock();
+
+      int dimension = 160 * 9;
+      grid.reset(new Grid({ 0.0f, dimension * 1.0f / 2.0f },
+                            {dimension, dimension}, 
+                            {1.0f, 1.0f}));
+        graphView.SetRenderer(&renderer);
+
+      graphView.SetGrid(grid);
+      graphView.Init();
+
+      clock_t end_time = clock();
+      l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+      start_time = clock();
+      
         //logger.Log(2);
         StartupSettings& settings = StartupSettings::GetInstance();
         settings.ParseCommandLineArgs();
@@ -130,21 +149,35 @@ void GraphVisualizer::Play() {
         std::string players = cw2a_2;
         std::string turns = cw2a_3;
         //LoadGraph(path); 
+
+        end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        start_time = clock();
+
         overseer = std::make_shared<Overseer>();
-        Logger& l = Logger::GetInstance();
         l << args.size();
         //logger << 2.1;
         overseer->Init(name, game, players, turns);
+
+        end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+        start_time = clock();
+
         graph = overseer->GetGraph();
-        int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
-        grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
-                            {dimension, dimension}, 
-                            {1.0f, 1.0f}));
-        graphView.SetRenderer(&renderer);
+        //int verticesCnt = graph->GetVerticesCnt();
+        //int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
+        //grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
+        //                    {dimension, dimension}, 
+        //                    {1.0f, 1.0f}));
+        //graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
-        graphView.SetGrid(grid);
-        graphView.Init();
+        //graphView.SetGrid(grid);
+        //graphView.Init();
+        
+        overseerThread.Start(this, &GraphVisualizer::Listener);
+
         graphView.Display();
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 40.0f, -6.0f});
@@ -163,7 +196,10 @@ void GraphVisualizer::Play() {
             renderer.AddModel(cubeModel);
         }
         renderer.UpdateVertexData();
-        overseerThread.Start(this, &GraphVisualizer::Listener);
+
+        end_time = clock();
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        l << std::string("Game started!\n");
     }
     InterfaceProvider ip;
     UpdateCamera();
