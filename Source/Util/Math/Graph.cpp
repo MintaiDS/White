@@ -13,8 +13,8 @@ namespace White {
 
       void Vertex::SetSize(int x, int y)
       {
-        coord[0] = x;
-        coord[1] = y;
+        coord[0] = (float)x;
+        coord[1] = (float)y;
       }
 
       void Graph::AppendEdge(Edge* e)
@@ -109,7 +109,7 @@ namespace White {
           world_map[my_city_id][GetIdByIdx(storage_idx)] = path;
         }
         auto dijkstra = Dijkstra(*this, my_city_idx, NULL, NULL);
-        for (int i = 0; i < sz; ++i)
+        for (size_t i = 0; i < sz; ++i)
         {
           if (world_map[my_city_id][i] == nullptr)
           {
@@ -213,6 +213,16 @@ namespace White {
         return GetEdgeByIdx(edge_idx)->GetPointIdxFromPosition(position);
       }
 
+      int Graph::GetCloserPoint(int edge_idx, int position)
+      {
+        Edge* e = GetEdgeByIdx(edge_idx);
+        int len = e->GetLength();
+        if (position < len - position)
+          return e->GetFrom();
+        else
+          return e->GetTo();
+      }
+
       Path Path::FormPath(Graph& g, int i_idx, int j_idx, std::vector<std::pair<Edge*, bool>>& dijkstra)
       {
         int i_id = g.GetIdByIdx(i_idx);
@@ -231,7 +241,7 @@ namespace White {
         res.push_back({ NULL, false });
         res.shrink_to_fit();
         size_t sz = res.size();
-        for (int i = 0; i < sz / 2; ++i)
+        for (size_t i = 0; i < sz / 2; ++i)
         {
           std::swap(res[i], res[sz - 1 - i]);
         }
@@ -258,14 +268,6 @@ namespace White {
         if ((it = blocked_lines.find(edge_idx)) != blocked_lines.end() && it->second == t)
           blocked_lines.erase(edge_idx);
       }
-
-      void Graph::CollisionCleanup(Train * t)
-      {
-        t->task.DropTask();
-        UnblockLine(t->GetLineIdx(), t);
-        t->ResetCooldown();
-      }
-
     }
   }
 }

@@ -59,7 +59,7 @@ namespace White {
 
         std::vector<Edge*>& GetEdgeList() { return edges; }
         Math::Vector<float> GetCoord() { return coord; }
-        void SetCoord(double x, double y) { coord[0] = x; coord[1] = y; }
+        void SetCoord(double x, double y) { coord[0] = (float)x; coord[1] = (float)y; }
         void ShiftCoord(Math::Vector<float>& p) { coord += p; }
 
       private:
@@ -116,11 +116,11 @@ namespace White {
 
         int GetCommonPointIdx(int edge_idx1, int edge_idx2);
         int GetPointIdxByPosition(int edge_idx, int position);
+        int GetCloserPoint(int edge_idx, int position);
 
         Train* CheckLine(int edge_idx);
         void BlockLine(int edge_idx, Train* t);
         void UnblockLine(int edge_idx, Train* t);
-        void CollisionCleanup(Train* t);
 
         int turn_counter = 0;
 

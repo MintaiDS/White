@@ -64,7 +64,7 @@ namespace White {
         std::vector<Vertex*> vs = g->GetVertices();
         std::vector<Math::Vector<float>> shift(vs.size());
         int sz = vs.size();
-        int step = sqrt(sz) + 1;
+        int step = (int)sqrt(sz) + 1;
         for (int i = 0; i < sz; ++i)
         {
           vs[i]->SetCoord(100. + 10. * (i % step), 100. + 10. * (i / step));
@@ -76,14 +76,14 @@ namespace White {
         while (shifted)
         {
           num++;
-          for (int i = 0; i < vs.size(); ++i)
+          for (size_t i = 0; i < vs.size(); ++i)
             vs[i]->ShiftCoord(shift[i]);
           shifted = false;
-          for (int i = 0; i < vs.size(); ++i) {
+          for (size_t i = 0; i < vs.size(); ++i) {
             Vertex* v0 = vs[i];
             xvel = 0.;
             yvel = 0.;
-            for (int j = 0; j < vs.size(); ++j)
+            for (size_t j = 0; j < vs.size(); ++j)
             {
               Vertex* v1 = vs[j];
               auto dst = dist(v1, v0);
@@ -110,8 +110,8 @@ namespace White {
               //Pnt pnt{ xvel, yvel };
               //v0->ShiftCoord(pnt);
             }
-            shift[i][0] = xvel;
-            shift[i][1] = yvel;
+            shift[i][0] = (float)xvel;
+            shift[i][1] = (float)yvel;
           }
           //for (int i = 0; i < shift.size(); ++i)
             //printf("%d: %f %f\n", i, shift[i].x, shift[i].y);

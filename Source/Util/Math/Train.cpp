@@ -20,7 +20,7 @@ namespace White {
           l << std::string("Come home\n");
         task = t;
         this->path = path;
-        for (int i = 0; i < path.size(); ++i)
+        for (size_t i = 0; i < path.size(); ++i)
         {
           if (path[i].first != NULL)
             l << std::to_string(path[i].first->GetIdx()) << std::string(" ") << std::to_string(path[i].second) << std::string(", ");
@@ -35,10 +35,12 @@ namespace White {
         p->SetVacant(false);
       }
 
-      std::pair<int, int>& Train::Task::ContinueMovement(Edge* edge, int position)
+      std::pair<int, int> Train::Task::ContinueMovement(Edge* edge, int position)
       {
         Logger& l = Logger::GetInstance();
         int line_idx = edge->GetIdx();
+        if (path.size() == 1)
+          return { line_idx, 0 };
         //assert(task != NO_TASK);
         Edge* e = path[path_idx].first;
         bool is_back = path[path_idx].second;
@@ -52,7 +54,10 @@ namespace White {
           else
             idx = edge->GetTo();
           if (idx == start_idx)
-            return std::pair<int, int>{ e->GetIdx(), path[path_idx].second ? -1 : 1 };
+          {
+            std::pair<int, int> step = { e->GetIdx(), path[path_idx].second ? -1 : 1 };
+            return step;
+          }
         }
         if ((is_back && position == 0) || (!is_back && position == e->GetLength()))
         {
@@ -60,17 +65,26 @@ namespace White {
           Edge* e_next = path[path_idx + 1].first;
           bool is_next_back = path[path_idx + 1].second;
           if (is_next_back)
-            return std::pair<int, int>{ e_next->GetIdx(), -1 };
+          {
+            std::pair<int, int>step = { e_next->GetIdx(), -1 };
+            return step;
+          }
           else
-            return std::pair<int, int>{ e_next->GetIdx(), 1 };
+          {
+            std::pair<int, int> step = { e_next->GetIdx(), 1 };
+            return step;
+          }
         }
-        return std::pair<int, int> {e->GetIdx(), is_back ? -1 : 1};
+        std::pair<int, int> step = {e->GetIdx(), is_back ? -1 : 1};
+        return step;
       }
       bool Train::Task::TaskEnded(int line_idx, int position)
       {
         Logger& l = Logger::GetInstance();
         if (task == NO_TASK)
           return false;
+        if (path.size() == 1)
+          return true;
         if (path_idx == path.size() - 1)
         {
           if (path[path_idx].second)
@@ -89,26 +103,41 @@ namespace White {
         destination->SetVacant(true);
       }
 
-      bool Train::Task::PathIdxValid(int line_idx)
+      bool Train::Task::PathIdxValid(Train* t)
       {
+        int line_idx = t->GetLineIdx();
+        if (path.size() == 1)
+          return true;
         Logger& l = Logger::GetInstance();
         if (path[path_idx].first->GetIdx() != line_idx)
         {
-          for (int i = 1; i < path.size(); ++i)
+          for (size_t i = 0; i < path.size(); ++i)
           {
             Edge* e = path[i].first;
-            if (e->GetIdx() == line_idx)
+            if (e != NULL && e->GetIdx() == line_idx)
             {
-              path_idx = i;
-              return false;
+              path_idx = (int)i;
+              t->SetDirection(0);
+              return true;
             }
           }
+          return false;
         }
         return true;
       }
       void Train::Task::ChangeCurrentPath(std::pair<Edge*, bool> new_path)
       {
+        Logger& l = Logger::GetInstance();
         path[path_idx] = new_path;
+        l << std::string("path_idx: ") << std::to_string(path_idx) << std::string("\n");
+        for (size_t i = 0; i < path.size(); ++i)
+        {
+          if (path[i].first != NULL)
+            l << std::to_string(path[i].first->GetIdx()) << std::string(" ") << std::to_string(path[i].second) << std::string(", ");
+          else
+            l << std::string("Empty, ");
+          l << std::string("\n");
+        }
       }
       bool Train::Task::IsFirst(int position)
       {
@@ -141,6 +170,13 @@ namespace White {
           break;
         }
         }
+      }
+      bool Train::IncStopCount()
+      {
+        if (++stop_count > 2)
+          return true;
+        return false;
+          
       }
 }
   }

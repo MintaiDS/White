@@ -145,11 +145,11 @@ namespace White {
 
       bool Connection::Request(const ActionMessage & msg, ResponseMessage& resp)
       {
-        bool is_move = (msg.actionCode == MOVE);
-        FD_SET ReadSet;
+        //bool is_move = (msg.actionCode == MOVE);
+        //FD_SET ReadSet;
 
         Logger& l = Logger::GetInstance();
-        l << std::string("Message type ") << std::to_string((int)msg.actionCode) << std::string("\n");
+        //l << std::string("Message type ") << std::to_string((int)msg.actionCode) << std::string("\n");
         int retVal = 0;
         std::stringstream ss;
         ss << std::hex;
@@ -174,7 +174,7 @@ namespace White {
         if (msg.actionCode == Action::LOGOUT)
           return true;
 
-        clock_t start_time = clock();
+        //clock_t start_time = clock();
 
         char szResponse[5];
         retVal = recv(clientSocket, szResponse, 4, 0);
@@ -189,11 +189,11 @@ namespace White {
         resp.result = (Result)toInt(szResponse);
         //resp.result = (Result)toInt(code);
 
-        clock_t end_time = clock();
+        //clock_t end_time = clock();
         //if (is_move)
         //{
-          l << std::string("1 Recv message time: ");
-          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+          //l << std::string("1 Recv message time: ");
+          //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         //}
 
         //if (is_move)
@@ -232,7 +232,7 @@ namespace White {
 #endif
           return false;
         }
-        start_time = clock();
+        //start_time = clock();
 
         resp.dataLength = toInt(szResponse);
         int data_left = resp.dataLength;
@@ -257,11 +257,11 @@ namespace White {
         resp.data[resp.dataLength] = '\0';
         //l << std::string("Got the response\n");
 
-        end_time = clock();
+        //end_time = clock();
         //if (is_move)
         //{
-          l << std::string("Recv message time: ");
-          l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+          //l << std::string("Recv message time: ");
+          //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         //}
         return true;
       }
@@ -288,7 +288,7 @@ namespace White {
         Request(msg, resp);
         //l << std::to_string((int)resp.result) << std::string("\n");
         if (resp.result != OKEY)
-          l << resp.data << std::string("\n");
+          l << std::string(resp.data) << std::string("\n");
         //if (edge_idx == 149)
           //l << std::to_string((int)resp.result);
       }
