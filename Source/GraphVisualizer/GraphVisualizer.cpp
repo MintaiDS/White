@@ -161,6 +161,9 @@ void GraphVisualizer::Play() {
         graphView.SetGraph(graph);
         graphView.SetGrid(grid);
         graphView.Init();
+        
+        overseerThread.Start(this, &GraphVisualizer::Listener);
+
         graphView.Display();
         camera.Rotate({0.0f, 180.0f, 0.0f});
         camera.Translate({0.0f, 40.0f, -6.0f});
@@ -183,7 +186,6 @@ void GraphVisualizer::Play() {
         end_time = clock();
         l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         l << std::string("Game started!\n");
-        overseerThread.Start(this, &GraphVisualizer::Listener);
     }
     InterfaceProvider ip;
     UpdateCamera();
