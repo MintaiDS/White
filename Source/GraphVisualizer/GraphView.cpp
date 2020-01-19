@@ -24,6 +24,7 @@ using namespace White;
 
 GraphView::GraphView() 
         : renderer(nullptr) {
+    isInitialized = false;
     ObjectManager& om = ObjectManager::GetInstance();
     mainMesh = om.Create<Mesh<float>>();
     mainModel = om.Create<Model>();
@@ -47,7 +48,7 @@ void GraphView::Display() {
         DisplayPost(i);
     }
     for (auto& p : graph->GetEdges()) {
-        DisplayEdge(p.second);
+        //DisplayEdge(p.second);
     }
     for (auto& p : graph->GetTrains()) {
         DisplayTrain(p.second);
@@ -142,7 +143,7 @@ void GraphView::DisplayPost(int node) {
     Math::Vector<float> pos = cells[shuffledIndices[node]].vertexPosition;
     Post* post = graph->GetVById(node)->GetPost();
     if (!post) {
-        DisplayNode(node);
+        //DisplayNode(node);
         return;
     }
     int type = post->GetPostType();
@@ -317,6 +318,14 @@ void GraphView::UpdateTrains() {
         mesh->SetRotation(rotation);
         i++;
     }
+}
+
+bool GraphView::IsInitialized() const {
+    return isInitialized;
+}
+
+void GraphView::CompleteInitialization() {
+    isInitialized = true;
 }
 
 void GraphView::SetRenderer(White::Engine::Graphics::Renderer* renderer) {

@@ -61,6 +61,43 @@ DWORD GraphVisualizer::Listener() {
   return 0;
 }
 
+DWORD GraphVisualizer::ViewInitializer() {
+    graph = overseer->GetGraph();
+    int verticesCnt = graph->GetVerticesCnt();
+    int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
+    grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
+                        {dimension, dimension}, 
+                        {1.0f, 1.0f}));
+    graphView.SetRenderer(&renderer);
+    graphView.SetGraph(graph);
+    graphView.SetGrid(grid);
+    graphView.Init();
+    graphView.Display();
+    camera.Rotate({0.0f, 180.0f, 0.0f});
+    camera.Translate({0.0f, 40.0f, -6.0f});
+    ObjectManager& om = ObjectManager::GetInstance();
+    dir = {0.0f, 0.0f, 1.0f};
+    prev = {0.0f, 0.0f};
+    std::wifstream in(L"Engine/Config/startup.config");
+    int n;
+    in >> n;
+    for (int i = 0; i < n; i++) {
+        std::wstring modelPath;
+        in >> modelPath;
+        ModelLoader modelLoader;
+        Model cube = modelLoader.Import(modelPath);
+        unsigned cubeModel = om.Create<Model>(cube);
+        renderer.AddModel(cubeModel);
+    }
+    renderer.UpdateVertexData();
+    renderer.ToggleActualState();
+    graphView.CompleteInitialization();
+
+    return 0;
+}
+
+
+
 void GraphVisualizer::LoadGraph(std::string name) {
     graph = std::make_shared<Graph>();
     Connection& conn = Connection::GetInstance(SERVER_ADDR, SERVER_PORT);
@@ -135,35 +172,78 @@ void GraphVisualizer::Play() {
         l << args.size();
         //logger << 2.1;
         overseer->Init(name, game, players, turns);
-        graph = overseer->GetGraph();
-        int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
-        grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
-                            {dimension, dimension}, 
-                            {1.0f, 1.0f}));
-        graphView.SetRenderer(&renderer);
-        graphView.SetGraph(graph);
-        graphView.SetGrid(grid);
-        graphView.Init();
-        graphView.Display();
-        camera.Rotate({0.0f, 180.0f, 0.0f});
-        camera.Translate({0.0f, 40.0f, -6.0f});
-        ObjectManager& om = ObjectManager::GetInstance();
-        dir = {0.0f, 0.0f, 1.0f};
-        prev = {0.0f, 0.0f};
-        std::wifstream in(L"Engine/Config/startup.config");
-        int n;
-        in >> n;
-        for (int i = 0; i < n; i++) {
-            std::wstring modelPath;
-            in >> modelPath;
-            ModelLoader modelLoader;
-            Model cube = modelLoader.Import(modelPath);
-            unsigned cubeModel = om.Create<Model>(cube);
-            renderer.AddModel(cubeModel);
-        }
-        renderer.UpdateVertexData();
+
+        ///////
+    //graph = overseer->GetGraph();
+    //int verticesCnt = graph->GetVerticesCnt();
+    //int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
+    //grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
+    //                    {dimension, dimension}, 
+    //                    {1.0f, 1.0f}));
+    //graphView.SetRenderer(&renderer);
+    //graphView.SetGraph(graph);
+    //graphView.SetGrid(grid);
+    //graphView.Init();
+    //graphView.Display();
+    //camera.Rotate({0.0f, 180.0f, 0.0f});
+    //camera.Translate({0.0f, 40.0f, -6.0f});
+    //ObjectManager& om = ObjectManager::GetInstance();
+    //dir = {0.0f, 0.0f, 1.0f};
+    //prev = {0.0f, 0.0f};
+    //std::wifstream in(L"Engine/Config/startup.config");
+    //int n;
+    //in >> n;
+    //for (int i = 0; i < n; i++) {
+    //    std::wstring modelPath;
+    //    in >> modelPath;
+    //    ModelLoader modelLoader;
+    //    Model cube = modelLoader.Import(modelPath);
+    //    unsigned cubeModel = om.Create<Model>(cube);
+    //    renderer.AddModel(cubeModel);
+    //}
+    //renderer.UpdateVertexData();
+    //graphView.CompleteInitialization();
+    graph = overseer->GetGraph();
+    int verticesCnt = graph->GetVerticesCnt();
+    int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
+    grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
+                        {dimension, dimension}, 
+                        {1.0f, 1.0f}));
+    graphView.SetRenderer(&renderer);
+    graphView.SetGraph(graph);
+    graphView.SetGrid(grid);
+    graphView.Init();
+
         overseerThread.Start(this, &GraphVisualizer::Listener);
+
+    graphView.Display();
+    camera.Rotate({0.0f, 180.0f, 0.0f});
+    camera.Translate({0.0f, 40.0f, -6.0f});
+    ObjectManager& om = ObjectManager::GetInstance();
+    dir = {0.0f, 0.0f, 1.0f};
+    prev = {0.0f, 0.0f};
+    std::wifstream in(L"Engine/Config/startup.config");
+    int n;
+    in >> n;
+    for (int i = 0; i < n; i++) {
+        std::wstring modelPath;
+        in >> modelPath;
+        ModelLoader modelLoader;
+        Model cube = modelLoader.Import(modelPath);
+        unsigned cubeModel = om.Create<Model>(cube);
+        renderer.AddModel(cubeModel);
+    }
+    renderer.UpdateVertexData();
+    renderer.ToggleActualState();
+    graphView.CompleteInitialization();
+
+
+
+
+
+
+        /////////////
+    //    initializerThread.Start(this, &GraphVisualizer::ViewInitializer);
     }
     InterfaceProvider ip;
     UpdateCamera();

@@ -22,10 +22,15 @@ namespace Graphics {
 Renderer::Renderer() {
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>
                (std::chrono::system_clock::now().time_since_epoch());
+    isUpToDate = true;
 }
 
 void Renderer::Init() {
     game = new GraphVisualizer(*this);
+}
+
+void Renderer::ToggleActualState() {
+    isUpToDate = !isUpToDate;
 }
 
 void Renderer::Render() {
@@ -33,13 +38,15 @@ void Renderer::Render() {
         = std::chrono::duration_cast<std::chrono::milliseconds>
           (std::chrono::system_clock::now().time_since_epoch());
     game->Play();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
-    for (int i = 0; i < contextStates.size(); i++) {
-        contextStates[i].Activate();
-        contextStates[i].UpdateCamera(view, projection);
-        contextStates[i].Render();
-    }
+//    if (!isUpToDate && false) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.75f, 0.75f, 0.75f, 1.0f);
+        for (int i = 0; i < contextStates.size(); i++) {
+            contextStates[i].Activate();
+            contextStates[i].UpdateCamera(view, projection);
+            contextStates[i].Render();
+        }
+//    }
     lastTime = std::chrono::duration_cast<std::chrono::milliseconds>
                (std::chrono::system_clock::now().time_since_epoch());
     unsigned sleepTime = 0;
@@ -74,8 +81,7 @@ void Renderer::AddModel(unsigned model) {
     ModelFormat fmt = modelInstance.GetFormat();
     for (auto& it : contextStates) {
         if (it.GetModelFormat() == fmt) {
-            it.GetRenderData().AddModel(model);
-            
+            it.GetRenderData().AddModel(model);        
             return;
         }
     }
