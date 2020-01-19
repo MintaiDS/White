@@ -57,8 +57,8 @@ namespace White {
         }
         data += "}";
         l << data << std::string("\n");
+        prev_clock = clock();
         msg = conn.FormActionMessage(Action::LOGIN, data);
-        resp;
         conn.Request(msg, resp);
         if (resp.result == Result::OKEY)
         {

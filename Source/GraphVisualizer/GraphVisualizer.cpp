@@ -108,6 +108,20 @@ void GraphVisualizer::Play() {
       l.Init("run.log");
 
       clock_t start_time = clock();
+
+      int dimension = 160 * 9;
+      grid.reset(new Grid({ 0.0f, dimension * 1.0f / 2.0f },
+                            {dimension, dimension}, 
+                            {1.0f, 1.0f}));
+        graphView.SetRenderer(&renderer);
+
+      graphView.SetGrid(grid);
+      graphView.Init();
+
+      clock_t end_time = clock();
+      l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+
+      start_time = clock();
       
         //logger.Log(2);
         StartupSettings& settings = StartupSettings::GetInstance();
@@ -136,7 +150,7 @@ void GraphVisualizer::Play() {
         std::string turns = cw2a_3;
         //LoadGraph(path); 
 
-        clock_t end_time = clock();
+        end_time = clock();
         l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
 
         start_time = clock();
@@ -152,15 +166,15 @@ void GraphVisualizer::Play() {
         start_time = clock();
 
         graph = overseer->GetGraph();
-        int verticesCnt = graph->GetVerticesCnt();
-        int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
-        grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
-                            {dimension, dimension}, 
-                            {1.0f, 1.0f}));
-        graphView.SetRenderer(&renderer);
+        //int verticesCnt = graph->GetVerticesCnt();
+        //int dimension = 160 * (std::sqrt(verticesCnt) + 1); 
+        //grid.reset(new Grid({0.0f, dimension * 1.0f / 2.0f}, 
+        //                    {dimension, dimension}, 
+        //                    {1.0f, 1.0f}));
+        //graphView.SetRenderer(&renderer);
         graphView.SetGraph(graph);
-        graphView.SetGrid(grid);
-        graphView.Init();
+        //graphView.SetGrid(grid);
+        //graphView.Init();
         
         overseerThread.Start(this, &GraphVisualizer::Listener);
 

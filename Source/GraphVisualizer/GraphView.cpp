@@ -35,20 +35,20 @@ void GraphView::Init() {
         int row = i / (grid->gridSize[1]);
         int column = i % (grid->gridSize[1]);
         cells.push_back(grid->cells[row][column]);
-        shuffledIndices.push_back(i);
+        //shuffledIndices.push_back(i);
     }
-    std::random_device rd;
-    std::mt19937 g(rd()); 
-    std::shuffle(shuffledIndices.begin(), shuffledIndices.end(), g);
+    //std::random_device rd;
+    //std::mt19937 g(rd()); 
+    //std::shuffle(shuffledIndices.begin(), shuffledIndices.end(), g);
 }
 
 void GraphView::Display() {
    for (int i = 0; i < graph->GetVerticesCnt(); i++) {
         DisplayPost(i);
     }
-    //for (auto& p : graph->GetEdges()) {
-    //    DisplayEdge(p.second);
-    //}
+    for (auto& p : graph->GetEdges()) {
+        DisplayEdge(p.second);
+    }
     for (auto& p : graph->GetTrains()) {
         DisplayTrain(p.second);
     }
@@ -218,22 +218,22 @@ void GraphView::DisplayEdge(Edge* edgePtr) {
     ip.Query<Mesh<float>>(mainMesh)->AddChild(seg);
     renderer->AddModel(modelId); 
 
-    std::stringstream str;
-    str << edgePtr->GetLength();
-    White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.2f}, 
-                                                      {grid->cellSize[1] * 4.4f, 
-                                                      grid->cellSize[1] * 4.4f}, str.str());
-    charBlock.Scale({grid->cellSize[0] * 4.4f, grid->cellSize[1] * 4.4f, 1.0f});
-    charBlock.Translate({-0.008f, 0.001f, 0.0f});
-    std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
-    for (int i = 0; i < meshes.size(); i++) {
-        unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
-        model.SetMesh(mesh);
-        modelId = om.Create<Model>(model);
-        renderer->AddModel(modelId); 
-        ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
-        renderer->AddMesh(mesh);
-    }
+    //std::stringstream str;
+    //str << edgePtr->GetLength();
+    //White::Engine::Graphics::CharacterBlock charBlock({mid[0], mid[1], 0.7f - 0.2f}, 
+    //                                                  {grid->cellSize[1] * 4.4f, 
+    //                                                  grid->cellSize[1] * 4.4f}, str.str());
+    //charBlock.Scale({grid->cellSize[0] * 4.4f, grid->cellSize[1] * 4.4f, 1.0f});
+    //charBlock.Translate({-0.008f, 0.001f, 0.0f});
+    //std::vector<Mesh<float>>& meshes = charBlock.GetMeshes();
+    //for (int i = 0; i < meshes.size(); i++) {
+    //    unsigned mesh = om.Create<Mesh<float>>(meshes[i]);
+    //    model.SetMesh(mesh);
+    //    modelId = om.Create<Model>(model);
+    //    renderer->AddModel(modelId); 
+    //    ip.Query<Mesh<float>>(mainMesh)->AddChild(mesh);
+    //    renderer->AddMesh(mesh);
+    //}
 }
 
 
