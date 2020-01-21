@@ -116,7 +116,8 @@ namespace White {
       {
         clock_t start_time = clock();
         Logger& l = Logger::GetInstance();
-        l << std::string("Turn ") << std::to_string(++(graph->turn_counter)) << std::string("\n");
+        l << std::string("\n");
+        l << std::string("\nTurn ") << std::to_string(++(graph->turn_counter)) << std::string("\n");
         GameState game_state = FINISHED;
         ActionMessage msg = conn.FormActionMessage(Action::GAMES, "");
         ResponseMessage resp;
@@ -195,17 +196,21 @@ namespace White {
         conn.ReadWhatLeft();
 
         clock_t end_time = clock();
-        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
+        //l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         double full_time = (double)(end_time - prev_clock) / CLOCKS_PER_SEC;
         if (prev_clock == 0. || full_time <= 0.91)
         {
           msg = conn.FormActionMessage(Action::TURN, conn.END_TURN);
           conn.Request(msg, resp);
+          int count = 0;
           while (resp.result != Result::OKEY)
           {
+            count++;
             l << std::string("Waiting...\n");
             Sleep(sleep_time);
             conn.Request(msg, resp);
+            if (count > 10)
+              break;
           }
           end_time = clock();
           l << std::string("Sent End Turn!\n");
@@ -228,6 +233,7 @@ namespace White {
         for (auto& t : trains)
         {
           t->SetMoved(false);
+          t->block = NULL;
           if (t->GetTask() != Train::Task::NO_TASK)
           {
             if (!t->task.PathIdxValid(t))
@@ -278,7 +284,7 @@ namespace White {
               idxs.push_back(t->GetIdx());
               my_city->SetCurArmor(city_armor - Train::level_cost[train_level - 1]);
               t->SetLevel(train_level + 1);
-              t->SetGoodsCap(40 * train_level + 1);
+              t->SetGoodsCap(40 * (train_level + 1));
             }
           }
         }
@@ -311,6 +317,30 @@ namespace White {
         {
           if (t->GetCooldown() == 0)
           {
+            int pos = t->GetPosition();
+            int line_idx = t->GetLineIdx();
+            int pnt_idx = graph->GetPointIdxByPosition(line_idx, pos);
+            if (pnt_idx != -1)
+            {
+              Vertex* v = graph->GetVByIdx(pnt_idx);
+              if (v->GetPost() != NULL && v->GetPost()->GetPostType() != CITY)
+              {
+                int danger_line;
+                if ((danger_line = CheckSurroundings(pnt_idx, t)) != -1)
+                {
+                  t->task.DropTask();
+                  std::map<int, int> danger;
+                  danger[danger_line] = danger_line;
+                  auto dijkstra = Dijkstra(*graph, pnt_idx, &danger, NULL);
+                  auto path_val = Path::FormPath(*graph, pnt_idx, my_city->GetPointIdx(), dijkstra);
+                  auto path = path_val.GetPath();
+                  l << std::string("train ") + std::to_string(t->GetIdx()) + " home fleeing\n";
+                  t->task.SetTask(Train::Task::COME_HOME, path, my_city, pnt_idx);
+                  continue;
+                }
+              }
+            }
+
             if ((t->GetTask() != Train::Task::NO_TASK) && (t->task.TaskEnded(t->GetLineIdx(), t->GetPosition())))
             {
               graph->UnblockLine(t->GetLineIdx(), t);
@@ -408,13 +438,15 @@ namespace White {
         t->SetNeedMessage(false);
         Logger& l = Logger::GetInstance();
         l << t->GetIdx();
+        l << std::string("Position: ") << std::to_string(t->GetLineIdx()) + std::string(" ") + std::to_string(t->GetPosition()) + std::string("\n");
         t->SetMoved(true);
         auto task = t->GetTask();
         if (task != Train::Task::NO_TASK && task != Train::Task::DEFENDER)
         {
           auto step = t->task.ContinueMovement(graph->GetEdgeByIdx(t->GetLineIdx()), t->GetPosition());
+          l << std::string("Goods: ") << std::to_string((int)t->GetGoodsType()) + std::string(" ") + std::to_string(t->GetGoods()) + std::string("\n");
           l << std::string("Step: ") << std::to_string(step.first) + std::string(" ") + std::to_string(step.second) + std::string("\n");
-          l << std::string("Position: ") << std::to_string(t->GetLineIdx()) + std::string(" ") + std::to_string(t->GetPosition()) + std::string("\n");
+          
           if (step.first != t->GetLineIdx() || (t->GetPosition() == 0 || t->GetPosition() == graph->GetEdgeByIdx(step.first)->GetLength()))
           {
             t->SetNeedMessage(true);
@@ -433,7 +465,24 @@ namespace White {
                   if (IsCityCollision(t, tr_coll, step))
                   {
                     t->SetMove({ t->GetLineIdx(), 0 });
-                    t->SetDirection(0);
+                    t->block = tr_coll;
+                    if (CheckCycle(tr_coll, t))
+                    {
+                      l << "found cycle\n";
+                      t->SetMove(step);
+                      t->SetDirection(step.second);
+                      t->SetPrevPosition(t->GetPosition());
+                      t->SetPosition(new_pos);
+                      t->SetPrevLineIdx(t->GetLineIdx());
+                      t->SetLineIdx(step.first);
+                    }
+                    else
+                    {
+                      if (t->GetDirection() == 0)
+                        t->SetNeedMessage(false);
+                      else
+                        t->SetDirection(0);
+                    }
                   }
                   else
                   {
@@ -467,7 +516,24 @@ namespace White {
                     //conn.SendMoveMessage(t->GetLineIdx(), 0, t->GetIdx());
                     t->SetMove({ t->GetLineIdx(), 0 });
                     //t->SetMove(step);
-                    t->SetDirection(0);
+                    t->block = tr_coll;
+                    if (CheckCycle(tr_coll, t))
+                    {
+                      l << "found cycle\n";
+                      t->SetMove(step);
+                      t->SetDirection(step.second);
+                      t->SetPrevPosition(t->GetPosition());
+                      t->SetPosition(new_pos);
+                      t->SetPrevLineIdx(t->GetLineIdx());
+                      t->SetLineIdx(step.first);
+                    }
+                    else
+                    {
+                      if (t->GetDirection() == 0)
+                        t->SetNeedMessage(false);
+                      else
+                        t->SetDirection(0);
+                    }
                   }
                   else
                     //TryMakeMove(tr_coll);
@@ -492,7 +558,11 @@ namespace White {
                   //conn.SendMoveMessage(t->GetLineIdx(), 0, t->GetIdx());
                   t->SetMove({ t->GetLineIdx(), 0 });
                   //t->SetMove(step);
-                  t->SetDirection(0);
+
+                  if (t->GetDirection() == 0)
+                    t->SetNeedMessage(false);
+                  else
+                    t->SetDirection(0);
                 }
               }
             }
@@ -517,7 +587,24 @@ namespace White {
               {
                 //conn.SendMoveMessage(step.first, 0, t->GetIdx());
                 t->SetMove({ t->GetLineIdx(), 0 });
-                t->SetDirection(0);
+                t->block = tr_coll;
+                if (CheckCycle(tr_coll, t))
+                {
+                  l << "found cycle\n";
+                  t->SetMove(step);
+                  t->SetDirection(step.second);
+                  t->SetPrevPosition(t->GetPosition());
+                  t->SetPosition(new_pos);
+                  t->SetPrevLineIdx(t->GetLineIdx());
+                  t->SetLineIdx(step.first);
+                }
+                else
+                {
+                  if (t->GetDirection() == 0)
+                    t->SetNeedMessage(false);
+                  else
+                    t->SetDirection(0);
+                }
               }
             }
           }
@@ -546,16 +633,44 @@ namespace White {
                 {
                   //conn.SendMoveMessage(step.first, 0, t->GetIdx());
                   t->SetMove({ t->GetLineIdx(), 0 });
-                  t->SetDirection(0);
-                  t->SetNeedMessage(true);
+                  t->block = tr_coll;
+                  if (CheckCycle(tr_coll, t))
+                  {
+                    l << "found cycle\n";
+                    t->SetMove(step);
+                    t->SetDirection(step.second);
+                    t->SetPrevPosition(t->GetPosition());
+                    t->SetPosition(t->GetPosition() + step.second);
+                    t->SetPrevLineIdx(t->GetLineIdx());
+                    t->SetLineIdx(step.first);
+                  }
+                  else
+                  {
+                    t->SetDirection(0);
+                    t->SetNeedMessage(true);
+                  }
                 }
               }
               else
               {
                 //conn.SendMoveMessage(step.first, 0, t->GetIdx());
                 t->SetMove({ t->GetLineIdx(), 0 });
-                t->SetDirection(0);
-                t->SetNeedMessage(true);
+                t->block = tr_coll;
+                if (CheckCycle(tr_coll, t))
+                {
+                  l << "found cycle\n";
+                  t->SetMove(step);
+                  t->SetDirection(step.second);
+                  t->SetPrevPosition(t->GetPosition());
+                  t->SetPosition(t->GetPosition() + step.second);
+                  t->SetPrevLineIdx(t->GetLineIdx());
+                  t->SetLineIdx(step.first);
+                }
+                else
+                {
+                  t->SetDirection(0);
+                  t->SetNeedMessage(true);
+                }
               }
             }
             else
@@ -689,7 +804,10 @@ namespace White {
                   {
                     tr->SetMoved(true);
                     tr->SetMove({ tr->GetLineIdx(), 0 });
-                    tr->SetDirection(0);
+                    if (t->GetDirection() == 0)
+                      t->SetNeedMessage(false);
+                    else
+                      t->SetDirection(0);
                   }
                 }
               }
@@ -738,7 +856,7 @@ namespace White {
           double max_pure_val = 0.;
           int min_dist = INT_MAX;
           Market* mrkt = NULL;
-          if (food_income < 0.7 || percent < 0.45 + (log(pop_percent * 5) + 3.) / 8.)
+          if (food_income < 0.8 || percent < 0.45 + (log(pop_percent * 5) + 3.) / 8.)
           {
             for (auto& v : graph->GetMarkets())
             {
@@ -746,21 +864,24 @@ namespace White {
               if (m->Vacant())
               {
                 auto path = graph->GetPath(point_idx, m->GetPointIdx());
-                int dist = max(graph->GetPathLen(point_idx, m->GetPointIdx()) * 2, 1);
+                int dist = max(graph->GetPathLen(point_idx, m->GetPointIdx()), 1);
+                
+                int cap = t->GetGoodsCap() - t->GetGoods();
+                int mag_cap = min(m->GetMaxProduct(), m->GetCurProduct() + dist * m->GetResupply());
+                dist *= 2;
+                if (mag_cap < cap)
+                  dist += (cap - mag_cap) / m->GetResupply();
                 if (path.size() > 1)
                 {
                   Edge* e = path[1].first;
                   Train* tr = graph->CheckLine(e->GetIdx());
-                  if (tr != NULL && tr != t && tr->GetDirection() == path[1].second)
+                  if (tr != NULL && tr != t && tr->GetDirection() == (path[1].second ? 1 : -1))
                   {
                     int pos = tr->GetPosition();
                     int extra_dist = path[1].second ? e->GetLength() - pos : pos;
                     dist += extra_dist;
                   }
                 }
-                int cap = min(m->GetCurProduct() + dist * m->GetResupply(), m->GetMaxProduct());
-                cap = min(cap, t->GetGoodsCap() - t->GetGoods());
-
                 //l << cap;
                 //l << dist;
                 //set a koefficient so the further the market is the less the value will be
@@ -801,19 +922,23 @@ namespace White {
             {
               auto path = graph->GetPath(point_idx, s->GetPointIdx());
               int dist = max(graph->GetPathLen(point_idx, s->GetPointIdx()) * 2, 1);
+
+              int cap = t->GetGoodsCap() - t->GetGoods();
+              int stor_cap = min(s->GetMaxArmor(), s->GetCurArmor() + dist * s->GetResupply());
+              dist *= 2;
+              if (stor_cap < cap)
+                dist += (cap - stor_cap) / s->GetResupply();
               if (path.size() > 1)
               {
                 Edge* e = path[1].first;
                 Train* tr = graph->CheckLine(e->GetIdx());
-                if (tr != NULL && tr != t && tr->GetDirection() == path[1].second)
+                if (tr != NULL && tr != t && tr->GetDirection() == (path[1].second ? 1 : -1))
                 {
                   int pos = tr->GetPosition();
                   int extra_dist = path[1].second ? e->GetLength() - pos : pos;
                   dist += extra_dist;
                 }
               }
-              int cap = min(s->GetCurArmor() + dist * s->GetResupply(), s->GetMaxArmor());
-              cap = min(cap, t->GetGoodsCap() - t->GetGoods());
               //set a koefficient so the further the market is the less the value will be
               //double koef = 1.2;
               double val = (double)cap / dist;
@@ -858,8 +983,14 @@ namespace White {
       }
       Overseer::GameState Overseer::ParseGameState(char * data)
       {
+        Logger& l = Logger::GetInstance();
         json json_parsed = json::parse(data);
         json games = json_parsed.at("games");
+        if (games.is_null())
+        {
+          l << std::string("games responce is weird\n");
+          l << games.dump() << std::string("\n");
+        }
         for (size_t i = 0; i < games.size(); ++i)
         {
           std::string name = games[i].at("name");
@@ -1044,7 +1175,7 @@ namespace White {
           }
           }
         }
-        l << std::string("trains: ") << std::to_string(trains_j.size()) << std::string("\n");
+        //l << std::string("trains: ") << std::to_string(trains_j.size()) << std::string("\n");
         for (size_t i = 0; i < trains_j.size(); ++i)
         {
           json train_j = trains_j[i];
@@ -1127,6 +1258,44 @@ namespace White {
         for (auto t : trains)
           food_income += t->GetFoodIncome();
         return food_income;
+      }
+      int Overseer::CheckSurroundings(int point_idx, Train* tr)
+      {
+        for (auto p : graph->GetTrains())
+        {
+          Train* t = p.second;
+          if (t == tr)
+            continue;
+          int pos = t->GetPosition();
+          int line_idx = t->GetLineIdx();
+          int pnt_idx = graph->GetPointIdxByPosition(line_idx, pos);
+          if (pnt_idx == -1)
+          {
+            Edge* e = graph->GetEdgeByIdx(line_idx);
+            if (e->GetFrom() == point_idx && pos == 1)
+              return line_idx;
+            if (e->GetTo() == point_idx && pos == e->GetLength() - 1)
+              return line_idx;
+          }
+          else
+          {
+            Vertex* v = graph->GetVByIdx(point_idx);
+            for (auto e : v->GetEdgeList())
+            {
+              if (e->GetOtherV(point_idx) == pnt_idx && e->GetLength() == 1)
+                return e->GetIdx();
+            }
+          }
+        }
+        return -1;
+      }
+      bool Overseer::CheckCycle(Train * cur, Train * start)
+      {
+        if (cur == NULL)
+          return false;
+        if (cur == start)
+          return true;
+        return CheckCycle(cur->block, start);
       }
     }
   }

@@ -7,7 +7,7 @@ namespace White {
   namespace Util {
     namespace Math {
 
-      const int Train::level_cost[2] = { 40, 80 };
+      const int Train::level_cost[2] = { 30, 60 };
 
       void Train::Task::SetTask(TaskType t, std::vector<std::pair<Edge*, bool>>& path, Post* p, int start_idx)
       {
@@ -38,6 +38,8 @@ namespace White {
       std::pair<int, int> Train::Task::ContinueMovement(Edge* edge, int position)
       {
         Logger& l = Logger::GetInstance();
+        //l << std::string("path_size: ") + std::to_string(path.size()) + std::string("\n");
+        //l << std::string("path_idx: ") + std::to_string(path_idx) + "\n";
         int line_idx = edge->GetIdx();
         if (path.size() == 1)
           return { line_idx, 0 };
@@ -61,6 +63,8 @@ namespace White {
         }
         if ((is_back && position == 0) || (!is_back && position == e->GetLength()))
         {
+          if (path_idx == path.size() - 1)
+            return { e->GetIdx(), is_back ? -1 : 1 };
           //assert(path_idx != path.size());
           Edge* e_next = path[path_idx + 1].first;
           bool is_next_back = path[path_idx + 1].second;
@@ -117,7 +121,7 @@ namespace White {
             if (e != NULL && e->GetIdx() == line_idx)
             {
               path_idx = (int)i;
-              t->SetDirection(0);
+              t->SetDirection(path[i].second ? 1 : -1);
               return true;
             }
           }
