@@ -52,7 +52,7 @@ namespace White {
         std::vector<Train*> trains;
         Connection& conn;
         std::string player_idx;
-        int armor_buffer = 29;
+        int armor_buffer = 19;
         int rating = 0;
         clock_t prev_clock = 0;
 
@@ -66,6 +66,8 @@ namespace White {
         void CalcFoodIncome();
         void CollisionCleanup(Train * t, bool need_reset);
         double CountFoodIncome();
+        int CheckSurroundings(int point_idx, Train* tr);
+        bool CheckCycle(Train* cur, Train* start);
 
         void SetRating(int val) { rating = val; }
 

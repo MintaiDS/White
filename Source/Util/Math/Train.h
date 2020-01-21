@@ -60,6 +60,7 @@ namespace White {
         };
 
         Task task;
+        Train* block = NULL;
         int GetIdx() { return idx; }
         int GetPosition() { return position; }
         int GetLineIdx() { return line_idx; }

@@ -160,32 +160,35 @@ namespace White {
         const char* pBuf = s.c_str();
 
         //l << std::string("Sending request from client\n");
-        retVal = send(clientSocket, pBuf, s.size(), 0);
+        do {
+          retVal = send(clientSocket, pBuf, s.size(), 0);
 
-        if (retVal == SOCKET_ERROR)
-        {
-          l << std::string("Unable to send\n");
+          if (retVal == SOCKET_ERROR)
+          {
+            l << std::string("Unable to send\n");
 #ifndef __unix__
-          WSACleanup();
+            WSACleanup();
 #endif
-          return false;
-        }
-
+            return false;
+          }
+        } while (retVal <= 0);
         if (msg.actionCode == Action::LOGOUT)
           return true;
 
         //clock_t start_time = clock();
 
         char szResponse[5];
-        retVal = recv(clientSocket, szResponse, 4, 0);
-        if (retVal == SOCKET_ERROR)
-        {
-          l << std::string("Unable to recv\n");
+        do {
+          retVal = recv(clientSocket, szResponse, 4, 0);
+          if (retVal == SOCKET_ERROR)
+          {
+            l << std::string("Unable to recv\n");
 #ifndef __unix__
-          WSACleanup();
+            WSACleanup();
 #endif
-          return false;
-        }
+            return false;
+          }
+        } while (retVal <= 0);
         resp.result = (Result)toInt(szResponse);
         //resp.result = (Result)toInt(code);
 
@@ -223,6 +226,8 @@ namespace White {
           l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
         }*/
 
+        clock_t start_time = clock();
+
         retVal = recv(clientSocket, szResponse, 4, 0);
         if (retVal == SOCKET_ERROR)
         {
@@ -233,6 +238,10 @@ namespace White {
           return false;
         }
         //start_time = clock();
+
+        clock_t end_time = clock();
+        l << std::string("Recv message time: ");
+        l << std::to_string((double)(end_time - start_time) / CLOCKS_PER_SEC) << std::string("\n");
 
         resp.dataLength = toInt(szResponse);
         int data_left = resp.dataLength;

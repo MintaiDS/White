@@ -3,7 +3,7 @@
 namespace White {
   namespace Util {
     namespace Math {
-        const int City::level_cost[2] = { 100, 200};
+        const int City::level_cost[2] = { 75, 150};
     }
   }
 }
