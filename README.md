@@ -11,6 +11,17 @@
 - [Dmitry Lisay](https://github.com/403)
 - [Dmitry Sipeyko](https://github.com/MintaiDS)
 - [Taras Makarevich](https://github.com/glisquery)
+### Build
+Current build is in archive White.zip.
+Unpack it into some directory.
+To run the application use:
+```batch
+Engine.exe <username> [game_name [num_players [num_turns]]]
+```
+For example:  
+```batch Engine.exe White TestGame 5 2000``` - to create a game  
+or ```batch Engine.exe White TestGame``` - to connect to an existing game
+
 ### Short description
 An educational project of the simple game client. 
 A game is built with a simple game engine
